@@ -17,20 +17,26 @@ public class GameScreen implements Screen {
 	int screenHeight;
 	OrthographicCamera camera;
 	Viewport viewport;
+	GameState state;
 
 	Array<Mass> massArray = new Array<Mass>();
 	Array<PhysicsObject> physArray = new Array<PhysicsObject>();
 	Mass massOne = new Mass(new Vector2(200, 200), 50, 80);
 	Mass massTwo = new Mass(new Vector2(400, 200), 50, 0);
 	Ship myShip = new Ship(new Vector2(300, 200), new Vector2(10, 180), 10);
-
+	
 	ShapeRenderer shapeRenderer = new ShapeRenderer();
 
+	Boolean touch = false;
+	int touchCount = 0;
+	
 	public GameScreen(GravityGame gam, int width, int height) {
 		this.game = gam;
 		screenWidth = width;
 		screenHeight = height;
-
+		
+		this.state = GameState.AIMING;
+		
 		// Create mass and ship
 		massArray.add(massOne);
 		massArray.add(massTwo);
@@ -56,8 +62,26 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		for (PhysicsObject physObj : physArray) {
-			physObj.update(delta, massArray);
+		switch (this.state) {
+			case AIMING:
+				if (Gdx.input.isTouched() && !touch) {
+					touch = true;
+					System.out.println("started touch");
+				} else if (!Gdx.input.isTouched() && touch) {
+					touch = false;
+					System.out.println("ended touch");
+					touchCount++;
+				}
+				if (touchCount > 5) {
+					this.state = GameState.FIRING;
+				}
+				break;
+			case FIRING:
+				for (PhysicsObject physObj : physArray) {
+					physObj.update(delta, massArray);
+				}
+				checkForCollisions();
+				break;
 		}
 
 		camera.update();
@@ -74,8 +98,6 @@ public class GameScreen implements Screen {
 		shapeRenderer.setColor(0, 1, 0, 1);
 		myShip.draw(shapeRenderer);
 		shapeRenderer.end();
-
-		checkForCollisions();
 
 	}
 
