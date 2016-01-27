@@ -2,6 +2,7 @@ package com.gravitygame;
 
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class TouchListener implements GestureListener {
 
@@ -19,8 +20,9 @@ public class TouchListener implements GestureListener {
 
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
-		// TODO Auto-generated method stub
-		return false;
+		Vector3 screenPos = new Vector3(x, y, 0);
+		screen.tap(screenPos);
+		return true;
 	}
 
 	@Override

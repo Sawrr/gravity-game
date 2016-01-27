@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class GravityGame extends Game {
 	public SpriteBatch batch;
 	public BitmapFont font;
-	public final int screenWidth = 480;
-	public final int screenHeight = 640;
+	public final int screenWidth = 960;
+	public final int screenHeight = 1280;
 
 	public void create() {
 		batch = new SpriteBatch();

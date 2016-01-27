@@ -3,12 +3,15 @@ package com.gravitygame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -28,9 +31,6 @@ public class GameScreen implements Screen {
 	Ship myShip = new Ship(new Vector2(300, 200), new Vector2(10, 180), 10);
 
 	ShapeRenderer shapeRenderer = new ShapeRenderer();
-
-	Boolean touch = false;
-	int touchCount = 0;
 
 	public GameScreen(GravityGame gam, int width, int height) {
 		this.game = gam;
@@ -66,10 +66,20 @@ public class GameScreen implements Screen {
 
 	public void pan(float x, float y) {
 		camera.translate(x, y);
+		float effectiveViewportWidth = camera.viewportWidth * camera.zoom;
+		float effectiveViewportHeight = camera.viewportHeight * camera.zoom;
+		camera.position.x = MathUtils.clamp(camera.position.x, effectiveViewportWidth / 2f, screenWidth - effectiveViewportWidth / 2f);
+		camera.position.y = MathUtils.clamp(camera.position.y, effectiveViewportHeight / 2f, screenHeight - effectiveViewportHeight / 2f);
 	}
 
 	public void zoom(float zoomDistance) {
 		camera.zoom += zoomDistance;
+		camera.zoom = MathUtils.clamp(camera.zoom, 0.001f, 10000/camera.viewportWidth);
+	}
+	
+	public void tap(Vector3 screenPos) {
+		camera.unproject(screenPos);
+		System.out.println(screenPos.x + ", " + screenPos.y);
 	}
 
 	@Override
