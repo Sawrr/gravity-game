@@ -1,11 +1,13 @@
 package com.gravitygame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -24,18 +26,23 @@ public class GameScreen implements Screen {
 	Mass massOne = new Mass(new Vector2(200, 200), 50, 80);
 	Mass massTwo = new Mass(new Vector2(400, 200), 50, 0);
 	Ship myShip = new Ship(new Vector2(300, 200), new Vector2(10, 180), 10);
-	
+
 	ShapeRenderer shapeRenderer = new ShapeRenderer();
 
 	Boolean touch = false;
 	int touchCount = 0;
-	
+
 	public GameScreen(GravityGame gam, int width, int height) {
 		this.game = gam;
 		screenWidth = width;
 		screenHeight = height;
-		
+
 		this.state = GameState.AIMING;
+
+		InputMultiplexer inputMultiplexer = new InputMultiplexer();
+		inputMultiplexer.addProcessor(new DesktopListener(this));
+		inputMultiplexer.addProcessor(new GestureDetector(new TouchListener(this)));
+		Gdx.input.setInputProcessor(inputMultiplexer);
 		
 		// Create mass and ship
 		massArray.add(massOne);
@@ -57,31 +64,28 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	public void pan(float x, float y) {
+		camera.translate(x, y);
+	}
+
+	public void zoom(float zoomDistance) {
+		camera.zoom += zoomDistance;
+	}
+
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		switch (this.state) {
-			case AIMING:
-				if (Gdx.input.isTouched() && !touch) {
-					touch = true;
-					System.out.println("started touch");
-				} else if (!Gdx.input.isTouched() && touch) {
-					touch = false;
-					System.out.println("ended touch");
-					touchCount++;
-				}
-				if (touchCount > 5) {
-					this.state = GameState.FIRING;
-				}
-				break;
-			case FIRING:
-				for (PhysicsObject physObj : physArray) {
-					physObj.update(delta, massArray);
-				}
-				checkForCollisions();
-				break;
+		case AIMING:
+			break;
+		case FIRING:
+			for (PhysicsObject physObj : physArray) {
+				physObj.update(delta, massArray);
+			}
+			checkForCollisions();
+			break;
 		}
 
 		camera.update();
