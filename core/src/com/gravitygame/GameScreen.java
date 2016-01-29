@@ -25,8 +25,8 @@ public class GameScreen implements Screen {
 
 	Array<Mass> massArray = new Array<Mass>();
 	Array<PhysicsObject> physArray = new Array<PhysicsObject>();
-	Mass massOne = new Mass(new Vector2(200, 200), 50, 80);
-	Mass massTwo = new Mass(new Vector2(400, 200), 50, 0);
+	Mass massOne = new Mass(new Vector2(200, 500), 30, 80);
+	Mass massTwo = new Mass(new Vector2(400, 200), 50, 3);
 	Ship myShip = new Ship(new Vector2(300, 200), new Vector2(10, 180), 10);
 
 	ShapeRenderer shapeRenderer = new ShapeRenderer();
@@ -36,7 +36,7 @@ public class GameScreen implements Screen {
 		screenWidth = width;
 		screenHeight = height;
 
-		this.state = GameState.AIMING;
+		this.state = GameState.VIEWING;
 
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(new DesktopListener(this));
@@ -63,39 +63,71 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	public void pan(float x, float y) {
-		camera.translate(x, y);
+	public void pan(float x, float y, float deltaX, float deltaY) {
+		switch (this.state) {
+			case VIEWING:
+				camera.translate(deltaX, deltaY);
+				clampCamera();
+				break;
+			case AIMING:
+				System.out.println(x + " " + y + " " + deltaX + " " + deltaY);
+				break;
+			case FIRING:
+				break;
+		}
+	}
+
+	public void zoom(float zoomDistance) {
+		switch (this.state) {
+			case VIEWING:
+				camera.zoom += zoomDistance;
+				clampCamera();
+				break;
+			case AIMING:
+				break;
+			case FIRING:
+				break;
+		}
+	}
+	
+	public void tap(Vector3 screenPos) {
+		camera.unproject(screenPos);
+		Vector2 tapCoords = new Vector2(screenPos.x, screenPos.y);
+		startAiming();
+	}
+
+	public void startAiming() {
+		this.state = GameState.AIMING;
+		camera.position.x = myShip.pos.x;
+		camera.position.y = myShip.pos.y;
+		camera.zoom = 1f;
+		clampCamera();
+	}
+	
+	public void clampCamera() {
+		camera.zoom = MathUtils.clamp(camera.zoom, 1f, screenWidth/camera.viewportWidth);
 		float effectiveViewportWidth = camera.viewportWidth * camera.zoom;
 		float effectiveViewportHeight = camera.viewportHeight * camera.zoom;
 		camera.position.x = MathUtils.clamp(camera.position.x, effectiveViewportWidth / 2f, screenWidth - effectiveViewportWidth / 2f);
 		camera.position.y = MathUtils.clamp(camera.position.y, effectiveViewportHeight / 2f, screenHeight - effectiveViewportHeight / 2f);
 	}
-
-	public void zoom(float zoomDistance) {
-		camera.zoom += zoomDistance;
-		System.out.println(camera.zoom);
-		camera.zoom = MathUtils.clamp(camera.zoom, 1f, screenWidth/camera.viewportWidth);
-	}
 	
-	public void tap(Vector3 screenPos) {
-		camera.unproject(screenPos);
-		System.out.println(screenPos.x + ", " + screenPos.y);
-	}
-
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		switch (this.state) {
-		case AIMING:
-			break;
-		case FIRING:
-			for (PhysicsObject physObj : physArray) {
-				physObj.update(delta, massArray);
-			}
-			checkForCollisions();
-			break;
+			case VIEWING:
+				break;
+			case AIMING:
+				break;
+			case FIRING:
+				for (PhysicsObject physObj : physArray) {
+					physObj.update(delta, massArray);
+				}
+				checkForCollisions();
+				break;
 		}
 
 		camera.update();

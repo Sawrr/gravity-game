@@ -39,7 +39,7 @@ public class TouchListener implements GestureListener {
 
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY) {
-		screen.pan(-deltaX, deltaY);
+		screen.pan(x, y, -deltaX, deltaY);
 		return true;
 	}
 
@@ -52,7 +52,7 @@ public class TouchListener implements GestureListener {
 	@Override
 	public boolean zoom(float initialDistance, float distance) {
 		float zoomDistance = distance - initialDistance;
-		screen.zoom(-zoomDistance);
+		screen.zoom(zoomDistance);
 		return true;
 	}
 
