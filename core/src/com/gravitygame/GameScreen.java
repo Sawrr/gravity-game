@@ -3,7 +3,6 @@ package com.gravitygame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -74,7 +73,8 @@ public class GameScreen implements Screen {
 
 	public void zoom(float zoomDistance) {
 		camera.zoom += zoomDistance;
-		camera.zoom = MathUtils.clamp(camera.zoom, 0.001f, 10000/camera.viewportWidth);
+		System.out.println(camera.zoom);
+		camera.zoom = MathUtils.clamp(camera.zoom, 1f, screenWidth/camera.viewportWidth);
 	}
 	
 	public void tap(Vector3 screenPos) {

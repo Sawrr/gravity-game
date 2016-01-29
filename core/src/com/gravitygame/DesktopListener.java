@@ -48,8 +48,7 @@ public class DesktopListener implements InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		float zoomDistance = (float) 0.1 * amount;
-		screen.zoom(zoomDistance);
-		System.out.println("scrolled");
+		screen.zoom(-zoomDistance);
 		return true;
 	}
 }

@@ -52,7 +52,7 @@ public class TouchListener implements GestureListener {
 	@Override
 	public boolean zoom(float initialDistance, float distance) {
 		float zoomDistance = distance - initialDistance;
-		screen.zoom(zoomDistance);
+		screen.zoom(-zoomDistance);
 		return true;
 	}
 
