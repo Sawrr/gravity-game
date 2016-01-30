@@ -7,14 +7,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class GravityGame extends Game {
 	public SpriteBatch batch;
 	public BitmapFont font;
-	public final int screenWidth = 1280;
-	public final int screenHeight = 960;
+	public final int screenWidth = 640;
+	public final int screenHeight = 480;
 
 	public void create() {
 		batch = new SpriteBatch();
 		//Use LibGDX's default Arial font.
 		font = new BitmapFont();
-		this.setScreen(new MainMenuScreen(this, screenWidth, screenHeight));
+		this.setScreen(new MainMenuScreen(this, 960, 1280));
 	}
 
 	public void render() {

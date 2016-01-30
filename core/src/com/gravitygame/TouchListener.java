@@ -45,13 +45,13 @@ public class TouchListener implements GestureListener {
 
 	@Override
 	public boolean panStop(float x, float y, int pointer, int button) {
-		// TODO Auto-generated method stub
-		return false;
+		screen.panStop(x, y);
+		return true;
 	}
 
 	@Override
 	public boolean zoom(float initialDistance, float distance) {
-		float zoomDistance = distance - initialDistance;
+		float zoomDistance = (float) -0.0001 * (distance - initialDistance);
 		screen.zoom(zoomDistance);
 		return true;
 	}
