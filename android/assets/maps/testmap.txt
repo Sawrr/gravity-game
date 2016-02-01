@@ -1,0 +1,55 @@
+{
+massArray: [
+	{
+		pos: {
+			x: 200
+			y: 500
+		}
+		radius: 30
+		density: 30
+	}
+	{
+		pos: {
+			x: 400
+			y: 200
+		}
+		radius: 50
+		density: 50
+	}
+]
+ship:	{
+		class: com.gravitygame.Ship
+		pos: {
+			x: 300
+			y: 200
+		}
+		vel: [
+			{
+				x: 10
+				y: 180
+			}
+			{
+				x: 10
+				y: 180
+			}
+			{
+				x: 10
+				y: 180
+			}
+			{
+				x: 10
+				y: 180
+			}
+		]
+		acc: [
+			{}
+			{}
+			{}
+			{}
+		]
+		radius: 10
+	}
+background: spacebg.jpg
+width: 960
+height: 1280
+}

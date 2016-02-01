@@ -11,8 +11,8 @@ public class MainMenuScreen implements Screen {
 	int screenHeight;
 	OrthographicCamera camera;
 
-	public MainMenuScreen(final GravityGame gam, int width, int height) {
-		game = gam;
+	public MainMenuScreen(final GravityGame game, int width, int height) {
+		this.game = game;
 		screenWidth = width;
 		screenHeight = height;
 		
@@ -33,7 +33,7 @@ public class MainMenuScreen implements Screen {
 		game.batch.end();
 
 		if (Gdx.input.isTouched()) {
-			game.setScreen(new GameScreen(game, screenWidth, screenHeight));
+			game.setScreen(new GameScreen(game, "testmap"));
 			dispose();
 		}
 	}

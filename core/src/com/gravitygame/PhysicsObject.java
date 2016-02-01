@@ -11,6 +11,10 @@ public class PhysicsObject extends GameObject {
 
 	private static final float G = 5;
 
+	public PhysicsObject() {
+	
+	}
+	
 	public PhysicsObject(Vector2 pos, Vector2 vel) {
 		super(pos);
 		for (int i = 0; i < NUM_STEPS; i++) {

@@ -6,6 +6,10 @@ import com.badlogic.gdx.math.Vector2;
 public class Ship extends PhysicsObject {
 	public float radius;
 
+	public Ship() {
+		super();
+	}
+	
 	public Ship(Vector2 pos, Vector2 vel, float radius) {
 		super(pos, vel);
 		this.radius = radius;

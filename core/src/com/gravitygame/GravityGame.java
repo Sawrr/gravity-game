@@ -12,9 +12,8 @@ public class GravityGame extends Game {
 
 	public void create() {
 		batch = new SpriteBatch();
-		//Use LibGDX's default Arial font.
 		font = new BitmapFont();
-		this.setScreen(new MainMenuScreen(this, 960, 1280));
+		this.setScreen(new MainMenuScreen(this, screenWidth, screenHeight));		
 	}
 
 	public void render() {
