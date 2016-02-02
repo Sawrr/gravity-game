@@ -37,9 +37,11 @@ public class GameScreen implements Screen {
 	private InputMultiplexer inputMultiplexer = new InputMultiplexer();
 	
 	private Json json = new Json();
+	private String mapName;
 	
 	public GameScreen(GravityGame game, String mapName) {
 		this.game = game;
+		this.mapName = mapName;
 
 		state = GameState.VIEWING;
 		
@@ -55,11 +57,11 @@ public class GameScreen implements Screen {
 		worldHeight = gameMap.height;
 		
 		// Create texture from background image name
-		this.bgTexture = new Texture(gameMap.background);
+		bgTexture = new Texture(gameMap.background);
 				
 		camera = new OrthographicCamera();
 		viewport = new FitViewport(game.screenWidth, game.screenHeight, camera);
-		camera.setToOrtho(false, worldWidth/2, worldHeight/2);
+		camera.setToOrtho(false); //, worldWidth/2, worldHeight/2);
 		clampCamera();
 	}
 
@@ -67,12 +69,10 @@ public class GameScreen implements Screen {
 		for (Mass mass : gameMap.massArray) {
 			float dist = gameMap.ship.getDiffVector(mass).len();
 			if (dist <= gameMap.ship.radius + mass.radius) {
-				System.out.println("Collision detected");
-				game.create();
+				reset();
 			}
 			if (gameMap.ship.pos.x <= 0 || gameMap.ship.pos.x >= worldWidth || gameMap.ship.pos.y <= 0 || gameMap.ship.pos.y >= worldHeight) {
-				System.out.println("Ship out of bounds");
-				game.create();
+				reset();
 			}
 		}
 	}
@@ -87,7 +87,7 @@ public class GameScreen implements Screen {
 				dragDeltaX += deltaX;
 				dragDeltaY += deltaY;
 				break;
-			case FIRING:
+			default:
 				break;
 		}
 	}
@@ -103,7 +103,7 @@ public class GameScreen implements Screen {
 				dragDeltaX = 0;
 				dragDeltaY = 0;
 				break;
-			case FIRING:
+			default:
 				break;
 		}
 	}
@@ -114,9 +114,7 @@ public class GameScreen implements Screen {
 				camera.zoom += zoomDistance;
 				clampCamera();
 				break;
-			case AIMING:
-				break;
-			case FIRING:
+			default:
 				break;
 		}
 	}
@@ -126,9 +124,7 @@ public class GameScreen implements Screen {
 			case VIEWING:
 				startAiming();
 				break;
-			case AIMING:
-				break;
-			case FIRING:
+			default:
 				break;
 		}
 	}
@@ -154,16 +150,17 @@ public class GameScreen implements Screen {
 		camera.position.y = MathUtils.clamp(camera.position.y, effectiveViewportHeight / 2f, worldHeight - effectiveViewportHeight / 2f);
 	}
 	
+	public void reset() {
+		dispose();
+		game.setScreen(new GameScreen(game, mapName));		
+	}
+	
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		switch (state) {
-			case VIEWING:
-				break;
-			case AIMING:
-				break;
 			case FIRING:
 				gameMap.ship.update(delta, gameMap.massArray);
 				checkForCollisions();
@@ -171,6 +168,8 @@ public class GameScreen implements Screen {
 				camera.position.y = gameMap.ship.pos.y;
 				camera.zoom = 1f;
 				clampCamera();
+				break;
+			default:
 				break;
 		}
 
@@ -220,8 +219,6 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		shapeRenderer.dispose();
-		spriteBatch.dispose();
 		bgTexture.dispose();
 	}
 }
