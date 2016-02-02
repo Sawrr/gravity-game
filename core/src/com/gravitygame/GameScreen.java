@@ -69,7 +69,11 @@ public class GameScreen implements Screen {
 		for (Mass mass : gameMap.massArray) {
 			float dist = gameMap.ship.getDiffVector(mass).len();
 			if (dist <= gameMap.ship.radius + mass.radius) {
-				reset();
+				if (mass instanceof Goal) {
+					nextMap();
+				} else {
+					reset();	
+				}
 			}
 			if (gameMap.ship.pos.x <= 0 || gameMap.ship.pos.x >= worldWidth || gameMap.ship.pos.y <= 0 || gameMap.ship.pos.y >= worldHeight) {
 				reset();
@@ -155,6 +159,12 @@ public class GameScreen implements Screen {
 		game.setScreen(new GameScreen(game, mapName));		
 	}
 	
+	public void nextMap() {
+		dispose();
+		String nextMapName = "nextmap";
+		game.setScreen(new GameScreen(game, nextMapName));
+	}
+	
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
@@ -184,8 +194,12 @@ public class GameScreen implements Screen {
 		shapeRenderer.begin(ShapeType.Filled);
 
 		// Draw masses
-		shapeRenderer.setColor(1, 0, 0, 1);
 		for (Mass mass : gameMap.massArray) {
+			if (mass instanceof Goal) {
+				shapeRenderer.setColor(0, 0, 1, 1);				
+			} else {
+				shapeRenderer.setColor(1, 0, 0, 1);
+			}
 			mass.draw(shapeRenderer);
 		}
 
