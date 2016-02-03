@@ -132,6 +132,25 @@ public class GameScreen implements Screen {
 				break;
 		}
 	}
+	
+	public void touchDown() {
+		switch (state) {
+			case FIRING:
+				gameMap.ship.isBoosting = true;
+				gameMap.ship.boostScalar = (float) 200.0;
+			default:
+				break;
+		}
+	}
+	
+	public void touchUp() {
+		switch (state) {
+			case FIRING:
+				gameMap.ship.isBoosting = false;
+			default:
+				break;
+		}
+	}
 
 	public void startAiming() {
 		state = GameState.AIMING;
@@ -205,6 +224,9 @@ public class GameScreen implements Screen {
 
 		// Draw ship
 		shapeRenderer.setColor(0, 1, 0, 1);
+		if (gameMap.ship.isBoosting) {
+			shapeRenderer.setColor(0, 1, 1, 1);
+		}
 		gameMap.ship.draw(shapeRenderer);
 		shapeRenderer.end();
 

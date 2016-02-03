@@ -8,6 +8,10 @@ public class PhysicsObject extends GameObject {
 
 	public Vector2[] vel = new Vector2[NUM_STEPS];
 	public Vector2[] acc = new Vector2[NUM_STEPS];
+	
+	public Boolean isBoosting = false;
+	public float boost = 60;
+	public float boostScalar;
 
 	private static final float G = 5;
 
@@ -33,9 +37,21 @@ public class PhysicsObject extends GameObject {
 		}
 		return grav;
 	}
-
+	
 	public void computeAccel(Array<Mass> massArray) {
-		this.acc[0].set(computeGravity(massArray));
+		Vector2 acc1 = computeGravity(massArray);
+		if (isBoosting) {
+			if (boost > 0) {
+				Vector2 boostVec = new Vector2(vel[0].x, vel[0].y);
+				boostVec.nor();
+				boostVec.scl(boostScalar);
+				acc1.add(boostVec);
+				boost--;
+			} else {
+				isBoosting = false;
+			}
+		}
+		this.acc[0].set(acc1);
 	}
 
 	public void adamsBashforth4(float delta, Vector2[] vectors, Vector2 updateVector) {

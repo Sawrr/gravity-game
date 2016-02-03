@@ -1,5 +1,30 @@
 {
 massArray: [
+	{
+		class: com.gravitygame.Goal
+		pos: {
+			x: 600
+			y: 600
+		}
+		radius: 20
+		density: 20
+	}
+	{
+		pos: {
+			x: 100
+			y: 500
+		}
+		radius: 40
+		density: 40
+	}
+	{
+		pos: {
+			x: 300
+			y: 300
+		}
+		radius: 75
+		density: 75
+	}
 ]
 ship:	{
 		class: com.gravitygame.Ship
