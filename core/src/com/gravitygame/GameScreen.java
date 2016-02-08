@@ -25,7 +25,7 @@ public class GameScreen implements Screen {
 	private OrthographicCamera camera;
 	private Viewport viewport;
 	private GameState state;
-	private GameMap gameMap = new GameMap();
+	private GameMap gameMap;
 
 	private SpriteBatch spriteBatch = new SpriteBatch();
 	private Texture bgTexture;
@@ -35,13 +35,14 @@ public class GameScreen implements Screen {
 	private int dragDeltaY;
 	
 	private InputMultiplexer inputMultiplexer = new InputMultiplexer();
-	
-	private Json json = new Json();
+
 	private String mapName;
+	private int mapId;
 	
-	public GameScreen(GravityGame game, String mapName) {
+	public GameScreen(GravityGame game, String mapName, int mapId) {
 		this.game = game;
 		this.mapName = mapName;
+		this.mapId = mapId;
 
 		state = GameState.VIEWING;
 		
@@ -49,7 +50,8 @@ public class GameScreen implements Screen {
 		inputMultiplexer.addProcessor(new GestureDetector(new TouchListener(this)));
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		
-		FileHandle file = Gdx.files.internal("maps/" + mapName + ".txt");
+		FileHandle file = Gdx.files.internal("maps/" + mapName);
+		Json json = new Json();
 		gameMap = json.fromJson(GameMap.class, file);
 		
 		// Extract world width, height
@@ -64,7 +66,7 @@ public class GameScreen implements Screen {
 				
 		camera = new OrthographicCamera();
 		viewport = new FitViewport(game.screenWidth, game.screenHeight, camera);
-		camera.setToOrtho(false); //, worldWidth/2, worldHeight/2);
+		camera.setToOrtho(false);
 		clampCamera();
 	}
 
@@ -185,13 +187,19 @@ public class GameScreen implements Screen {
 	
 	public void reset() {
 		dispose();
-		game.setScreen(new GameScreen(game, mapName));		
+		game.setScreen(new GameScreen(game, mapName, mapId));		
 	}
 	
 	public void nextMap() {
 		dispose();
-		String nextMapName = "nextmap";
-		game.setScreen(new GameScreen(game, nextMapName));
+		int nextMapId = mapId + 1;
+		if (game.mapNameArray.size != nextMapId){
+			String nextMapName = game.mapNameArray.get(nextMapId);
+			game.setScreen(new GameScreen(game, nextMapName, nextMapId));
+		} else {
+			System.out.println("You have won the game.");
+			System.exit(0);
+		}
 	}
 	
 	////////////////////////////////////////

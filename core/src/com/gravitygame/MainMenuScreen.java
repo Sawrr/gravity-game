@@ -33,7 +33,7 @@ public class MainMenuScreen implements Screen {
 		game.batch.end();
 
 		if (Gdx.input.isTouched()) {
-			game.setScreen(new GameScreen(game, "testmap"));
+			game.setScreen(new GameScreen(game, game.mapNameArray.first(), 0));
 			dispose();
 		}
 	}
