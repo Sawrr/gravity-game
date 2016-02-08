@@ -33,7 +33,7 @@ public class GameScreen implements Screen {
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	private int dragDeltaX;
 	private int dragDeltaY;
-
+	
 	private InputMultiplexer inputMultiplexer = new InputMultiplexer();
 	
 	private Json json = new Json();
@@ -56,6 +56,9 @@ public class GameScreen implements Screen {
 		worldWidth = gameMap.width;
 		worldHeight = gameMap.height;
 		
+		// Set Ship screen
+		gameMap.ship.screen = this;
+		
 		// Create texture from background image name
 		bgTexture = new Texture(gameMap.background);
 				
@@ -65,22 +68,10 @@ public class GameScreen implements Screen {
 		clampCamera();
 	}
 
-	public void checkForCollisions() {
-		for (Mass mass : gameMap.massArray) {
-			float dist = gameMap.ship.getDiffVector(mass).len();
-			if (dist <= gameMap.ship.radius + mass.radius) {
-				if (mass instanceof Goal) {
-					nextMap();
-				} else {
-					reset();	
-				}
-			}
-			if (gameMap.ship.pos.x <= 0 || gameMap.ship.pos.x >= worldWidth || gameMap.ship.pos.y <= 0 || gameMap.ship.pos.y >= worldHeight) {
-				reset();
-			}
-		}
-	}
-
+	////////////////////////////////
+	// Handle mouse / touch input //
+	////////////////////////////////
+	
 	public void pan(float x, float y, float deltaX, float deltaY) {
 		switch (state) {
 			case VIEWING:
@@ -136,8 +127,7 @@ public class GameScreen implements Screen {
 	public void touchDown() {
 		switch (state) {
 			case FIRING:
-				gameMap.ship.isBoosting = true;
-				gameMap.ship.boostScalar = (float) 200.0;
+				gameMap.ship.startBoost(200f);
 			default:
 				break;
 		}
@@ -146,12 +136,32 @@ public class GameScreen implements Screen {
 	public void touchUp() {
 		switch (state) {
 			case FIRING:
-				gameMap.ship.isBoosting = false;
+				gameMap.ship.stopBoost();
 			default:
 				break;
 		}
 	}
 
+	////////////////////////////////////////
+	//         Everything else            //
+	////////////////////////////////////////
+	
+	public void checkForCollisions() {
+		for (Mass mass : gameMap.massArray) {
+			float dist = gameMap.ship.getDiffVector(mass).len();
+			if (dist <= gameMap.ship.radius + mass.radius) {
+				if (mass instanceof Goal) {
+					nextMap();
+				} else {
+					reset();	
+				}
+			}
+			if (gameMap.ship.pos.x <= 0 || gameMap.ship.pos.x >= worldWidth || gameMap.ship.pos.y <= 0 || gameMap.ship.pos.y >= worldHeight) {
+				reset();
+			}
+		}
+	}
+	
 	public void startAiming() {
 		state = GameState.AIMING;
 		camera.position.x = gameMap.ship.pos.x;
@@ -183,6 +193,10 @@ public class GameScreen implements Screen {
 		String nextMapName = "nextmap";
 		game.setScreen(new GameScreen(game, nextMapName));
 	}
+	
+	////////////////////////////////////////
+	//         libgdx methods             //
+	////////////////////////////////////////
 	
 	@Override
 	public void render(float delta) {
@@ -256,5 +270,6 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		bgTexture.dispose();
+		gameMap.ship.boostSound.dispose();
 	}
 }

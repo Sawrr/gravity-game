@@ -50,12 +50,6 @@ ship:	{
 				y: 180
 			}
 		]
-		acc: [
-			{}
-			{}
-			{}
-			{}
-		]
 		radius: 10
 	}
 background: spacebg.jpg
