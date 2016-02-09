@@ -58,7 +58,7 @@ ship:	{
 		]
 		radius: 10
 	}
-background: spacebg.jpg
+background: spacebg2.jpg
 width: 960
 height: 1280
 }

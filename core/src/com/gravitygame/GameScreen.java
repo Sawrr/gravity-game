@@ -226,9 +226,16 @@ public class GameScreen implements Screen {
 
 		camera.update();
 		
+		float aspectRatio = (float) bgTexture.getHeight() / bgTexture.getWidth();
+		float paraScalar = 0.8f;
+		float paraX = (camera.position.x - game.screenWidth/2 * camera.zoom) * paraScalar;
+		float paraY = (camera.position.y - game.screenHeight/2 * camera.zoom) * paraScalar;
+		float paraWidth = worldWidth * camera.zoom;
+		float paraHeight = worldHeight * camera.zoom * aspectRatio;
+		
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
-		spriteBatch.draw(bgTexture, 0, 0, worldWidth, worldHeight);
+		spriteBatch.draw(bgTexture, paraX, paraY, paraWidth, paraHeight);
 		spriteBatch.end();
 		
 		shapeRenderer.setProjectionMatrix(camera.combined);
