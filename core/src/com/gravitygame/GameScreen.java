@@ -15,11 +15,12 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameScreen implements Screen {
-	private final GravityGame game;
+	public final GravityGame game;
 	private int worldWidth;
 	private int worldHeight;
 	private OrthographicCamera camera;
@@ -29,6 +30,8 @@ public class GameScreen implements Screen {
 
 	private SpriteBatch spriteBatch = new SpriteBatch();
 	private Texture bgTexture;
+	private int bgWidth;
+	private int bgHeight;
 	
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	private int dragDeltaX;
@@ -50,9 +53,7 @@ public class GameScreen implements Screen {
 		inputMultiplexer.addProcessor(new GestureDetector(new TouchListener(this)));
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		
-		FileHandle file = Gdx.files.internal("maps/" + mapName);
-		Json json = new Json();
-		gameMap = json.fromJson(GameMap.class, file);
+		loadFromJson();
 		
 		// Extract world width, height
 		worldWidth = gameMap.width;
@@ -63,13 +64,21 @@ public class GameScreen implements Screen {
 		
 		// Create texture from background image name
 		bgTexture = new Texture(gameMap.background);
+		bgWidth = bgTexture.getWidth();
+		bgHeight = bgTexture.getHeight();
 				
 		camera = new OrthographicCamera();
-		viewport = new FitViewport(game.screenWidth, game.screenHeight, camera);
+		viewport = new FillViewport(game.screenWidth, game.screenHeight, camera);
 		camera.setToOrtho(false);
 		clampCamera();
 	}
 
+	public void loadFromJson() {
+		FileHandle file = Gdx.files.internal("maps/" + mapName);
+		Json json = new Json();
+		gameMap = json.fromJson(GameMap.class, file);
+	}
+	
 	////////////////////////////////
 	// Handle mouse / touch input //
 	////////////////////////////////
@@ -166,10 +175,10 @@ public class GameScreen implements Screen {
 	
 	public void startAiming() {
 		state = GameState.AIMING;
-		camera.position.x = gameMap.ship.pos.x;
+		/*camera.position.x = gameMap.ship.pos.x;
 		camera.position.y = gameMap.ship.pos.y;
 		camera.zoom = 1f;
-		clampCamera();
+		clampCamera(); */
 	}
 	
 	public void startFiring(Vector2 dragVector) {
@@ -178,7 +187,7 @@ public class GameScreen implements Screen {
 	}
 	
 	public void clampCamera() {
-		camera.zoom = MathUtils.clamp(camera.zoom, 1f, worldWidth/camera.viewportWidth);
+		camera.zoom = MathUtils.clamp(camera.zoom, 1f, 1.5f);
 		float effectiveViewportWidth = camera.viewportWidth * camera.zoom;
 		float effectiveViewportHeight = camera.viewportHeight * camera.zoom;
 		camera.position.x = MathUtils.clamp(camera.position.x, effectiveViewportWidth / 2f, worldWidth - effectiveViewportWidth / 2f);
@@ -186,8 +195,8 @@ public class GameScreen implements Screen {
 	}
 	
 	public void reset() {
-		dispose();
-		game.setScreen(new GameScreen(game, mapName, mapId));		
+		loadFromJson();
+		state = GameState.VIEWING;
 	}
 	
 	public void nextMap() {
@@ -223,19 +232,29 @@ public class GameScreen implements Screen {
 			default:
 				break;
 		}
-
+		
 		camera.update();
 		
-		float aspectRatio = (float) bgTexture.getHeight() / bgTexture.getWidth();
-		float paraScalar = 0.8f;
-		float paraX = (camera.position.x - game.screenWidth/2 * camera.zoom) * paraScalar;
-		float paraY = (camera.position.y - game.screenHeight/2 * camera.zoom) * paraScalar;
-		float paraWidth = worldWidth * camera.zoom;
-		float paraHeight = worldHeight * camera.zoom * aspectRatio;
+		float paraScalar = 100f;
+		
+		float x = camera.position.x - camera.zoom * game.screenWidth/2;
+		float y = camera.position.y - camera.zoom * game.screenHeight/2;
+		float width = game.screenWidth * camera.zoom;
+		float height = game.screenHeight * camera.zoom;
+		//int srcX = (int) (camera.position.x);
+		//int srcY =  (int) (worldHeight - camera.position.y);
+		//int srcWidth = (int) (500 + camera.zoom * paraScalar);
+		//int srcHeight = (int) (500 + camera.zoom * paraScalar);
+		
+		int srcX = 0;
+		int srcY = 0;
+		int srcWidth = 100;
+		int srcHeight = 100;
 		
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
-		spriteBatch.draw(bgTexture, paraX, paraY, paraWidth, paraHeight);
+		spriteBatch.draw(bgTexture, x, y, width, height, srcX, srcY, srcWidth, srcHeight, false, false);
+		
 		spriteBatch.end();
 		
 		shapeRenderer.setProjectionMatrix(camera.combined);
@@ -285,6 +304,5 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		bgTexture.dispose();
-		gameMap.ship.boostSound.dispose();
 	}
 }

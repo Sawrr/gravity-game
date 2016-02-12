@@ -12,7 +12,6 @@ public class Ship extends PhysicsObject {
 	public float boost = 60;
 	public float boostScalar;
 	public GameScreen screen;
-	public Sound boostSound = Gdx.audio.newSound(Gdx.files.internal("rockettrail.mp3"));
 	
 	public Ship() {
 		super();
@@ -31,13 +30,13 @@ public class Ship extends PhysicsObject {
 		boostScalar = scalar;
 		if (boost > 0) {
 			isBoosting = true;
-			boostSound.loop();
+			//screen.game.boostSound.play();
 		}
 	}
 	
 	public void stopBoost() {
 		isBoosting = false;
-		boostSound.stop();
+		//screen.game.boostSound.stop();
 	}
 	
 	@Override
