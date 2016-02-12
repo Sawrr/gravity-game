@@ -25,8 +25,8 @@ public class GravityGame extends Game {
 			screenWidth = Gdx.graphics.getWidth();
 			screenHeight = Gdx.graphics.getHeight();
 		} else {
-			screenWidth = 1280;
-			screenHeight = 720;
+			screenWidth = 720;
+			screenHeight = 1280;
 		}
 		
 		batch = new SpriteBatch();

@@ -175,10 +175,10 @@ public class GameScreen implements Screen {
 	
 	public void startAiming() {
 		state = GameState.AIMING;
-		/*camera.position.x = gameMap.ship.pos.x;
-		camera.position.y = gameMap.ship.pos.y;
+		camera.position.x = gameMap.ship.pos.x;
+		camera.position.y = gameMap.ship.pos.y + 200;
 		camera.zoom = 1f;
-		clampCamera(); */
+		clampCamera();
 	}
 	
 	public void startFiring(Vector2 dragVector) {
@@ -225,8 +225,8 @@ public class GameScreen implements Screen {
 				gameMap.ship.update(delta, gameMap.massArray);
 				checkForCollisions();
 				camera.position.x = gameMap.ship.pos.x;
-				camera.position.y = gameMap.ship.pos.y;
-				camera.zoom = 1f;
+				camera.position.y = gameMap.ship.pos.y + 200;
+				camera.zoom = 1.0f;
 				clampCamera();
 				break;
 			default:
@@ -246,10 +246,10 @@ public class GameScreen implements Screen {
 		//int srcWidth = (int) (500 + camera.zoom * paraScalar);
 		//int srcHeight = (int) (500 + camera.zoom * paraScalar);
 		
-		int srcX = 0;
-		int srcY = 0;
-		int srcWidth = 100;
-		int srcHeight = 100;
+		int srcX = (int) camera.position.x;
+		int srcY = bgHeight - (int) camera.position.y;
+		int srcWidth = 500;
+		int srcHeight = 500;
 		
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
