@@ -236,6 +236,7 @@ public class GameScreen implements Screen {
 		
 		camera.update();
 		
+		float aspectRatio = game.screenWidth / (float) game.screenHeight;
 		float paraScalar = 0.1f;
 		
 		// Camera variables
@@ -250,8 +251,8 @@ public class GameScreen implements Screen {
 		
 		// Texture variables
 		int srcWidth = gameMap.viewWidth;
-		int srcHeight = gameMap.viewWidth * game.screenHeight/game.screenWidth;
-		int srcX = (int) ((bgWidth  - srcWidth)/2 + norX * paraScalar * bgWidth);
+		int srcHeight = (int) (gameMap.viewWidth / aspectRatio);
+		int srcX = (int) ((bgWidth  - srcWidth)/2 + norX * aspectRatio * paraScalar * bgWidth);
 		int srcY = (int) ((bgHeight - srcHeight)/2 + norY * paraScalar * bgHeight);
 		
 		spriteBatch.setProjectionMatrix(camera.combined);
