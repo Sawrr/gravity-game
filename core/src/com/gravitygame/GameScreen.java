@@ -58,9 +58,6 @@ public class GameScreen implements Screen {
 		worldWidth = gameMap.width;
 		worldHeight = gameMap.height;
 		
-		// Set Ship screen
-		gameMap.ship.screen = this;
-		
 		// Create texture from background image name
 		bgTexture = new Texture(gameMap.background);
 		bgWidth = bgTexture.getWidth();
@@ -76,6 +73,7 @@ public class GameScreen implements Screen {
 		FileHandle file = Gdx.files.internal("maps/" + mapName);
 		Json json = new Json();
 		gameMap = json.fromJson(GameMap.class, file);
+		gameMap.ship.screen = this;
 	}
 	
 	////////////////////////////////
@@ -198,6 +196,7 @@ public class GameScreen implements Screen {
 	public void reset() {
 		loadFromJson();
 		state = GameState.VIEWING;
+		game.boostSound.stop();
 	}
 	
 	public void nextMap() {

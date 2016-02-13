@@ -1,7 +1,5 @@
 package com.gravitygame;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -30,13 +28,13 @@ public class Ship extends PhysicsObject {
 		boostScalar = scalar;
 		if (boost > 0) {
 			isBoosting = true;
-			//screen.game.boostSound.play();
+			screen.game.boostSound.play();
 		}
 	}
 	
 	public void stopBoost() {
 		isBoosting = false;
-		//screen.game.boostSound.stop();
+		screen.game.boostSound.stop();
 	}
 	
 	@Override
