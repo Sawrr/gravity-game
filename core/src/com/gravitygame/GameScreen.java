@@ -66,7 +66,7 @@ public class GameScreen implements Screen {
 		camera = new OrthographicCamera();
 		viewport = new FillViewport(game.screenWidth, game.screenHeight, camera);
 		camera.setToOrtho(false);
-		clampCameraPos();
+		centerCamOnBall();
 	}
 
 	public void loadFromJson() {
@@ -175,10 +175,7 @@ public class GameScreen implements Screen {
 	
 	public void startAiming() {
 		state = GameState.AIMING;
-		camera.position.x = gameMap.ship.pos.x;
-		camera.position.y = gameMap.ship.pos.y + 200;
-		camera.zoom = 1f;
-		clampCameraPos();
+		centerCamOnBall();
 	}
 	
 	public void startFiring(Vector2 dragVector) {
@@ -191,6 +188,13 @@ public class GameScreen implements Screen {
 		float effectiveViewportHeight = camera.viewportHeight * camera.zoom;
 		camera.position.x = MathUtils.clamp(camera.position.x, effectiveViewportWidth / 2f, worldWidth - effectiveViewportWidth / 2f);
 		camera.position.y = MathUtils.clamp(camera.position.y, effectiveViewportHeight / 2f, worldHeight - effectiveViewportHeight / 2f);
+	}
+	
+	public void centerCamOnBall() {
+		camera.position.x = gameMap.ship.pos.x;
+		camera.position.y = gameMap.ship.pos.y + 200;
+		camera.zoom = 1f;
+		clampCameraPos();
 	}
 	
 	public void reset() {
@@ -224,10 +228,7 @@ public class GameScreen implements Screen {
 			case FIRING:
 				gameMap.ship.update(delta, gameMap.massArray);
 				checkForCollisions();
-				camera.position.x = gameMap.ship.pos.x;
-				camera.position.y = gameMap.ship.pos.y + 200;
-				camera.zoom = 1.0f;
-				clampCameraPos();
+				centerCamOnBall();
 				break;
 			default:
 				break;
