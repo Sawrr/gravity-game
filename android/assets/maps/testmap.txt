@@ -2,8 +2,8 @@
 massArray: [
 	{
 		pos: {
-			x: 700
-			y: 1200
+			x: 500
+			y: 800
 		}
 		radius: 50
 		density: 50
@@ -12,6 +12,15 @@ massArray: [
 		pos: {
 			x: 900
 			y: 1200
+		}
+		radius: 70
+		density: 70
+	}
+			{
+		class: com.gravitygame.Goal
+		pos: {
+			x: 750
+			y: 1600
 		}
 		radius: 50
 		density: 50
@@ -52,4 +61,5 @@ ship:	{
 background: spacebg2.jpg
 width: 1440
 height: 2560
+viewWidth: 750
 }

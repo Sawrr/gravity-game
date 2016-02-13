@@ -4,23 +4,23 @@ massArray: [
 		class: com.gravitygame.Goal
 		pos: {
 			x: 600
-			y: 600
+			y: 1000
 		}
-		radius: 50
-		density: 75
+		radius: 40
+		density: 50
 	}
 	{
 		pos: {
-			x: 100
-			y: 500
+			x: 600
+			y: 800
 		}
 		radius: 40
 		density: 40
 	}
 	{
 		pos: {
-			x: 300
-			y: 300
+			x: 600
+			y: 600
 		}
 		radius: 75
 		density: 75
@@ -29,8 +29,8 @@ massArray: [
 ship:	{
 		class: com.gravitygame.Ship
 		pos: {
-			x: 300
-			y: 200
+			x: 500
+			y: 500
 		}
 		vel: [
 			{
@@ -56,9 +56,10 @@ ship:	{
 			{}
 			{}
 		]
-		radius: 10
+		radius: 20
 	}
 background: spacebg.jpg
-width: 960
-height: 1280
+width: 1080
+height: 1720
+viewWidth: 250
 }

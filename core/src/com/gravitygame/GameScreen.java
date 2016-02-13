@@ -16,7 +16,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameScreen implements Screen {
@@ -70,7 +69,7 @@ public class GameScreen implements Screen {
 		camera = new OrthographicCamera();
 		viewport = new FillViewport(game.screenWidth, game.screenHeight, camera);
 		camera.setToOrtho(false);
-		clampCamera();
+		clampCameraPos();
 	}
 
 	public void loadFromJson() {
@@ -87,7 +86,7 @@ public class GameScreen implements Screen {
 		switch (state) {
 			case VIEWING:
 				camera.translate(deltaX, deltaY);
-				clampCamera();
+				clampCameraPos();
 				break;
 			case AIMING:
 				dragDeltaX += deltaX;
@@ -117,8 +116,11 @@ public class GameScreen implements Screen {
 	public void zoom(float zoomDistance) {
 		switch (state) {
 			case VIEWING:
-				camera.zoom += zoomDistance;
-				clampCamera();
+				float maxZoom = Math.min(worldWidth/camera.viewportWidth, worldHeight/camera.viewportHeight);
+				if (camera.zoom + zoomDistance <= maxZoom && camera.zoom + zoomDistance >= 1f) {
+					camera.zoom += zoomDistance;
+				}
+				clampCameraPos();
 				break;
 			default:
 				break;
@@ -178,7 +180,7 @@ public class GameScreen implements Screen {
 		camera.position.x = gameMap.ship.pos.x;
 		camera.position.y = gameMap.ship.pos.y + 200;
 		camera.zoom = 1f;
-		clampCamera();
+		clampCameraPos();
 	}
 	
 	public void startFiring(Vector2 dragVector) {
@@ -186,8 +188,7 @@ public class GameScreen implements Screen {
 		gameMap.ship.vel[0] = dragVector;
 	}
 	
-	public void clampCamera() {
-		camera.zoom = MathUtils.clamp(camera.zoom, 1f, 1.5f);
+	public void clampCameraPos() {
 		float effectiveViewportWidth = camera.viewportWidth * camera.zoom;
 		float effectiveViewportHeight = camera.viewportHeight * camera.zoom;
 		camera.position.x = MathUtils.clamp(camera.position.x, effectiveViewportWidth / 2f, worldWidth - effectiveViewportWidth / 2f);
@@ -227,7 +228,7 @@ public class GameScreen implements Screen {
 				camera.position.x = gameMap.ship.pos.x;
 				camera.position.y = gameMap.ship.pos.y + 200;
 				camera.zoom = 1.0f;
-				clampCamera();
+				clampCameraPos();
 				break;
 			default:
 				break;
@@ -235,21 +236,23 @@ public class GameScreen implements Screen {
 		
 		camera.update();
 		
-		float paraScalar = 100f;
+		float paraScalar = 0.1f;
 		
+		// Camera variables
 		float x = camera.position.x - camera.zoom * game.screenWidth/2;
 		float y = camera.position.y - camera.zoom * game.screenHeight/2;
 		float width = game.screenWidth * camera.zoom;
 		float height = game.screenHeight * camera.zoom;
-		//int srcX = (int) (camera.position.x);
-		//int srcY =  (int) (worldHeight - camera.position.y);
-		//int srcWidth = (int) (500 + camera.zoom * paraScalar);
-		//int srcHeight = (int) (500 + camera.zoom * paraScalar);
+
+		// Normalized camera distance from center ( y is inverted )
+		float norX = camera.position.x / worldWidth - 0.5f;
+		float norY = 1 - camera.position.y / worldHeight - 0.5f;
 		
-		int srcX = (int) camera.position.x;
-		int srcY = bgHeight - (int) camera.position.y;
-		int srcWidth = 500;
-		int srcHeight = 500;
+		// Texture variables
+		int srcWidth = gameMap.viewWidth;
+		int srcHeight = gameMap.viewWidth * game.screenHeight/game.screenWidth;
+		int srcX = (int) ((bgWidth  - srcWidth)/2 + norX * paraScalar * bgWidth);
+		int srcY = (int) ((bgHeight - srcHeight)/2 + norY * paraScalar * bgHeight);
 		
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();

@@ -8,4 +8,5 @@ public class GameMap {
 	public String background;
 	public int width;
 	public int height;
+	public int viewWidth;
 }
