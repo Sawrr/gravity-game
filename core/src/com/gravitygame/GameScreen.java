@@ -7,6 +7,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -29,8 +30,14 @@ public class GameScreen implements Screen {
 
 	private SpriteBatch spriteBatch = new SpriteBatch();
 	private Texture bgTexture;
+	private Texture shipTexture;
+	private Texture shipBoostTexture;
+	private Sprite shipSprite;
 	private int bgWidth;
 	private int bgHeight;
+	
+	private float aspectRatio;
+	private float paraScalar;
 	
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	private int dragDeltaX;
@@ -54,6 +61,9 @@ public class GameScreen implements Screen {
 		
 		loadFromJson();
 		
+		aspectRatio = game.screenWidth / (float) game.screenHeight;
+		paraScalar = 0.1f;
+		
 		// Extract world width, height
 		worldWidth = gameMap.width;
 		worldHeight = gameMap.height;
@@ -62,6 +72,10 @@ public class GameScreen implements Screen {
 		bgTexture = new Texture(gameMap.background);
 		bgWidth = bgTexture.getWidth();
 		bgHeight = bgTexture.getHeight();
+		
+		shipTexture = new Texture(Gdx.files.internal("rocket.png"));
+		shipBoostTexture = new Texture(Gdx.files.internal("rocket_boost.png"));
+		shipSprite = new Sprite(shipTexture);
 				
 		camera = new OrthographicCamera();
 		viewport = new FillViewport(game.screenWidth, game.screenHeight, camera);
@@ -95,7 +109,6 @@ public class GameScreen implements Screen {
 		}
 	}
 	
-
 	public void panStop(float x, float y) {
 		switch (state) {
 			case VIEWING:
@@ -216,7 +229,48 @@ public class GameScreen implements Screen {
 	}
 	
 	////////////////////////////////////////
-	//         libgdx methods             //
+	//        Rendering methods           //
+	////////////////////////////////////////
+	
+	public void drawShip(SpriteBatch sb) {
+		// Set ship angle
+		float shipAngle = gameMap.ship.vel[0].angle();
+		shipSprite.setRotation(shipAngle);
+		
+		// Set ship texture
+		if (gameMap.ship.isBoosting) {
+			shipSprite.setTexture(shipBoostTexture);
+		} else {
+			shipSprite.setTexture(shipTexture);
+		}
+		
+		// Draw ship
+		shipSprite.setCenter(gameMap.ship.pos.x, gameMap.ship.pos.y);
+		shipSprite.draw(sb);
+	}
+	
+	public void drawBackground(SpriteBatch sb) {
+		// Camera variables
+		float x = camera.position.x - camera.zoom * game.screenWidth/2;
+		float y = camera.position.y - camera.zoom * game.screenHeight/2;
+		float width = game.screenWidth * camera.zoom;
+		float height = game.screenHeight * camera.zoom;
+
+		// Normalized camera distance from center ( y is inverted )
+		float norX = camera.position.x / worldWidth - 0.5f;
+		float norY = 1 - camera.position.y / worldHeight - 0.5f;
+		
+		// Texture variables
+		int srcWidth = gameMap.viewWidth;
+		int srcHeight = (int) (gameMap.viewWidth / aspectRatio);
+		int srcX = (int) ((bgWidth  - srcWidth)/2 + norX * aspectRatio * paraScalar * bgWidth);
+		int srcY = (int) ((bgHeight - srcHeight)/2 + norY * paraScalar * bgHeight);
+		
+		sb.draw(bgTexture, x, y, width, height, srcX, srcY, srcWidth, srcHeight, false, false);
+	}
+	
+	////////////////////////////////////////
+	//         LIBGDX methods             //
 	////////////////////////////////////////
 	
 	@Override
@@ -235,36 +289,20 @@ public class GameScreen implements Screen {
 		}
 		
 		camera.update();
-		
-		float aspectRatio = game.screenWidth / (float) game.screenHeight;
-		float paraScalar = 0.1f;
-		
-		// Camera variables
-		float x = camera.position.x - camera.zoom * game.screenWidth/2;
-		float y = camera.position.y - camera.zoom * game.screenHeight/2;
-		float width = game.screenWidth * camera.zoom;
-		float height = game.screenHeight * camera.zoom;
-
-		// Normalized camera distance from center ( y is inverted )
-		float norX = camera.position.x / worldWidth - 0.5f;
-		float norY = 1 - camera.position.y / worldHeight - 0.5f;
-		
-		// Texture variables
-		int srcWidth = gameMap.viewWidth;
-		int srcHeight = (int) (gameMap.viewWidth / aspectRatio);
-		int srcX = (int) ((bgWidth  - srcWidth)/2 + norX * aspectRatio * paraScalar * bgWidth);
-		int srcY = (int) ((bgHeight - srcHeight)/2 + norY * paraScalar * bgHeight);
-		
+				
+		// Sprite batch
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
-		spriteBatch.draw(bgTexture, x, y, width, height, srcX, srcY, srcWidth, srcHeight, false, false);
+		
+		drawBackground(spriteBatch);
+		drawShip(spriteBatch);
 		
 		spriteBatch.end();
 		
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeType.Filled);
 
-		// Draw masses
+		// Draw masses as circles
 		for (Mass mass : gameMap.massArray) {
 			if (mass instanceof Goal) {
 				shapeRenderer.setColor(0, 0, 1, 1);				
@@ -274,12 +312,15 @@ public class GameScreen implements Screen {
 			mass.draw(shapeRenderer);
 		}
 
-		// Draw ship
+		// Draw ship as circle
+		/*
 		shapeRenderer.setColor(0, 1, 0, 1);
 		if (gameMap.ship.isBoosting) {
 			shapeRenderer.setColor(0, 1, 1, 1);
 		}
 		gameMap.ship.draw(shapeRenderer);
+		*/
+		
 		shapeRenderer.end();
 
 	}
