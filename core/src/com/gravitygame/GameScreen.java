@@ -26,6 +26,10 @@ public class GameScreen implements Screen {
 	private GameState state;
 	public GameMap gameMap;
 
+	public float shipZoomLevel = 1f;
+	public float shipCamOffsetY = 200;
+	public float worldZoomLevel;
+	
 	private SpriteBatch spriteBatch = new SpriteBatch();
 	private Texture bgTexture;
 	private Texture shipTexture;
@@ -45,6 +49,10 @@ public class GameScreen implements Screen {
 
 	private String mapName;
 	private int mapId;
+	
+	private Vector2 moveTarget;
+	private float zoomTarget;
+	private GameState stateTarget;
 	
 	public GameScreen(GravityGame game, String mapName, int mapId) {
 		this.game = game;
@@ -79,6 +87,8 @@ public class GameScreen implements Screen {
 		viewport = new FillViewport(game.screenWidth, game.screenHeight, camera);
 		camera.setToOrtho(false);
 		camera.centerOnShip(this);
+		
+		worldZoomLevel = Math.min(worldWidth/camera.viewportWidth, worldHeight/camera.viewportHeight) / 2.5f;
 	}
 
 	public void loadFromJson() {
@@ -190,13 +200,17 @@ public class GameScreen implements Screen {
 	}
 	
 	public void startViewing() {
-		state = GameState.VIEWING;
-		camera.centerOnWorld(this);
+		state = GameState.MOVING;
+		moveTarget = new Vector2(worldWidth / 2, worldHeight / 2);
+		zoomTarget = worldZoomLevel;
+		stateTarget = GameState.VIEWING;
 	}
 	
 	public void startAiming() {
-		state = GameState.AIMING;
-		camera.center(gameMap.ship.pos.x, gameMap.ship.pos.y, 1f, worldWidth, worldHeight);
+		state = GameState.MOVING;
+		moveTarget = new Vector2(gameMap.ship.pos.x, gameMap.ship.pos.y + shipCamOffsetY);
+		zoomTarget = shipZoomLevel;
+		stateTarget = GameState.AIMING;
 	}
 	
 	public void startFiring(Vector2 dragVector) {
@@ -276,7 +290,24 @@ public class GameScreen implements Screen {
 			case FIRING:
 				gameMap.ship.update(delta, gameMap.massArray);
 				checkForCollisions();
-				camera.center(gameMap.ship.pos.x, gameMap.ship.pos.y, 1f, worldWidth, worldHeight);
+				camera.centerOnShip(this);
+				break;
+			case MOVING:
+				float dx = moveTarget.x - camera.position.x;
+				float dy = moveTarget.y - camera.position.y;
+				float dzoom = zoomTarget - camera.zoom;
+				if ((Math.hypot(dx, dy) > 3f) || Math.abs(dzoom) > 3f) {
+					camera.position.x += dx/7f;
+					camera.position.y += dy/7f;
+					camera.zoom += dzoom/7f;
+				} else {
+					if (stateTarget == GameState.VIEWING) {
+						camera.centerOnWorld(this);
+					} else if (stateTarget == GameState.AIMING) {
+						camera.centerOnShip(this);
+					}
+					state = stateTarget;
+				}
 				break;
 			default:
 				break;

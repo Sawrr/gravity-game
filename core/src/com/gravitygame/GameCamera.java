@@ -23,7 +23,7 @@ public class GameCamera extends OrthographicCamera {
 		int worldHeight = screen.worldHeight;
 		float x = screen.worldWidth / 2;
 		float y = screen.worldHeight / 2;
-		float zm = Math.min(worldWidth/viewportWidth, worldHeight/viewportHeight) / 1.5f;
+		float zm = screen.worldZoomLevel;
 		center(x, y, zm, worldWidth, worldHeight);
 	}
 	
@@ -31,8 +31,8 @@ public class GameCamera extends OrthographicCamera {
 		int worldWidth = screen.worldWidth;
 		int worldHeight = screen.worldHeight;
 		float x = screen.gameMap.ship.pos.x;
-		float y = screen.gameMap.ship.pos.y + 200;
-		float zm = 1f;
+		float y = screen.gameMap.ship.pos.y + screen.shipCamOffsetY;
+		float zm = screen.shipZoomLevel;
 		center(x, y, zm, worldWidth, worldHeight);
 	}
 }
