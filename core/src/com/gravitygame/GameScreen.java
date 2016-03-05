@@ -58,8 +58,6 @@ public class GameScreen implements Screen {
 		this.game = game;
 		this.mapName = mapName;
 		this.mapId = mapId;
-
-		state = GameState.VIEWING;
 		
 		inputMultiplexer.addProcessor(new DesktopListener(this));
 		inputMultiplexer.addProcessor(new GestureDetector(new TouchListener(this)));
@@ -88,8 +86,10 @@ public class GameScreen implements Screen {
 		camera.setToOrtho(false);
 		camera.centerOnShip(this);
 		
-		worldZoomLevel = Math.min(worldWidth/camera.viewportWidth, worldHeight/camera.viewportHeight);
-		System.out.println(camera.viewportWidth + " " + camera.viewportHeight + " " + worldZoomLevel);
+		worldZoomLevel = Math.min(worldWidth/camera.viewportWidth, worldHeight/camera.viewportHeight)/1.2f;
+		
+		state = GameState.VIEWING;
+		camera.centerOnWorld(this);
 	}
 
 	public void loadFromJson() {
@@ -148,17 +148,15 @@ public class GameScreen implements Screen {
 	}
 	
 	public void tap(Vector3 screenPos, int count) {
-		if (count == 1) {
-			switch (state) {
-				case VIEWING:
-					startAiming();
-					break;
-				case AIMING:
-					startViewing();
-					break;
-				default:
-					break;
-			}
+		switch (state) {
+			case VIEWING:
+				startAiming();
+				break;
+			case AIMING:
+				startViewing();
+				break;
+			default:
+				break;
 		}
 	}
 	
