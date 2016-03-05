@@ -5,14 +5,12 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Json;
@@ -21,12 +19,12 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameScreen implements Screen {
 	public final GravityGame game;
-	private int worldWidth;
-	private int worldHeight;
-	private OrthographicCamera camera;
+	public int worldWidth;
+	public int worldHeight;
+	private GameCamera camera;
 	private Viewport viewport;
 	private GameState state;
-	private GameMap gameMap;
+	public GameMap gameMap;
 
 	private SpriteBatch spriteBatch = new SpriteBatch();
 	private Texture bgTexture;
@@ -77,10 +75,10 @@ public class GameScreen implements Screen {
 		shipBoostTexture = new Texture(Gdx.files.internal("rocket_boost.png"));
 		shipSprite = new Sprite(shipTexture);
 				
-		camera = new OrthographicCamera();
+		camera = new GameCamera();
 		viewport = new FillViewport(game.screenWidth, game.screenHeight, camera);
 		camera.setToOrtho(false);
-		centerCamOnBall();
+		camera.centerOnShip(this);
 	}
 
 	public void loadFromJson() {
@@ -98,7 +96,7 @@ public class GameScreen implements Screen {
 		switch (state) {
 			case VIEWING:
 				camera.translate(deltaX, deltaY);
-				clampCameraPos();
+				camera.clampPos(worldWidth, worldHeight);
 				break;
 			case AIMING:
 				dragDeltaX += deltaX;
@@ -131,20 +129,25 @@ public class GameScreen implements Screen {
 				if (camera.zoom + zoomDistance <= maxZoom && camera.zoom + zoomDistance >= 1f) {
 					camera.zoom += zoomDistance;
 				}
-				clampCameraPos();
+				camera.clampPos(worldWidth, worldHeight);
 				break;
 			default:
 				break;
 		}
 	}
 	
-	public void tap(Vector3 screenPos) {
-		switch (state) {
-			case VIEWING:
-				startAiming();
-				break;
-			default:
-				break;
+	public void tap(Vector3 screenPos, int count) {
+		if (count == 2) {
+			switch (state) {
+				case VIEWING:
+					startAiming();
+					break;
+				case AIMING:
+					startViewing();
+					break;
+				default:
+					break;
+			}
 		}
 	}
 	
@@ -186,33 +189,24 @@ public class GameScreen implements Screen {
 		}
 	}
 	
+	public void startViewing() {
+		state = GameState.VIEWING;
+		camera.centerOnWorld(this);
+	}
+	
 	public void startAiming() {
 		state = GameState.AIMING;
-		centerCamOnBall();
+		camera.center(gameMap.ship.pos.x, gameMap.ship.pos.y, 1f, worldWidth, worldHeight);
 	}
 	
 	public void startFiring(Vector2 dragVector) {
 		state = GameState.FIRING;
 		gameMap.ship.vel[0] = dragVector;
 	}
-	
-	public void clampCameraPos() {
-		float effectiveViewportWidth = camera.viewportWidth * camera.zoom;
-		float effectiveViewportHeight = camera.viewportHeight * camera.zoom;
-		camera.position.x = MathUtils.clamp(camera.position.x, effectiveViewportWidth / 2f, worldWidth - effectiveViewportWidth / 2f);
-		camera.position.y = MathUtils.clamp(camera.position.y, effectiveViewportHeight / 2f, worldHeight - effectiveViewportHeight / 2f);
-	}
-	
-	public void centerCamOnBall() {
-		camera.position.x = gameMap.ship.pos.x;
-		camera.position.y = gameMap.ship.pos.y + 200;
-		camera.zoom = 1f;
-		clampCameraPos();
-	}
-	
+		
 	public void reset() {
 		loadFromJson();
-		state = GameState.VIEWING;
+		state = GameState.AIMING;
 		game.boostSound.stop();
 	}
 	
@@ -282,7 +276,7 @@ public class GameScreen implements Screen {
 			case FIRING:
 				gameMap.ship.update(delta, gameMap.massArray);
 				checkForCollisions();
-				centerCamOnBall();
+				camera.center(gameMap.ship.pos.x, gameMap.ship.pos.y, 1f, worldWidth, worldHeight);
 				break;
 			default:
 				break;

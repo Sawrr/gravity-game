@@ -20,7 +20,7 @@ public class TouchListener implements GestureListener {
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
 		Vector3 screenPos = new Vector3(x, y, 0);
-		screen.tap(screenPos);
+		screen.tap(screenPos, count);
 		return true;
 	}
 
