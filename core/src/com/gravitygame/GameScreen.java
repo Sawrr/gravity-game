@@ -88,7 +88,8 @@ public class GameScreen implements Screen {
 		camera.setToOrtho(false);
 		camera.centerOnShip(this);
 		
-		worldZoomLevel = Math.min(worldWidth/camera.viewportWidth, worldHeight/camera.viewportHeight) / 2.5f;
+		worldZoomLevel = Math.min(worldWidth/camera.viewportWidth, worldHeight/camera.viewportHeight);
+		System.out.println(camera.viewportWidth + " " + camera.viewportHeight + " " + worldZoomLevel);
 	}
 
 	public void loadFromJson() {
@@ -147,7 +148,7 @@ public class GameScreen implements Screen {
 	}
 	
 	public void tap(Vector3 screenPos, int count) {
-		if (count == 2) {
+		if (count == 1) {
 			switch (state) {
 				case VIEWING:
 					startAiming();
