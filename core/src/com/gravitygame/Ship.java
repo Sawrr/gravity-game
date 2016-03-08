@@ -10,6 +10,7 @@ public class Ship extends PhysicsObject {
 	public float boost = 60;
 	public float boostScalar;
 	public GameScreen screen;
+	public float angle;
 	
 	public Ship() {
 		super();

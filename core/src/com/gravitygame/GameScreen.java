@@ -42,8 +42,7 @@ public class GameScreen implements Screen {
 	private float paraScalar;
 	
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
-	private int dragDeltaX;
-	private int dragDeltaY;
+	private Vector2 dragVector;
 	
 	private InputMultiplexer inputMultiplexer = new InputMultiplexer();
 
@@ -80,6 +79,8 @@ public class GameScreen implements Screen {
 		shipTexture = new Texture(Gdx.files.internal("rocket.png"));
 		shipBoostTexture = new Texture(Gdx.files.internal("rocket_boost.png"));
 		shipSprite = new Sprite(shipTexture);
+		
+		dragVector = new Vector2(0,1f);
 				
 		camera = new GameCamera();
 		viewport = new FillViewport(game.screenWidth, game.screenHeight, camera);
@@ -110,8 +111,8 @@ public class GameScreen implements Screen {
 				camera.clampPos(worldWidth, worldHeight);
 				break;
 			case AIMING:
-				dragDeltaX += deltaX;
-				dragDeltaY += deltaY;
+				dragVector.x += deltaX;
+				dragVector.y += deltaY;
 				break;
 			default:
 				break;
@@ -123,10 +124,9 @@ public class GameScreen implements Screen {
 			case VIEWING:
 				break;
 			case AIMING:
-				Vector2 dragVector = new Vector2(dragDeltaX, dragDeltaY);
 				startFiring(dragVector);
-				dragDeltaX = 0;
-				dragDeltaY = 0;
+				dragVector.x = 0;
+				dragVector.y = 1f;
 				break;
 			default:
 				break;
@@ -213,8 +213,10 @@ public class GameScreen implements Screen {
 	}
 	
 	public void startFiring(Vector2 dragVector) {
+		Vector2 Vinitial = new Vector2(dragVector);
 		state = GameState.FIRING;
-		gameMap.ship.vel[0] = dragVector;
+		gameMap.ship.vel[0] = Vinitial;
+		
 	}
 		
 	public void reset() {
@@ -241,8 +243,7 @@ public class GameScreen implements Screen {
 	
 	public void drawShip(SpriteBatch sb) {
 		// Set ship angle
-		float shipAngle = gameMap.ship.vel[0].angle();
-		shipSprite.setRotation(shipAngle);
+		shipSprite.setRotation(gameMap.ship.angle);
 		
 		// Set ship texture
 		if (gameMap.ship.isBoosting) {
@@ -286,8 +287,15 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		switch (state) {
+			case VIEWING:
+				gameMap.ship.angle = 90;
+				break;
+			case AIMING: 
+				gameMap.ship.angle = dragVector.angle();
+				break;
 			case FIRING:
 				gameMap.ship.update(delta, gameMap.massArray);
+				gameMap.ship.angle = gameMap.ship.vel[0].angle();
 				checkForCollisions();
 				camera.centerOnShip(this);
 				break;
