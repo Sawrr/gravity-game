@@ -11,11 +11,7 @@ public class Ship extends PhysicsObject {
 	public float boostScalar;
 	public GameScreen screen;
 	public float angle;
-	
-	public Ship() {
-		super();
-	}
-	
+		
 	public Ship(Vector2 pos, Vector2 vel, float radius) {
 		super(pos, vel);
 		this.radius = radius;

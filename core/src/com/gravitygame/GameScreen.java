@@ -1,7 +1,6 @@
 package com.gravitygame;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
@@ -18,9 +17,8 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameScreen implements Screen {
-	public final GravityGame game;
-	public int worldWidth;
-	public int worldHeight;
+	private int worldWidth;
+	private int worldHeight;
 	private GameCamera camera;
 	private Viewport viewport;
 	private GameState state;
@@ -43,8 +41,6 @@ public class GameScreen implements Screen {
 	
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	private Vector2 dragVector;
-	
-	private InputMultiplexer inputMultiplexer = new InputMultiplexer();
 
 	private String mapName;
 	private int mapId;
@@ -57,13 +53,7 @@ public class GameScreen implements Screen {
 		this.game = game;
 		this.mapName = mapName;
 		this.mapId = mapId;
-		
-		inputMultiplexer.addProcessor(new DesktopListener(this));
-		inputMultiplexer.addProcessor(new GestureDetector(new TouchListener(this)));
-		Gdx.input.setInputProcessor(inputMultiplexer);
-		
-		loadFromJson();
-		
+				
 		aspectRatio = game.screenWidth / (float) game.screenHeight;
 		paraScalar = 0.1f;
 		
@@ -98,84 +88,6 @@ public class GameScreen implements Screen {
 		Json json = new Json();
 		gameMap = json.fromJson(GameMap.class, file);
 		gameMap.ship.screen = this;
-	}
-	
-	////////////////////////////////
-	// Handle mouse / touch input //
-	////////////////////////////////
-	
-	public void pan(float x, float y, float deltaX, float deltaY) {
-		switch (state) {
-			case VIEWING:
-				camera.translate(deltaX, deltaY);
-				camera.clampPos(worldWidth, worldHeight);
-				break;
-			case AIMING:
-				dragVector.x += deltaX;
-				dragVector.y += deltaY;
-				break;
-			default:
-				break;
-		}
-	}
-	
-	public void panStop(float x, float y) {
-		switch (state) {
-			case VIEWING:
-				break;
-			case AIMING:
-				startFiring(dragVector);
-				dragVector.x = 0;
-				dragVector.y = 1f;
-				break;
-			default:
-				break;
-		}
-	}
-
-	public void zoom(float zoomDistance) {
-		switch (state) {
-			case VIEWING:
-				float maxZoom = Math.min(worldWidth/camera.viewportWidth, worldHeight/camera.viewportHeight);
-				if (camera.zoom + zoomDistance <= maxZoom && camera.zoom + zoomDistance >= 1f) {
-					camera.zoom += zoomDistance;
-				}
-				camera.clampPos(worldWidth, worldHeight);
-				break;
-			default:
-				break;
-		}
-	}
-	
-	public void tap(Vector3 screenPos, int count) {
-		switch (state) {
-			case VIEWING:
-				startAiming();
-				break;
-			case AIMING:
-				startViewing();
-				break;
-			default:
-				break;
-		}
-	}
-	
-	public void touchDown() {
-		switch (state) {
-			case FIRING:
-				gameMap.ship.startBoost(200f);
-			default:
-				break;
-		}
-	}
-	
-	public void touchUp() {
-		switch (state) {
-			case FIRING:
-				gameMap.ship.stopBoost();
-			default:
-				break;
-		}
 	}
 
 	////////////////////////////////////////
@@ -235,6 +147,23 @@ public class GameScreen implements Screen {
 			System.out.println("You have won the game.");
 			System.exit(0);
 		}
+	}
+	
+	////////////////////////////////////////
+	//        Camera methods             //
+	///////////////////////////////////////
+	
+	public void pan(float deltaX, float deltaY) {
+		camera.translate(deltaX, deltaY);
+		camera.clampPos(worldWidth, worldHeight);
+	}
+	
+	public void zoom(float zoomDistance) {
+		float maxZoom = Math.min(worldWidth/camera.viewportWidth, worldHeight/camera.viewportHeight);
+		if (camera.zoom + zoomDistance <= maxZoom && camera.zoom + zoomDistance >= 1f) {
+			camera.zoom += zoomDistance;
+		}
+		camera.clampPos(worldWidth, worldHeight);
 	}
 	
 	////////////////////////////////////////

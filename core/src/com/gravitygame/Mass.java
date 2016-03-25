@@ -7,10 +7,6 @@ public class Mass extends GameObject {
 	public float radius;
 	public float density;
 
-	public Mass() {
-		super();
-	}
-	
 	public Mass(Vector2 pos, float radius, float density) {
 		super(pos);
 		this.radius = radius;

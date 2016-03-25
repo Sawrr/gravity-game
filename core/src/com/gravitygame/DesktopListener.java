@@ -4,10 +4,8 @@ import com.badlogic.gdx.InputProcessor;
 
 public class DesktopListener implements InputProcessor {
 	
-	GameScreen screen;
-	
-	public DesktopListener(GameScreen gameScreen) {
-		this.screen = gameScreen;
+	public DesktopListener() {
+
 	}
 
 	@Override
@@ -27,13 +25,13 @@ public class DesktopListener implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		screen.touchDown();
+		InputHandler.touchDown();
 		return false;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		screen.touchUp();
+		InputHandler.touchUp();
 		return false;
 	}
 
@@ -50,7 +48,7 @@ public class DesktopListener implements InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		float zoomDistance = (float) 0.05 * amount;
-		screen.zoom(zoomDistance);
+		InputHandler.zoom(zoomDistance);
 		return true;
 	}
 }

@@ -1,12 +1,13 @@
 package com.gravitygame;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-public class GameMap {
+public class MapObject {
 	public Array<Mass> massArray;
-	public Ship ship;
+	public Vector2 shipPos;
 	public String background;
-	public int width;
-	public int height;
+	public int worldWidth;
+	public int worldHeight;
 	public int viewWidth;
 }

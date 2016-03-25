@@ -10,10 +10,6 @@ public class PhysicsObject extends GameObject {
 	public Vector2[] acc = new Vector2[NUM_STEPS];
 	
 	private static final float G = 5;
-
-	public PhysicsObject() {
-	
-	}
 	
 	public PhysicsObject(Vector2 pos, Vector2 vel) {
 		super(pos);

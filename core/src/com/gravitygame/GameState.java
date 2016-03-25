@@ -1,5 +1,5 @@
 package com.gravitygame;
 
 public enum GameState {
-	VIEWING, MOVING, AIMING, FIRING
+	MAINMENU, VIEWING, MOVING, AIMING, FIRING
 }

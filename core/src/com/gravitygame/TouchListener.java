@@ -5,11 +5,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class TouchListener implements GestureListener {
-
-	GameScreen screen;
 	
-	public TouchListener(GameScreen gameScreen) {
-		this.screen = gameScreen;
+	public TouchListener() {
+
 	}
 	
 	@Override
@@ -20,7 +18,7 @@ public class TouchListener implements GestureListener {
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
 		Vector3 screenPos = new Vector3(x, y, 0);
-		screen.tap(screenPos, count);
+		InputHandler.tap(screenPos, count);
 		return true;
 	}
 
@@ -38,20 +36,20 @@ public class TouchListener implements GestureListener {
 
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY) {
-		screen.pan(x, y, -deltaX, deltaY);
+		InputHandler.pan(x, y, -deltaX, deltaY);
 		return true;
 	}
 
 	@Override
 	public boolean panStop(float x, float y, int pointer, int button) {
-		screen.panStop(x, y);
+		InputHandler.panStop(x, y);
 		return true;
 	}
 
 	@Override
 	public boolean zoom(float initialDistance, float distance) {
 		float zoomDistance = (float) -0.0001 * (distance - initialDistance);
-		screen.zoom(zoomDistance);
+		InputHandler.zoom(zoomDistance);
 		return true;
 	}
 

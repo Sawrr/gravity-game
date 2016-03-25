@@ -1,0 +1,5 @@
+{
+mapList: [
+	testmap.txt, nextmap.txt, emptymap.txt
+]
+}
