@@ -1,0 +1,5 @@
+{
+levelList: [
+	testLevel.lvl
+]
+}
