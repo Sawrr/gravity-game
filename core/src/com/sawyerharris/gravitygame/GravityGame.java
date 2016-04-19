@@ -1,6 +1,10 @@
 package com.sawyerharris.gravitygame;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Preferences;
@@ -12,12 +16,12 @@ import com.badlogic.gdx.Preferences;
  * 
  */
 public class GravityGame extends Game {
-	/** Max number of custom levels the user may create */
-	public static final int NUM_CUSTOM_LEVELS = 10;
 	/** Map of themes */
-	public static final HashMap<String, Theme> themes = new HashMap<String, Theme>();
+	private static Map<String, Theme> themes = new HashMap<String, Theme>();
 	/** Map of levels */
-	public static final HashMap<String, Level> levels = new HashMap<String, Level>();
+	private static Map<String, Level> levels = new HashMap<String, Level>();
+	/** Ordered list of levels */
+	private static List<String> levelNames = new ArrayList<String>();
 	
 	/** Tracks user progress and settings */
 	private Preferences statusPrefs;
@@ -30,7 +34,10 @@ public class GravityGame extends Game {
 	@Override
 	public void create () {
 		AssetLoader.loadThemes(themes);
-		AssetLoader.loadLevels(levels);
+		themes = Collections.unmodifiableMap(themes);
+		AssetLoader.loadLevels(levels, levelNames);
+		levels = Collections.unmodifiableMap(levels);
+		levelNames = Collections.unmodifiableList(levelNames);
 	}
 	
 	/**
@@ -39,6 +46,30 @@ public class GravityGame extends Game {
 	@Override
 	public void render () {
 		super.render();
+	}
+	
+	/**
+	 * Returns unmodifiable map of Themes
+	 * @return themes
+	 */
+	public static Map<String, Theme> getThemes() {
+		return themes;
+	}
+	
+	/**
+	 * Returns unmodifiable map of Levels
+	 * @return levels
+	 */
+	public static Map<String, Level> getLevels() {
+		return levels;
+	}
+	
+	/**
+	 * Returns unmodifiable list of level names
+	 * @return levelNames
+	 */
+	public static List<String> getLevelNames() {
+		return levelNames;
 	}
 	
 	/**

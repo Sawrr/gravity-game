@@ -1,5 +1,5 @@
 {
-levelList: [
+levelNames: [
 	testLevel.lvl
 ]
 }

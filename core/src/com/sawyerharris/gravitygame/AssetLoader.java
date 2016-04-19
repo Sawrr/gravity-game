@@ -1,6 +1,10 @@
 package com.sawyerharris.gravitygame;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -33,18 +37,18 @@ public class AssetLoader {
 	 *
 	 */
 	private static class ThemeList {
-		public String[] themeList;
+		public ArrayList<String> themeNames;
 	}
 	
 	/**
-	 * Loads themes into HashMap parameter
+	 * Loads themes into Map parameter
 	 * @param themes
 	 */
-	public static void loadThemes(HashMap<String, Theme> themes) {				
+	public static void loadThemes(Map<String, Theme> themes) {				
 		FileHandle themeListFile = Gdx.files.internal(THEME_LIST);
-		String[] themeList;
+		ArrayList<String> themeList;
 		if (themeListFile.exists()) {
-			themeList = JSON.fromJson(ThemeList.class, themeListFile).themeList;
+			themeList = JSON.fromJson(ThemeList.class, themeListFile).themeNames;
 			FileHandle themeDir = Gdx.files.internal(THEME_FOLDER);
 			if (themeDir.exists()) {
 				for (String name : themeList) {
@@ -69,21 +73,21 @@ public class AssetLoader {
 	 *
 	 */
 	private static class LevelList {
-		public String[] levelList;
+		public ArrayList<String> levelNames;
 	}
 	
 	/**
-	 * Loads levels into HashMap parameter
+	 * Loads levels into Map parameter
 	 * @param levels
 	 */
-	public static void loadLevels(HashMap<String, Level> levels) {				
+	public static void loadLevels(Map<String, Level> levels, List<String> levelNames) {				
 		FileHandle levelListFile = Gdx.files.internal(LEVEL_LIST);
-		String[] levelList;
 		if (levelListFile.exists()) {
-			levelList = JSON.fromJson(LevelList.class, levelListFile).levelList;
+			ArrayList<String> list = JSON.fromJson(LevelList.class, levelListFile).levelNames;
+			levelNames.addAll(list);
 			FileHandle levelDir = Gdx.files.internal(LEVEL_FOLDER);
 			if (levelDir.exists()) {
-				for (String name : levelList) {
+				for (String name : levelNames) {
 					FileHandle file = Gdx.files.internal(LEVEL_FOLDER + name);
 					Level level = JSON.fromJson(Level.class, file);
 					levels.put(level.getName(), level);

@@ -44,22 +44,26 @@ public class Level {
 	}
 	
 	/**
-	 * Sets name of level
+	 * Sets name of level (custom levels only)
 	 * @param name
 	 */
 	public void setName(String name) {
-		this.name = name;
+		if (type == LevelType.CUSTOM) {
+			this.name = name;
+		}
 	}
 	
 	/**
-	 * Sets name of level theme
+	 * Sets name of level theme (custom levels only)
 	 * @param themeName
 	 */
 	public void setThemeName(String themeName) {
-		if (GravityGame.themes.containsKey(themeName)) {
-			this.themeName = themeName;
-		} else {
-			throw new IllegalArgumentException("Invalid theme name");
+		if (type == LevelType.CUSTOM) {
+			if (GravityGame.getThemes().containsKey(themeName)) {
+				this.themeName = themeName;
+			} else {
+				throw new IllegalArgumentException("Invalid theme name");
+			}
 		}
 	}
 	
