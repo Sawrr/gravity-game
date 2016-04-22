@@ -43,23 +43,13 @@ public class GravityGame extends Game {
 		levels = Collections.unmodifiableMap(levels);
 		levelNames = Collections.unmodifiableList(levelNames);
 		AssetLoader.loadThemeTextures(textures, themes);
+		AssetLoader.loadOtherTextures(textures);
 		textures = Collections.unmodifiableMap(textures);
 		
-		// Test case: Circular orbit with radius, velocity = 1
-		Planet planet = new Planet(new Vector3(0,0,0), 1);
-		Ship ship = new Ship(new Vector3(1, 0, 0), new Vector3(0, 1, 0));
-		ArrayList<Planet> planets = new ArrayList<Planet>();
-		planets.add(planet);
-		// Number of periods of revolution
-		int N = 2;
-		float dt = 0.001f;
-		for (int i = 0; i < N*(int)(2*Math.PI/dt); i++) {
-			ship.update(dt, planets);
-			System.out.println("Error in r: " + (ship.getPosition().len() - 1.0f));
-			System.out.println("Error in v: " + (ship.getVelocity().len() - 1.0f));
-			System.out.println("x: " + ship.getPosition().x + " y: " + ship.getPosition().y);
-			System.out.println("vx: " + ship.getVelocity().x + " vy: " + ship.getVelocity().y);
-		}
+		Ship ship = new Ship(new Vector3(150,150,0), new Vector3(0,0,0));
+		Planet planet = new Planet(new Vector3(100,100,0), 10, themes.get("testTheme"));
+		
+		setScreen(new GameScreen(ship, planet));
 	}
 	
 	/**
@@ -92,6 +82,10 @@ public class GravityGame extends Game {
 	 */
 	public static List<String> getLevelNames() {
 		return levelNames;
+	}
+	
+	public static Map<String, Texture> getTextures() {
+		return textures;
 	}
 	
 	/**

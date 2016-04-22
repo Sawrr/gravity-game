@@ -1,5 +1,7 @@
 package com.sawyerharris.gravitygame;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
@@ -17,13 +19,44 @@ public class Planet extends Actor {
 	private int radius;
 	private int mass;
 	
-	public Planet(Vector3 position, int radius) {
+	private Texture texture;
+	
+	/**
+	 * Constructor
+	 * @param position
+	 * @param radius
+	 */
+	protected Planet(Vector3 position, int radius) {
 		this.position = position;
 		this.radius = radius;
 		// Normalized pi because units are irrelevant
 		this.mass = density * radius * radius;
+		
+		if (this instanceof HomePlanet) {
+			texture = GravityGame.getTextures().get(AssetLoader.HOME_PLANET_IMG);
+			if (texture == null) {
+				System.out.println("Error: image not found: " + AssetLoader.HOME_PLANET_IMG);
+				System.exit(1);
+			}
+		}
 	}
 	
+	/**
+	 * Constructor with given theme
+	 * @param position
+	 * @param radius
+	 * @param theme
+	 */
+	public Planet(Vector3 position, int radius, Theme theme) {
+		this(position, radius);
+		
+		texture = GravityGame.getTextures().get(theme.getPlanet());
+		if (texture == null) {
+			System.out.println("Error: image not found: " + theme.getPlanet());
+			System.exit(1);
+		}
+	}
+		
 	/**
 	 * Returns planet position
 	 * @return position
@@ -46,5 +79,10 @@ public class Planet extends Actor {
 	 */
 	public int getMass() {
 		return mass;
+	}
+	
+	@Override
+	public void draw(Batch batch, float alpha) {
+		batch.draw(texture, position.x - radius, position.y - radius, 2 * radius, 2 * radius);
 	}
 }

@@ -2,8 +2,14 @@ package com.sawyerharris.gravitygame;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 
 /**
  * Spaceship
@@ -15,13 +21,35 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 public class Ship extends Actor {
 	/** Gravitational Constant */
 	private static final int G = 1;
+	/** Characteristic radius of ship used for collisions */
+	private static final int collisionRadius = 20;
+	/** Characteristic radius of ship used for drag listener */
+	private static final int dragRadius = 40;
 	
 	private Vector3 position;
 	private Vector3 velocity;
+	private float angle;
+	
+	private Texture texture;
+	private Sprite sprite;
 	
 	public Ship(Vector3 position, Vector3 velocity) {
 		this.position = position;
 		this.velocity = velocity;
+		
+		texture = GravityGame.getTextures().get(AssetLoader.SHIP_IMG);
+		if (texture == null) {
+			System.out.println("Error: " + AssetLoader.SHIP_IMG + " not found");
+			System.exit(1);
+		}
+		sprite = new Sprite(texture);
+		
+		setBounds(position.x - dragRadius, position.y - dragRadius, 2 * dragRadius, 2 * dragRadius);
+		addListener(new DragListener() {
+			public void dragStop(InputEvent event, float x, float y, int pointer) {
+				System.out.println("x: " + (x + getX()) + " y: " + (y + getY()));
+			}
+		});
 	}
 	
 	/**
@@ -65,6 +93,8 @@ public class Ship extends Actor {
 		
 		velocity = new Vector3(vela.add(velb.scl(2)).add(velc).add(veld.scl(1.0f/2)).scl(1.0f/3)).sub(new Vector3(velocity).scl(1.0f/2));
 		position = new Vector3(posa.add(posb.scl(2)).add(posc).add(posd.scl(1.0f/2)).scl(1.0f/3)).sub(new Vector3(position).scl(1.0f/2));
+		
+		angle = new Vector2(velocity.x, velocity.y).angle();
 	}
 	
 	/**
@@ -81,5 +111,12 @@ public class Ship extends Actor {
 	 */
 	public Vector3 getVelocity() {
 		return velocity;
+	}
+	
+	@Override
+	public void draw(Batch batch, float alpha) {
+		sprite.setCenter(position.x, position.y);
+		sprite.setRotation(angle);
+		sprite.draw(batch);
 	}
 }

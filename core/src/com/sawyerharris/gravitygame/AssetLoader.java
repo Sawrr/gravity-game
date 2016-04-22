@@ -30,9 +30,14 @@ public class AssetLoader {
 	/** Name of levels folder in assets */
 	private static final String LEVEL_FOLDER = "levels/";
 	/** Name of art folder in assets */
-	private static final String ART_FOLDER = "art/";
+	public static final String ART_FOLDER = "art/";
 	/** Json object for reading files */
 	private static final Json JSON = new Json();
+	
+	/** Image name of ship */
+	public static final String SHIP_IMG = "ship.png";
+	/** Image name of earth */
+	public static final String HOME_PLANET_IMG = "homeplanet.png";
 	
 	/**
 	 * Container class for list of themes
@@ -129,6 +134,24 @@ public class AssetLoader {
 				System.out.println("Error: planet image not found: " + planet);
 				System.exit(1);
 			}
+		}
+	}
+	
+	public static void loadOtherTextures(Map<String, Texture> textures) {
+		try {
+			Texture ship = new Texture(ART_FOLDER + SHIP_IMG);
+			textures.put(SHIP_IMG, ship);
+		} catch (GdxRuntimeException e) {
+			System.out.println("Error: image not found: " + SHIP_IMG);
+			System.exit(1);
+		}
+		
+		try {
+			Texture ship = new Texture(ART_FOLDER + HOME_PLANET_IMG);
+			textures.put(HOME_PLANET_IMG, ship);
+		} catch (GdxRuntimeException e) {
+			System.out.println("Error: image not found: " + HOME_PLANET_IMG);
+			System.exit(1);
 		}
 	}
 }
