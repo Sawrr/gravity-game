@@ -8,6 +8,8 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 
 /**
@@ -27,6 +29,8 @@ public class AssetLoader {
 	private static final String LEVEL_LIST = "levels.txt";
 	/** Name of levels folder in assets */
 	private static final String LEVEL_FOLDER = "levels/";
+	/** Name of art folder in assets */
+	private static final String ART_FOLDER = "art/";
 	/** Json object for reading files */
 	private static final Json JSON = new Json();
 	
@@ -99,6 +103,32 @@ public class AssetLoader {
 		} else {
 			System.out.println("Error: Level list not found");
 			System.exit(1);
+		}
+	}
+	/**
+	 * Loads background and planet textures from themes
+	 * @param textures
+	 * @param themes
+	 */
+	public static void loadThemeTextures(Map<String, Texture> textures, Map<String, Theme> themes) {
+		for (Map.Entry<String, Theme> theme : themes.entrySet()) {
+			String background = theme.getValue().getBackground();
+			try {
+				Texture bg = new Texture(ART_FOLDER + background);
+				textures.put(background, bg);
+			} catch (GdxRuntimeException e) {
+				System.out.println("Error: background image not found: " + background);
+				System.exit(1);
+			}
+			
+			String planet = theme.getValue().getPlanet();
+			try {
+				Texture pl = new Texture(ART_FOLDER + planet);
+				textures.put(planet, pl);
+			} catch (GdxRuntimeException e) {
+				System.out.println("Error: planet image not found: " + planet);
+				System.exit(1);
+			}
 		}
 	}
 }
