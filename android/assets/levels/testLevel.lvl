@@ -16,6 +16,7 @@ planets: [
 			y: 500
 		}
 		radius: 20
+		home: false
 	}
 	{
 		position: {
@@ -23,6 +24,7 @@ planets: [
 			y: 750
 		}
 		radius: 50
+		home: true
 	}
 ]
 }

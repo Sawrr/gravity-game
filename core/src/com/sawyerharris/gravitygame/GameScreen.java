@@ -7,16 +7,15 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.sawyerharris.gravitygame.Level.PlanetObj;
+import com.sawyerharris.gravitygame.GravityGame.GameState;
+import com.sawyerharris.gravitygame.Level.PlanetMeta;
 
 /**
  * Game screen for when the game is being played
@@ -38,17 +37,24 @@ public class GameScreen implements Screen {
 	private FillViewport viewport;
 	private GameCamera camera;
 	
-	public GameScreen(Level level) {
-		// TODO handle state
+	private boolean viewCenterOnShip;
+	private Vector2 moveTarget;
+	private float zoomTarget;
+	
+	/**
+	 * Constructor creates GameScreen for a given Level
+	 * @param level
+	 */
+	public GameScreen(Level lvl) {		
+		level = lvl;
+		theme = GravityGame.getThemes().get(level.getThemeName());
 		
-		this.level = level;
-		this.theme = GravityGame.getThemes().get(level.getThemeName());
+		viewCenterOnShip = true;
 		
 		viewport = new FillViewport(GravityGame.getScreenWidth(), GravityGame.getScreenHeight());
 		camera = new GameCamera(level);
 		camera.setToOrtho(false);
 		viewport.setCamera(camera);
-		
 		stage = new Stage(viewport);
 		
 		InputMultiplexer mux = new InputMultiplexer();
@@ -56,25 +62,27 @@ public class GameScreen implements Screen {
 		mux.addProcessor(new ScrollProcessor());
 		Gdx.input.setInputProcessor(mux);
 
-		background = new Background(camera, level);
-		
+		// Create background, planets, ship and add to stage
+		background = new Background(this, camera, level);
 		planets = new ArrayList<Planet>();
-		for (PlanetObj planet : level.getPlanets()) {
-			planets.add(new Planet(planet.getPosition(), planet.getRadius(), theme));
+		for (PlanetMeta planet : level.getPlanets()) {
+			planets.add(new Planet(planet, theme));
 		}
-
 		ship = new Ship(level.getShipOrigin());
-		
-		stage.addActor(background);
-		stage.addActor(ship);
+		stage.addActor(background);		
 		for (Planet planet : planets) {
 			stage.addActor(planet);
 		}
+		stage.addActor(ship);
+		
+		setStateAiming();
 		
 		Timer.schedule(new Task(){
 			@Override
 			public void run() {
-				physicsUpdate();
+				if (GravityGame.getState() == GameState.FIRING) {
+					physicsUpdate();
+				}
 			}
 		}, DELTA_TIME, DELTA_TIME);
 	}
@@ -88,7 +96,8 @@ public class GameScreen implements Screen {
 	private class ScrollProcessor extends InputAdapter {
 		@Override
 		public boolean scrolled(int amount) {
-			System.out.println("scrolled");
+			camera.zoom(GameCamera.SCROLL_TO_ZOOM * amount);
+			
 			// move the following to LevelEditorScreen
 			int x = Gdx.input.getX();
 			int y = Gdx.input.getY();
@@ -105,6 +114,28 @@ public class GameScreen implements Screen {
 		}
 	}
 	
+	public void setStateAiming() {
+		GravityGame.setState(GameState.AIMING);
+		ship.setTouchable(Touchable.enabled);
+	}
+	
+	public void setStateFiring() {
+		GravityGame.setState(GameState.FIRING);
+		ship.setTouchable(Touchable.disabled);
+	}
+	
+	public void setStateViewMoving() {
+		GravityGame.setState(GameState.VIEW_MOVING);
+		viewCenterOnShip = !viewCenterOnShip;
+		if (viewCenterOnShip) {
+			zoomTarget = camera.SHIP_ZOOM_LEVEL;
+			moveTarget = ship.getPosition();
+		} else {
+			zoomTarget = camera.worldZoomLevel;
+			moveTarget = new Vector2(level.getWidth() / 2, level.getHeight() / 2);
+		}
+	}
+	
 	/**
 	 * Updates position and velocity of ship
 	 */
@@ -117,6 +148,7 @@ public class GameScreen implements Screen {
 	 */
 	public void reset() {
 		ship.setPosition(ship.getInitialPosition());
+		setStateAiming();
 	}
 	
 	@Override
@@ -130,6 +162,13 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		if (GravityGame.getState() == GameState.VIEW_MOVING) {
+			boolean finished = camera.autoMove(moveTarget, zoomTarget);
+			if (finished) {
+				setStateAiming();
+			}
+		}
+		
 		stage.draw();
 	}
 
@@ -159,8 +198,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
+		stage.dispose();
 	}
 
 }

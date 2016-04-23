@@ -20,7 +20,7 @@ public class Level {
 	private int width;
 	private int height;
 	private Vector2 shipOrigin;
-	private ArrayList<PlanetObj> planets;
+	private ArrayList<PlanetMeta> planets;
 	
 	/**
 	 * Type of level
@@ -38,9 +38,10 @@ public class Level {
 	 * @author Sawyer Harris
 	 *
 	 */
-	public static class PlanetObj {
+	public static class PlanetMeta {
 		private Vector2 position;
 		private int radius;
+		private boolean home;
 		
 		public Vector2 getPosition() {
 			return position;
@@ -48,6 +49,10 @@ public class Level {
 		
 		public int getRadius() {
 			return radius;
+		}
+		
+		public boolean getHome() {
+			return home;
 		}
 	}
 	
@@ -132,10 +137,10 @@ public class Level {
 	}
 	
 	/**
-	 * Returns ArrayList of planet objects
+	 * Returns ArrayList of PlanetMeta objects
 	 * @return planets
 	 */
-	public ArrayList<PlanetObj> getPlanets() {
+	public ArrayList<PlanetMeta> getPlanets() {
 		return planets;
 	}
 }

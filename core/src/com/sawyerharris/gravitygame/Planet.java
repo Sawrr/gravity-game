@@ -5,8 +5,11 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import com.sawyerharris.gravitygame.GravityGame.GameState;
+import com.sawyerharris.gravitygame.Level.PlanetMeta;
 
 /**
  * Planet
@@ -18,63 +21,72 @@ public class Planet extends Actor {
 	/** Mass area density of planets */
 	private static final int density = 500;
 	
+	/** Whether planet is the home planet */
+	private final boolean home;
+	
 	private Vector2 position;
 	private int radius;
 	private int mass;
 	
 	private Texture texture;
+	private Theme theme;
 	
 	/**
-	 * Constructor
-	 * @param position
-	 * @param radius
+	 * Constructor converts PlanetMeta into actual Planet
+	 * @param planet PlanetMeta data
+	 * @param theme Theme of level
 	 */
-	protected Planet(Vector2 position, int radius) {
-		this.position = position;
-		this.radius = radius;
+	public Planet(PlanetMeta planet, Theme theme) {
+		this.home = planet.getHome();
+		this.position = planet.getPosition();
+		this.radius = planet.getRadius();
 		// Normalized pi because units are irrelevant
 		this.mass = density * radius * radius;
 		
-		if (this instanceof HomePlanet) {
-			texture = GravityGame.getTextures().get(AssetLoader.HOME_PLANET_IMG);
-			if (texture == null) {
-				System.out.println("Error: image not found: " + AssetLoader.HOME_PLANET_IMG);
-				System.exit(1);
+		setTheme(theme);
+		setBounds(position.x - radius, position.y - radius, 2 * radius, 2 * radius);
+		
+		if (GravityGame.getState() == GameState.LEVEL_EDITOR) {
+			addListener(new DragListener() {
+				@Override		
+				public void drag(InputEvent event, float x, float y, int pointer) {
+				System.out.println("planet x: " + (x + getX()) + " y: " + (y + getY()));
+				}
+			});
+		
+			addListener(new ActorGestureListener() {
+				@Override
+				public void zoom(InputEvent event, float initialDistance, float distance) {
+					System.out.println("Planet zoom: " + distance);
 			}
+			});
+		} else {
+			setTouchable(Touchable.disabled);
 		}
 	}
 	
 	/**
-	 * Constructor with given theme
-	 * @param position
-	 * @param radius
+	 * Sets the planet's theme
 	 * @param theme
 	 */
-	public Planet(Vector2 position, int radius, Theme theme) {
-		this(position, radius);
-		
-		texture = GravityGame.getTextures().get(theme.getPlanet());
-		if (texture == null) {
-			System.out.println("Error: image not found: " + theme.getPlanet());
-			System.exit(1);
+	public void setTheme(Theme theme) {
+		if (home) {
+			texture = GravityGame.getTextures().get(AssetLoader.HOME_PLANET_IMG);
+			if (texture == null) {
+				System.out.println("Error: image not found: " + AssetLoader.HOME_PLANET_IMG);
+				System.exit(1);
+			} else {
+				this.theme = theme;
+			}
+		} else {
+			texture = GravityGame.getTextures().get(theme.getPlanet());
+			if (texture == null) {
+				System.out.println("Error: image not found: " + theme.getPlanet());
+				System.exit(1);
+			} else {
+				this.theme = theme;
+			}
 		}
-		
-		setBounds(position.x - radius, position.y - radius, 2 * radius, 2 * radius);
-		
-		// if LEVEL_EDITOR mode, add the following
-		addListener(new DragListener() {
-			@Override		
-			public void drag(InputEvent event, float x, float y, int pointer) {
-				System.out.println("planet x: " + (x + getX()) + " y: " + (y + getY()));
-			}
-		});
-		
-		addListener(new ActorGestureListener() {
-			@Override
-			public void zoom(InputEvent event, float initialDistance, float distance) {
-				System.out.println("Planet zoom: " + distance);
-			}
-		});
 	}
 		
 	/**

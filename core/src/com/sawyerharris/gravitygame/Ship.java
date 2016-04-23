@@ -19,9 +19,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
  */
 public class Ship extends Actor {
 	/** Characteristic radius of ship used for collisions */
-	private static final int collisionRadius = 20;
+	private static final int COLLISION_RADIUS = 20;
 	/** Characteristic radius of ship used for drag listener */
-	private static final int dragRadius = 40;
+	private static final int DRAG_RADIUS = 40;
 	
 	private Vector2 initialPosition;
 	private Vector2 position;
@@ -35,7 +35,8 @@ public class Ship extends Actor {
 		this.initialPosition = initialPosition;
 		this.position = initialPosition;
 		this.velocity = new Vector2(0,0);
-		setBounds(position.x - dragRadius, position.y - dragRadius, 2 * dragRadius, 2 * dragRadius);
+		setBounds(position.x - DRAG_RADIUS, position.y - DRAG_RADIUS, 
+				2 * DRAG_RADIUS, 2 * DRAG_RADIUS);
 		
 		texture = GravityGame.getTextures().get(AssetLoader.SHIP_IMG);
 		if (texture == null) {

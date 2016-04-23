@@ -29,18 +29,32 @@ public class GravityGame extends Game {
 	/** Map of Textures */
 	private static Map<String, Texture> textures = new HashMap<String, Texture>();
 	
+	/** Name of the status preferences file */
 	private static String statusPrefsName = "com.sawyerharris.gravitygame.status";
-	
 	/** Tracks user progress and settings */
 	private static Preferences statusPrefs;
+	/** Status Preferences Names */
+	private static String currentLevelStr = "currentLevel";
+	private static String highestLevelStr = "highestLevel";
+	private static String soundOnStr = "soundOn";
+	
+	/** Name of the custom levels file */
+	private static String customLevelPrefsName = "com.sawyerharris.gravitygame.customlevels";
+	/** Contains player's custom levels */
+	private static Preferences customLevelPrefs;
+	
+	/** Game status variables */
+	private static int currentLevel;
+	private static int highestLevel;
+	private static boolean soundOn;
+	
 	/** State of the game */
 	private static GameState state;
 	
+	/** Screen parameters */
 	private static int screenWidth;
 	private static int screenHeight;
 	private static float aspectRatio;
-	
-	private static int currentLevel;
 	
 	/**
 	 * Called when game started
@@ -67,18 +81,34 @@ public class GravityGame extends Game {
 		textures = Collections.unmodifiableMap(textures);
 		
 		statusPrefs = Gdx.app.getPreferences(statusPrefsName);
-		currentLevel = statusPrefs.getInteger("currentLevel");
-		System.out.println(currentLevel);		
+		currentLevel = statusPrefs.getInteger(currentLevelStr);
+		highestLevel = statusPrefs.getInteger(highestLevelStr);
+		soundOn = statusPrefs.getBoolean(soundOnStr);
 		
 		setScreen(new GameScreen(levels.get("testLevel")));
 	}
 	
+	/**
+	 * Advances game to next level according to levelNames
+	 */
 	public void nextLevel() {
 		currentLevel++;
-		statusPrefs.putInteger("currentLevel", currentLevel);
+		statusPrefs.putInteger(currentLevelStr, currentLevel);
 		statusPrefs.flush();
-		// TODO Check for array index exception, set state
-		setScreen(new GameScreen(levels.get(levelNames.get(currentLevel))));
+		try {
+			state = GameState.AIMING;
+			getScreen().dispose();
+			setScreen(new GameScreen(levels.get(levelNames.get(currentLevel))));
+		} catch (IndexOutOfBoundsException e) {
+			allLevelsFinished();
+		}
+	}
+	
+	/**
+	 * Announces congrats at beating all levels
+	 */
+	public void allLevelsFinished() {
+		
 	}
 	
 	/**
@@ -125,15 +155,26 @@ public class GravityGame extends Game {
 		return levelNames;
 	}
 	
+	/**
+	 * Returns unmodifiable map of textures
+	 * @return textures
+	 */
 	public static Map<String, Texture> getTextures() {
 		return textures;
+	}
+	
+	public static void setState(GameState s) {
+		if (s == null) {
+			throw new IllegalArgumentException("Invalid GameState in GravityGame.setState()");
+		}
+		state = s;
 	}
 	
 	/**
 	 * Returns game state
 	 * @return state
 	 */
-	public GameState getState() {
+	public static GameState getState() {
 		return state;
 	}
 	
@@ -144,6 +185,6 @@ public class GravityGame extends Game {
 	 * 
 	 */
 	public enum GameState {
-		MENU, LEVEL_EDITOR, VIEWING, VIEW_MOVING, AIMING, FIRING, LEVEL_FAILURE, LEVEL_SUCCESS
+		MENU, LEVEL_EDITOR, VIEW_MOVING, AIMING, FIRING, LEVEL_FAILURE, LEVEL_SUCCESS
 	}
 }
