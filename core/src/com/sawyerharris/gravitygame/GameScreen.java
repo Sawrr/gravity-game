@@ -9,6 +9,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -50,9 +51,9 @@ public class GameScreen implements Screen {
 		background = new Background(camera, GravityGame.getLevels().get("testLevel"));
 		
 		planets = new ArrayList<Planet>();
-		planets.add(new Planet(new Vector2(1000, 750), 50, GravityGame.getThemes().get("testTheme")));
+		planets.add(new Planet(new Vector2(1000, 1000), 50, GravityGame.getThemes().get("testTheme")));
 		
-		ship = new Ship(new Vector2(500, 500), new Vector2(0, 150));
+		ship = new Ship(new Vector2(900, 1000), new Vector2(0, 111.8033989f));
 		
 		stage.addActor(background);
 		stage.addActor(ship);
@@ -67,14 +68,35 @@ public class GameScreen implements Screen {
 		}, DELTA_TIME, DELTA_TIME);
 	}
 	
+	/**
+	 * Used to detect mouse wheel scrolling
+	 * 
+	 * @author Sawyer Harris
+	 *
+	 */
 	private class ScrollProcessor extends InputAdapter {
 		@Override
 		public boolean scrolled(int amount) {
 			System.out.println("scrolled");
+			// move the following to LevelEditorScreen
+			int x = Gdx.input.getX();
+			int y = Gdx.input.getY();
+			Vector3 coords3d = viewport.getCamera().unproject(new Vector3(x, y, 0));
+			Vector2 coords = new Vector2(coords3d.x, coords3d.y);
+			for (Planet planet : planets) {
+				Vector2 loc = new Vector2(planet.getPosition());
+				System.out.println(loc.x + " " + loc.y + " | " + coords.x + " " + coords.y);
+				if (loc.sub(coords).len2() <= Math.pow(planet.getRadius(),2)) {
+					System.out.println("on planet");
+				}
+			}
 			return true;
 		}
 	}
 	
+	/**
+	 * Updates position and velocity of ship
+	 */
 	private void physicsUpdate() {
 		ship.update(DELTA_TIME, planets);
 	}
