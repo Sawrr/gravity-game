@@ -1,6 +1,6 @@
 package com.sawyerharris.gravitygame;
 
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Home planet
@@ -15,7 +15,7 @@ public class HomePlanet extends Planet {
 	 * @param position
 	 * @param radius
 	 */
-	public HomePlanet(Vector3 position, int radius) {
+	public HomePlanet(Vector2 position, int radius) {
 		super(position, radius);		
 	}
 }

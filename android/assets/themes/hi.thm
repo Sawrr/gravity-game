@@ -1,8 +1,0 @@
-{
-name: testTheme
-background: background.png
-planet: planet.png
-music: music.mp3
-paraScalar: 1.0f
-srcViewWidth: 1.0f
-}

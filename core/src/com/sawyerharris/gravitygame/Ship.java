@@ -6,36 +6,36 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 
 /**
  * Spaceship
- * (mass = 1)
+ * (mass, G = 1)
  * 
  * @author Sawyer Harris
  *
  */
 public class Ship extends Actor {
-	/** Gravitational Constant */
-	private static final int G = 1;
 	/** Characteristic radius of ship used for collisions */
 	private static final int collisionRadius = 20;
 	/** Characteristic radius of ship used for drag listener */
 	private static final int dragRadius = 40;
 	
-	private Vector3 position;
-	private Vector3 velocity;
+	private Vector2 initialPosition;
+	private Vector2 position;
+	private Vector2 velocity;
 	private float angle;
 	
 	private Texture texture;
 	private Sprite sprite;
 	
-	public Ship(Vector3 position, Vector3 velocity) {
-		this.position = position;
+	public Ship(Vector2 initialPosition, Vector2 velocity) {
+		this.initialPosition = initialPosition;
+		this.position = initialPosition;
 		this.velocity = velocity;
+		setBounds(position.x - dragRadius, position.y - dragRadius, 2 * dragRadius, 2 * dragRadius);
 		
 		texture = GravityGame.getTextures().get(AssetLoader.SHIP_IMG);
 		if (texture == null) {
@@ -44,7 +44,6 @@ public class Ship extends Actor {
 		}
 		sprite = new Sprite(texture);
 		
-		setBounds(position.x - dragRadius, position.y - dragRadius, 2 * dragRadius, 2 * dragRadius);
 		addListener(new DragListener() {
 			public void dragStop(InputEvent event, float x, float y, int pointer) {
 				System.out.println("x: " + (x + getX()) + " y: " + (y + getY()));
@@ -53,10 +52,12 @@ public class Ship extends Actor {
 	}
 	
 	/**
-	 * Perform physics update on position and velocity 
+	 * Perform physics update on ship
+	 * @param dt delta time
+	 * @param planets list of planets
 	 */
-	public void update(float delta, ArrayList<Planet> planets) {
-		RK4(delta, planets);
+	public void update(float dt, ArrayList<Planet> planets) {
+		RK4(dt, planets);
 	}
 	
 	/**
@@ -64,13 +65,13 @@ public class Ship extends Actor {
 	 * @param planets list of Planet objects
 	 * @return force
 	 */
-	public Vector3 computeGravityForce(Vector3 shipPosition, ArrayList<Planet> planets) {
-		Vector3 force = new Vector3(0, 0, 0);
+	public Vector2 computeGravityForce(Vector2 shipPosition, ArrayList<Planet> planets) {
+		Vector2 force = new Vector2(0, 0);
 		for (Planet planet : planets) {
-			Vector3 r = new Vector3(position);
+			Vector2 r = new Vector2(position);
 			r.sub(planet.getPosition());
 			float rcube = (float) Math.pow(r.len(), 3);
-			force.add(r.scl(-G * planet.getMass() / rcube));
+			force.add(r.scl(-planet.getMass() / rcube));
 		}
 		return force;
 	}
@@ -78,30 +79,30 @@ public class Ship extends Actor {
 	/**
 	 * Updates position and velocity using Runge-Kutta 4th order method
 	 */
-	public void RK4(float delta, ArrayList<Planet> planets) {
-		Vector3 vela = new Vector3(velocity).add(computeGravityForce(position, planets).scl(delta / 2));
-		Vector3 posa = new Vector3(position).add(new Vector3(velocity).scl(delta / 2));
+	public void RK4(float dt, ArrayList<Planet> planets) {
+		Vector2 vela = new Vector2(velocity).add(computeGravityForce(position, planets).scl(dt / 2));
+		Vector2 posa = new Vector2(position).add(new Vector2(velocity).scl(dt / 2));
 		
-		Vector3 velb = new Vector3(velocity).add(computeGravityForce(posa, planets).scl(delta / 2));
-		Vector3 posb = new Vector3(position).add(new Vector3(vela).scl(delta / 2));
+		Vector2 velb = new Vector2(velocity).add(computeGravityForce(posa, planets).scl(dt / 2));
+		Vector2 posb = new Vector2(position).add(new Vector2(vela).scl(dt / 2));
 		
-		Vector3 velc = new Vector3(velocity).add(computeGravityForce(posb, planets).scl(delta));
-		Vector3 posc = new Vector3(position).add(new Vector3(velb).scl(delta));
+		Vector2 velc = new Vector2(velocity).add(computeGravityForce(posb, planets).scl(dt));
+		Vector2 posc = new Vector2(position).add(new Vector2(velb).scl(dt));
 		
-		Vector3 veld = new Vector3(velocity).add(computeGravityForce(posc, planets).scl(delta));
-		Vector3 posd = new Vector3(position).add(new Vector3(velc).scl(delta));
+		Vector2 veld = new Vector2(velocity).add(computeGravityForce(posc, planets).scl(dt));
+		Vector2 posd = new Vector2(position).add(new Vector2(velc).scl(dt));
 		
-		velocity = new Vector3(vela.add(velb.scl(2)).add(velc).add(veld.scl(1.0f/2)).scl(1.0f/3)).sub(new Vector3(velocity).scl(1.0f/2));
-		position = new Vector3(posa.add(posb.scl(2)).add(posc).add(posd.scl(1.0f/2)).scl(1.0f/3)).sub(new Vector3(position).scl(1.0f/2));
+		velocity = new Vector2(vela.add(velb.scl(2)).add(velc).add(veld.scl(1.0f/2)).scl(1.0f/3)).sub(new Vector2(velocity).scl(1.0f/2));
+		position = new Vector2(posa.add(posb.scl(2)).add(posc).add(posd.scl(1.0f/2)).scl(1.0f/3)).sub(new Vector2(position).scl(1.0f/2));
 		
-		angle = new Vector2(velocity.x, velocity.y).angle();
+		angle = velocity.angle();
 	}
 	
 	/**
 	 * Returns position of ship
 	 * @return position
 	 */
-	public Vector3 getPosition() {
+	public Vector2 getPosition() {
 		return position;
 	}
 	
@@ -109,7 +110,7 @@ public class Ship extends Actor {
 	 * Returns velocity of ship
 	 * @return velocity
 	 */
-	public Vector3 getVelocity() {
+	public Vector2 getVelocity() {
 		return velocity;
 	}
 	

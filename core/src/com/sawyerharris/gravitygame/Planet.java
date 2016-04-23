@@ -2,7 +2,7 @@ package com.sawyerharris.gravitygame;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /**
@@ -13,9 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  */
 public class Planet extends Actor {
 	/** Mass area density of planets */
-	private static final int density = 1;
+	private static final int density = 100;
 	
-	private Vector3 position;
+	private Vector2 position;
 	private int radius;
 	private int mass;
 	
@@ -26,7 +26,7 @@ public class Planet extends Actor {
 	 * @param position
 	 * @param radius
 	 */
-	protected Planet(Vector3 position, int radius) {
+	protected Planet(Vector2 position, int radius) {
 		this.position = position;
 		this.radius = radius;
 		// Normalized pi because units are irrelevant
@@ -47,7 +47,7 @@ public class Planet extends Actor {
 	 * @param radius
 	 * @param theme
 	 */
-	public Planet(Vector3 position, int radius, Theme theme) {
+	public Planet(Vector2 position, int radius, Theme theme) {
 		this(position, radius);
 		
 		texture = GravityGame.getTextures().get(theme.getPlanet());
@@ -61,7 +61,7 @@ public class Planet extends Actor {
 	 * Returns planet position
 	 * @return position
 	 */
-	public Vector3 getPosition() {
+	public Vector2 getPosition() {
 		return position;
 	}
 	

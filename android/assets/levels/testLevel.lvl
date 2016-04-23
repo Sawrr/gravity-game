@@ -3,11 +3,11 @@ name: testLevel
 type: OFFICIAL
 message: this is a message
 themeName: testTheme
-width: 512
-height: 1024
+width: 1440
+height: 2560
 shipOrigin: {
-	x: 10
-	y: 20
+	x: 500
+	y: 500
 }
 planets: [
 	{

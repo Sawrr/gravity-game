@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
@@ -32,11 +34,25 @@ public class GravityGame extends Game {
 	/** State of the game */
 	private GameState state;
 	
+	private static int screenWidth;
+	private static int screenHeight;
+	private static float aspectRatio;
+	
 	/**
 	 * Called when game started
 	 */
 	@Override
-	public void create () {
+	public void create() {
+		// TODO improve this
+		if (Gdx.app.getType() == ApplicationType.Android) {
+			screenWidth = Gdx.graphics.getWidth();
+			screenHeight = Gdx.graphics.getHeight();
+		} else {
+			screenWidth = 720;
+			screenHeight = 1280;
+		}
+		aspectRatio = screenWidth / (float) screenHeight;
+		
 		AssetLoader.loadThemes(themes);
 		themes = Collections.unmodifiableMap(themes);
 		AssetLoader.loadLevels(levels, levelNames);
@@ -46,10 +62,7 @@ public class GravityGame extends Game {
 		AssetLoader.loadOtherTextures(textures);
 		textures = Collections.unmodifiableMap(textures);
 		
-		Ship ship = new Ship(new Vector3(150,150,0), new Vector3(0,0,0));
-		Planet planet = new Planet(new Vector3(100,100,0), 10, themes.get("testTheme"));
-		
-		setScreen(new GameScreen(ship, planet));
+		setScreen(new GameScreen());
 	}
 	
 	/**
@@ -58,6 +71,18 @@ public class GravityGame extends Game {
 	@Override
 	public void render () {
 		super.render();
+	}
+	
+	public static float getAspectRatio() {
+		return aspectRatio;
+	}
+	
+	public static int getScreenWidth() {
+		return screenWidth;
+	}
+	
+	public static int getScreenHeight() {
+		return screenHeight;
 	}
 	
 	/**

@@ -1,5 +1,5 @@
 {
 themeNames: [
-	hi.thm
+	testTheme.thm
 ]
 }
