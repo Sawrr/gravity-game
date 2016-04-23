@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.sawyerharris.gravitygame.Level.PlanetObj;
 
 /**
  * Game screen for when the game is being played
@@ -28,6 +29,8 @@ public class GameScreen implements Screen {
 	public static final float DELTA_TIME = 0.001f;
 	
 	private Stage stage;
+	private Level level;
+	private Theme theme;
 	private Background background;
 	private ArrayList<Planet> planets;
 	private Ship ship;
@@ -35,10 +38,15 @@ public class GameScreen implements Screen {
 	private FillViewport viewport;
 	private GameCamera camera;
 	
-	public GameScreen() {
-		viewport = new FillViewport(1024, 1024);
-		camera = new GameCamera(GravityGame.getLevels().get("testLevel"));
-		camera.setToOrtho(false, GravityGame.getScreenWidth(), GravityGame.getScreenHeight());
+	public GameScreen(Level level) {
+		// TODO handle state
+		
+		this.level = level;
+		this.theme = GravityGame.getThemes().get(level.getThemeName());
+		
+		viewport = new FillViewport(GravityGame.getScreenWidth(), GravityGame.getScreenHeight());
+		camera = new GameCamera(level);
+		camera.setToOrtho(false);
 		viewport.setCamera(camera);
 		
 		stage = new Stage(viewport);
@@ -48,18 +56,21 @@ public class GameScreen implements Screen {
 		mux.addProcessor(new ScrollProcessor());
 		Gdx.input.setInputProcessor(mux);
 
-		background = new Background(camera, GravityGame.getLevels().get("testLevel"));
+		background = new Background(camera, level);
 		
 		planets = new ArrayList<Planet>();
-		planets.add(new Planet(new Vector2(1000, 1000), 50, GravityGame.getThemes().get("testTheme")));
-		
-		ship = new Ship(new Vector2(900, 1000), new Vector2(0, 111.8033989f));
+		for (PlanetObj planet : level.getPlanets()) {
+			planets.add(new Planet(planet.getPosition(), planet.getRadius(), theme));
+		}
+
+		ship = new Ship(level.getShipOrigin());
 		
 		stage.addActor(background);
 		stage.addActor(ship);
-		stage.addActor(planets.get(0));
+		for (Planet planet : planets) {
+			stage.addActor(planet);
+		}
 		
-
 		Timer.schedule(new Task(){
 			@Override
 			public void run() {
@@ -99,6 +110,13 @@ public class GameScreen implements Screen {
 	 */
 	private void physicsUpdate() {
 		ship.update(DELTA_TIME, planets);
+	}
+	
+	/**
+	 * Resets level to initial state
+	 */
+	public void reset() {
+		ship.setPosition(ship.getInitialPosition());
 	}
 	
 	@Override

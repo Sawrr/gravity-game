@@ -29,14 +29,18 @@ public class GravityGame extends Game {
 	/** Map of Textures */
 	private static Map<String, Texture> textures = new HashMap<String, Texture>();
 	
+	private static String statusPrefsName = "com.sawyerharris.gravitygame.status";
+	
 	/** Tracks user progress and settings */
-	private Preferences statusPrefs;
+	private static Preferences statusPrefs;
 	/** State of the game */
-	private GameState state;
+	private static GameState state;
 	
 	private static int screenWidth;
 	private static int screenHeight;
 	private static float aspectRatio;
+	
+	private static int currentLevel;
 	
 	/**
 	 * Called when game started
@@ -62,7 +66,19 @@ public class GravityGame extends Game {
 		AssetLoader.loadOtherTextures(textures);
 		textures = Collections.unmodifiableMap(textures);
 		
-		setScreen(new GameScreen());
+		statusPrefs = Gdx.app.getPreferences(statusPrefsName);
+		currentLevel = statusPrefs.getInteger("currentLevel");
+		System.out.println(currentLevel);		
+		
+		setScreen(new GameScreen(levels.get("testLevel")));
+	}
+	
+	public void nextLevel() {
+		currentLevel++;
+		statusPrefs.putInteger("currentLevel", currentLevel);
+		statusPrefs.flush();
+		// TODO Check for array index exception, set state
+		setScreen(new GameScreen(levels.get(levelNames.get(currentLevel))));
 	}
 	
 	/**

@@ -2,7 +2,7 @@ package com.sawyerharris.gravitygame;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Game level
@@ -19,7 +19,7 @@ public class Level {
 	private String themeName;
 	private int width;
 	private int height;
-	private Vector3 shipOrigin;
+	private Vector2 shipOrigin;
 	private ArrayList<PlanetObj> planets;
 	
 	/**
@@ -38,9 +38,17 @@ public class Level {
 	 * @author Sawyer Harris
 	 *
 	 */
-	private static class PlanetObj {
-		private Vector3 position;
+	public static class PlanetObj {
+		private Vector2 position;
 		private int radius;
+		
+		public Vector2 getPosition() {
+			return position;
+		}
+		
+		public int getRadius() {
+			return radius;
+		}
 	}
 	
 	/**
@@ -119,7 +127,7 @@ public class Level {
 	 * Returns ship origin
 	 * @return shipOrigin
 	 */
-	public Vector3 getShipOrigin() {
+	public Vector2 getShipOrigin() {
 		return shipOrigin;
 	}
 	

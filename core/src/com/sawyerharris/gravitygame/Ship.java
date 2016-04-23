@@ -31,10 +31,10 @@ public class Ship extends Actor {
 	private Texture texture;
 	private Sprite sprite;
 	
-	public Ship(Vector2 initialPosition, Vector2 velocity) {
+	public Ship(Vector2 initialPosition) {
 		this.initialPosition = initialPosition;
 		this.position = initialPosition;
-		this.velocity = velocity;
+		this.velocity = new Vector2(0,0);
 		setBounds(position.x - dragRadius, position.y - dragRadius, 2 * dragRadius, 2 * dragRadius);
 		
 		texture = GravityGame.getTextures().get(AssetLoader.SHIP_IMG);
@@ -96,6 +96,18 @@ public class Ship extends Actor {
 		position = new Vector2(posa.add(posb.scl(2)).add(posc).add(posd.scl(1.0f/2)).scl(1.0f/3)).sub(new Vector2(position).scl(1.0f/2));
 		
 		angle = velocity.angle();
+	}
+	
+	/**
+	 * Sets the position (NOT scene2d)
+	 * @param position
+	 */
+	public void setPosition(Vector2 position) {
+		this.position = position;
+	}
+	
+	public Vector2 getInitialPosition() {
+		return initialPosition;
 	}
 	
 	/**
