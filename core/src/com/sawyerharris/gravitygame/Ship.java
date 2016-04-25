@@ -9,7 +9,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import com.sawyerharris.gravitygame.GravityGame.GameState;
 
 /**
  * Spaceship
@@ -20,9 +22,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
  */
 public class Ship extends Actor {
 	/** Characteristic radius of ship used for collisions */
-	private static final int COLLISION_RADIUS = 20;
+	public static final int COLLISION_RADIUS = 20;
 	/** Characteristic radius of ship used for drag listener */
 	private static final int DRAG_RADIUS = 40;
+	/** Conversion from fling velocity to ship initial velocity */
+	private static final float FLING_SCALAR = 0.2f;
 	
 	private Screen screen;
 	private Vector2 initialPosition;
@@ -47,19 +51,30 @@ public class Ship extends Actor {
 			System.exit(1);
 		}
 		sprite = new Sprite(texture);
-		
+
 		addListener(new DragListener() {
 			public void dragStop(InputEvent event, float x, float y, int pointer) {
 				dragShip(x, y);
 			}
 		});
+		
+		addListener(new ActorGestureListener() {
+			@Override
+			public void fling(InputEvent event, float velocityX, float velocityY, int button) {
+				flingShip(velocityX, velocityY);
+			}
+		});
+	}
+	
+	private void flingShip(float velocityX, float velocityY) {
+		if (screen instanceof GameScreen  && GravityGame.getState() == GameState.AIMING) {
+			GameScreen gs = (GameScreen) screen;
+			gs.setStateFiring(new Vector2(velocityX * FLING_SCALAR, velocityY * FLING_SCALAR));
+		}
 	}
 	
 	private void dragShip(float x, float y) {
-		if (screen instanceof GameScreen) {
-			GameScreen gs = (GameScreen) screen;
-			gs.setStateFiring(new Vector2(-x, -y));
-		}
+		// TODO If level editor, drag ship around
 	}
 	
 	/**
@@ -86,6 +101,8 @@ public class Ship extends Actor {
 		}
 		return force;
 	}
+	
+	// TODO add boost force
 	
 	/**
 	 * Updates position and velocity using Runge-Kutta 4th order method

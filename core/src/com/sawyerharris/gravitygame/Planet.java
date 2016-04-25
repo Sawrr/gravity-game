@@ -89,6 +89,10 @@ public class Planet extends Actor {
 		}
 	}
 		
+	public boolean isHome() {
+		return home;
+	}
+	
 	/**
 	 * Returns planet position
 	 * @return position

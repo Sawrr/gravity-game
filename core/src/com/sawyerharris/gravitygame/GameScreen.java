@@ -100,7 +100,9 @@ public class GameScreen implements Screen {
 	private class ScrollProcessor extends InputAdapter {
 		@Override
 		public boolean scrolled(int amount) {
-			setStateAiming();
+			if (GravityGame.getState() == GameState.VIEW_MOVING) {
+				setStateAiming();
+			}
 			camera.zoom(GameCamera.SCROLL_TO_ZOOM * amount);
 			
 			// move the following to LevelEditorScreen
@@ -146,6 +148,22 @@ public class GameScreen implements Screen {
 	 */
 	private void physicsUpdate() {
 		ship.update(DELTA_TIME, planets);
+		checkForCollisions();
+	}
+	
+	private void checkForCollisions() {
+		for (Planet planet : planets) {
+			float dist = new Vector2(ship.getPosition()).sub(planet.getPosition()).len();
+			if (dist <= Ship.COLLISION_RADIUS + planet.getRadius()) {
+				if (planet.isHome()) {
+					// TODO make this right
+					
+				} else {
+					// TODO make this right
+					reset();
+				}
+			}
+		}
 	}
 	
 	/**
