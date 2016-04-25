@@ -19,7 +19,7 @@ import com.sawyerharris.gravitygame.Level.PlanetMeta;
  */
 public class Planet extends Actor {
 	/** Mass area density of planets */
-	private static final int density = 500;
+	private static final int density = 1500;
 	
 	/** Whether planet is the home planet */
 	private final boolean home;
@@ -117,6 +117,17 @@ public class Planet extends Actor {
 		return mass;
 	}
 	
+	/**
+	 * Return planet's theme
+	 * @return theme
+	 */
+	public Theme getTheme() {
+		return theme;
+	}
+	
+	/**
+	 * Called when planet is rendered
+	 */
 	@Override
 	public void draw(Batch batch, float alpha) {
 		batch.draw(texture, position.x - radius, position.y - radius, 2 * radius, 2 * radius);

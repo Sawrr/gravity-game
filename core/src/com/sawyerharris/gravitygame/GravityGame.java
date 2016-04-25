@@ -81,11 +81,12 @@ public class GravityGame extends Game {
 		textures = Collections.unmodifiableMap(textures);
 		
 		statusPrefs = Gdx.app.getPreferences(statusPrefsName);
-		currentLevel = statusPrefs.getInteger(currentLevelStr);
+		//currentLevel = statusPrefs.getInteger(currentLevelStr);
+		currentLevel = 0;
 		highestLevel = statusPrefs.getInteger(highestLevelStr);
 		soundOn = statusPrefs.getBoolean(soundOnStr);
 		
-		setScreen(new GameScreen(levels.get("testLevel")));
+		setScreen(new GameScreen(this, levels.get("testLevel")));
 	}
 	
 	/**
@@ -96,9 +97,8 @@ public class GravityGame extends Game {
 		statusPrefs.putInteger(currentLevelStr, currentLevel);
 		statusPrefs.flush();
 		try {
-			state = GameState.AIMING;
 			getScreen().dispose();
-			setScreen(new GameScreen(levels.get(levelNames.get(currentLevel))));
+			setScreen(new GameScreen(this, levels.get(levelNames.get(currentLevel))));
 		} catch (IndexOutOfBoundsException e) {
 			allLevelsFinished();
 		}
@@ -108,7 +108,8 @@ public class GravityGame extends Game {
 	 * Announces congrats at beating all levels
 	 */
 	public void allLevelsFinished() {
-		
+		System.out.println("allLevelsFinished");
+		System.exit(0);
 	}
 	
 	/**

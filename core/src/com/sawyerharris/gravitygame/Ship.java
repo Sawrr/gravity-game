@@ -27,6 +27,10 @@ public class Ship extends Actor {
 	private static final int DRAG_RADIUS = 40;
 	/** Conversion from fling velocity to ship initial velocity */
 	private static final float FLING_SCALAR = 0.2f;
+	/** Maximum fling velocity */
+	private static final float MAX_FLING_VELOCITY = 1000f;
+	/** Initial angle ship faces */
+	private static final float INITIAL_ANGLE = 90;
 	
 	private Screen screen;
 	private Vector2 initialPosition;
@@ -37,11 +41,17 @@ public class Ship extends Actor {
 	private Texture texture;
 	private Sprite sprite;
 	
+	/**
+	 * Constructor creates ship on given screen at initialPosition
+	 * @param screen
+	 * @param initialPosition
+	 */
 	public Ship(Screen screen, Vector2 initialPosition) {
 		this.screen = screen;
 		this.initialPosition = initialPosition;
 		this.position = initialPosition;
 		this.velocity = new Vector2(0,0);
+		this.angle = INITIAL_ANGLE;
 		setBounds(position.x - DRAG_RADIUS, position.y - DRAG_RADIUS, 
 				2 * DRAG_RADIUS, 2 * DRAG_RADIUS);
 		
@@ -66,13 +76,24 @@ public class Ship extends Actor {
 		});
 	}
 	
+	/**
+	 * Called when ship is flung
+	 * @param velocityX
+	 * @param velocityY
+	 */
 	private void flingShip(float velocityX, float velocityY) {
 		if (screen instanceof GameScreen  && GravityGame.getState() == GameState.AIMING) {
 			GameScreen gs = (GameScreen) screen;
-			gs.setStateFiring(new Vector2(velocityX * FLING_SCALAR, velocityY * FLING_SCALAR));
+			Vector2 initialVelocity = new Vector2(velocityX * FLING_SCALAR, velocityY * FLING_SCALAR);
+			gs.setStateFiring(initialVelocity);
 		}
 	}
 	
+	/**
+	 * Called when ship is dragged
+	 * @param x
+	 * @param y
+	 */
 	private void dragShip(float x, float y) {
 		// TODO If level editor, drag ship around
 	}
@@ -127,6 +148,15 @@ public class Ship extends Actor {
 	}
 	
 	/**
+	 * Resets the ship's position, velocity, and angle to initial state
+	 */
+	public void reset() {
+		angle = INITIAL_ANGLE;
+		position = initialPosition;
+		velocity.set(0,0);
+	}
+	
+	/**
 	 * Sets the position (NOT scene2d)
 	 * @param position
 	 */
@@ -134,6 +164,10 @@ public class Ship extends Actor {
 		this.position = position;
 	}
 	
+	/**
+	 * Returns the ship's initial position
+	 * @return initialPosition
+	 */
 	public Vector2 getInitialPosition() {
 		return initialPosition;
 	}
@@ -146,7 +180,14 @@ public class Ship extends Actor {
 		return position;
 	}
 	
+	/**
+	 * Sets the ship's velocity
+	 * @param velocity
+	 */
 	public void setVelocity(Vector2 velocity) {
+		if (velocity.len() > MAX_FLING_VELOCITY) {
+			velocity.nor().scl(MAX_FLING_VELOCITY);
+		}
 		this.velocity = velocity;
 	}
 	
@@ -158,6 +199,9 @@ public class Ship extends Actor {
 		return velocity;
 	}
 	
+	/**
+	 * Called when ship is rendered
+	 */
 	@Override
 	public void draw(Batch batch, float alpha) {
 		sprite.setCenter(position.x, position.y);

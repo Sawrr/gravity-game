@@ -1,0 +1,30 @@
+{
+name: testLevel2
+type: OFFICIAL
+message: this is a message
+themeName: testTheme
+width: 1440
+height: 2560
+shipOrigin: {
+	x: 500
+	y: 500
+}
+planets: [
+	{
+		position: {
+			x: 500
+			y: 900
+		}
+		radius: 50
+		home: false
+	}
+	{
+		position: {
+			x: 500
+			y: 1750
+		}
+		radius: 100
+		home: true
+	}
+]
+}

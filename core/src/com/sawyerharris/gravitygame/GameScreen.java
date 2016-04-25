@@ -28,6 +28,7 @@ public class GameScreen implements Screen {
 	/** Time between physics updates */
 	public static final float DELTA_TIME = 0.001f;
 	
+	private GravityGame game;
 	private Stage stage;
 	private Level level;
 	private Theme theme;
@@ -42,11 +43,14 @@ public class GameScreen implements Screen {
 	private Vector2 moveTarget;
 	private float zoomTarget;
 	
+	private Task physicsTask;
+	
 	/**
 	 * Constructor creates GameScreen for a given Level
 	 * @param level
 	 */
-	public GameScreen(Level lvl) {		
+	public GameScreen(GravityGame gam, Level lvl) {		
+		game = gam;
 		level = lvl;
 		theme = GravityGame.getThemes().get(level.getThemeName());
 		
@@ -81,14 +85,16 @@ public class GameScreen implements Screen {
 		// Starts in aiming mode
 		setStateAiming();
 		
-		Timer.schedule(new Task(){
+		physicsTask = new Task(){
 			@Override
 			public void run() {
 				if (GravityGame.getState() == GameState.FIRING) {
 					physicsUpdate();
 				}
 			}
-		}, DELTA_TIME, DELTA_TIME);
+		};
+		
+		Timer.schedule(physicsTask, DELTA_TIME, DELTA_TIME);
 	}
 	
 	/**
@@ -152,25 +158,41 @@ public class GameScreen implements Screen {
 	}
 	
 	private void checkForCollisions() {
+		// Check for planet collisions
 		for (Planet planet : planets) {
 			float dist = new Vector2(ship.getPosition()).sub(planet.getPosition()).len();
 			if (dist <= Ship.COLLISION_RADIUS + planet.getRadius()) {
 				if (planet.isHome()) {
-					// TODO make this right
-					
+					// TODO success and then reset
+					game.nextLevel();
+					return;
 				} else {
-					// TODO make this right
+					// TODO explosion and then reset
 					reset();
+					return;
 				}
 			}
 		}
+	
+		// Check boundaries of level
+		float x, y, width, height;
+		x = ship.getPosition().x;
+		y = ship.getPosition().y;
+		width = level.getWidth();
+		height = level.getHeight();
+		
+		if (x <= 0 || x > width || y <= 0 || y > height) {
+			reset();
+			return;
+		}
 	}
+
 	
 	/**
 	 * Resets level to initial state
 	 */
 	public void reset() {
-		ship.setPosition(ship.getInitialPosition());
+		ship.reset();
 		setStateAiming();
 	}
 	
@@ -198,7 +220,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
-		viewport.update(width, height);
+		//viewport.update(width, height);
 	}
 
 	@Override
@@ -221,7 +243,8 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		stage.dispose();
+		physicsTask.cancel();
+		stage.dispose();		
 	}
 
 }

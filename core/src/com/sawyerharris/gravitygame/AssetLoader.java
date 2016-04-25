@@ -27,6 +27,8 @@ public class AssetLoader {
 	private static final String LEVEL_LIST = "levels.txt";
 	/** Name of levels folder in assets */
 	private static final String LEVEL_FOLDER = "levels/";
+	/** Suffix of level files */
+	private static final String LEVEL_SUFFIX = ".lvl";
 	/** Name of art folder in assets */
 	public static final String ART_FOLDER = "art/";
 	/** Json object for reading files */
@@ -95,7 +97,7 @@ public class AssetLoader {
 			FileHandle levelDir = Gdx.files.internal(LEVEL_FOLDER);
 			if (levelDir.exists()) {
 				for (String name : levelNames) {
-					FileHandle file = Gdx.files.internal(LEVEL_FOLDER + name);
+					FileHandle file = Gdx.files.internal(LEVEL_FOLDER + name + LEVEL_SUFFIX);
 					Level level = JSON.fromJson(Level.class, file);
 					levels.put(level.getName(), level);
 				}
