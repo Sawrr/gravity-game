@@ -11,7 +11,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector3;
 
 /**
  * Gravity Game
@@ -95,6 +94,10 @@ public class GravityGame extends Game {
 	public void nextLevel() {
 		currentLevel++;
 		statusPrefs.putInteger(currentLevelStr, currentLevel);
+		if (currentLevel > highestLevel) {
+			highestLevel = currentLevel;
+			statusPrefs.putInteger(highestLevelStr, highestLevel);
+		}
 		statusPrefs.flush();
 		try {
 			getScreen().dispose();

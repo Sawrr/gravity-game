@@ -196,6 +196,14 @@ public class GameScreen implements Screen {
 		setStateAiming();
 	}
 	
+	/**
+	 * Returns the screen's ship
+	 * @return ship
+	 */
+	public Ship getShip() {
+		return ship;
+	}
+	
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub

@@ -36,6 +36,8 @@ public class AssetLoader {
 	
 	/** Image name of ship */
 	public static final String SHIP_IMG = "ship.png";
+	/** Image name of ship boosting */
+	public static final String SHIP_BOOST_IMG = "ship_boost.png";
 	/** Image name of earth */
 	public static final String HOME_PLANET_IMG = "homeplanet.png";
 	
@@ -110,8 +112,9 @@ public class AssetLoader {
 			System.exit(1);
 		}
 	}
+	
 	/**
-	 * Loads background and planet textures from themes
+	 * Loads background and planet textures from themes into Map parameter
 	 * @param textures
 	 * @param themes
 	 */
@@ -137,12 +140,24 @@ public class AssetLoader {
 		}
 	}
 	
+	/**
+	 * Loads other textures into Map parameter
+	 * @param textures
+	 */
 	public static void loadOtherTextures(Map<String, Texture> textures) {
 		try {
 			Texture ship = new Texture(ART_FOLDER + SHIP_IMG);
 			textures.put(SHIP_IMG, ship);
 		} catch (GdxRuntimeException e) {
 			System.out.println("Error: image not found: " + SHIP_IMG);
+			System.exit(1);
+		}
+		
+		try {
+			Texture shipBoost = new Texture(ART_FOLDER + SHIP_BOOST_IMG);
+			textures.put(SHIP_BOOST_IMG, shipBoost);
+		} catch (GdxRuntimeException e) {
+			System.out.println("Error: image not found: " + SHIP_BOOST_IMG);
 			System.exit(1);
 		}
 		

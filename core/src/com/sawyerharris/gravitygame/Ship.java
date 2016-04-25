@@ -2,6 +2,7 @@ package com.sawyerharris.gravitygame;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -24,13 +25,22 @@ public class Ship extends Actor {
 	/** Characteristic radius of ship used for collisions */
 	public static final int COLLISION_RADIUS = 20;
 	/** Characteristic radius of ship used for drag listener */
-	private static final int DRAG_RADIUS = 40;
+	private static final int TOUCH_RADIUS = 80;
 	/** Conversion from fling velocity to ship initial velocity */
 	private static final float FLING_SCALAR = 0.2f;
 	/** Maximum fling velocity */
 	private static final float MAX_FLING_VELOCITY = 1000f;
 	/** Initial angle ship faces */
 	private static final float INITIAL_ANGLE = 90;
+	/** Initial amount of boost */
+	private static final int INITIAL_BOOST = 2750;
+	/** Boost velocity scalar */
+	private static final float BOOST_SCALAR = 200f;
+	
+	/** Amount of boost available */
+	private int boost;
+	/** Whether boost is being used */
+	private boolean isBoosting;
 	
 	private Screen screen;
 	private Vector2 initialPosition;
@@ -38,7 +48,8 @@ public class Ship extends Actor {
 	private Vector2 velocity;
 	private float angle;
 	
-	private Texture texture;
+	private Texture shipTexture;
+	private Texture shipBoostTexture;
 	private Sprite sprite;
 	
 	/**
@@ -52,15 +63,22 @@ public class Ship extends Actor {
 		this.position = initialPosition;
 		this.velocity = new Vector2(0,0);
 		this.angle = INITIAL_ANGLE;
-		setBounds(position.x - DRAG_RADIUS, position.y - DRAG_RADIUS, 
-				2 * DRAG_RADIUS, 2 * DRAG_RADIUS);
+		this.boost = INITIAL_BOOST;
+		this.isBoosting = false;
+		setBounds(position.x - TOUCH_RADIUS, position.y - TOUCH_RADIUS, 
+				2 * TOUCH_RADIUS, 2 * TOUCH_RADIUS);
 		
-		texture = GravityGame.getTextures().get(AssetLoader.SHIP_IMG);
-		if (texture == null) {
+		shipTexture = GravityGame.getTextures().get(AssetLoader.SHIP_IMG);
+		if (shipTexture == null) {
 			System.out.println("Error: " + AssetLoader.SHIP_IMG + " not found");
 			System.exit(1);
 		}
-		sprite = new Sprite(texture);
+		shipBoostTexture = GravityGame.getTextures().get(AssetLoader.SHIP_BOOST_IMG);
+		if (shipBoostTexture == null) {
+			System.out.println("Error: " + AssetLoader.SHIP_BOOST_IMG + " not found");
+			System.exit(1);
+		}
+		sprite = new Sprite(shipTexture);
 
 		addListener(new DragListener() {
 			public void dragStop(InputEvent event, float x, float y, int pointer) {
@@ -123,22 +141,45 @@ public class Ship extends Actor {
 		return force;
 	}
 	
-	// TODO add boost force
+	/**
+	 * Computes acceleration on ship (gravity + potential boosting)
+	 * @param shipPosition
+	 * @param planets
+	 * @return acceleration vector
+	 */
+	public Vector2 computeAccel(Vector2 shipPosition, ArrayList<Planet> planets) {
+		Vector2 acc = computeGravityForce(shipPosition, planets);
+		if (Gdx.input.isTouched() && boost > 0) {
+			if (!isBoosting) {
+				startBoosting();
+			}
+				
+			Vector2 boostVec = new Vector2(velocity).nor().scl(BOOST_SCALAR);
+			acc.add(boostVec);
+			boost--;		
+			System.out.println("boost :" + boost);
+		} else {
+			if (isBoosting) {
+				stopBoosting();
+			}
+		}
+		return acc;
+	}
 	
 	/**
 	 * Updates position and velocity using Runge-Kutta 4th order method
 	 */
 	public void RK4(float dt, ArrayList<Planet> planets) {
-		Vector2 vela = new Vector2(velocity).add(computeGravityForce(position, planets).scl(dt / 2));
+		Vector2 vela = new Vector2(velocity).add(computeAccel(position, planets).scl(dt / 2));
 		Vector2 posa = new Vector2(position).add(new Vector2(velocity).scl(dt / 2));
 		
-		Vector2 velb = new Vector2(velocity).add(computeGravityForce(posa, planets).scl(dt / 2));
+		Vector2 velb = new Vector2(velocity).add(computeAccel(posa, planets).scl(dt / 2));
 		Vector2 posb = new Vector2(position).add(new Vector2(vela).scl(dt / 2));
 		
-		Vector2 velc = new Vector2(velocity).add(computeGravityForce(posb, planets).scl(dt));
+		Vector2 velc = new Vector2(velocity).add(computeAccel(posb, planets).scl(dt));
 		Vector2 posc = new Vector2(position).add(new Vector2(velb).scl(dt));
 		
-		Vector2 veld = new Vector2(velocity).add(computeGravityForce(posc, planets).scl(dt));
+		Vector2 veld = new Vector2(velocity).add(computeAccel(posc, planets).scl(dt));
 		Vector2 posd = new Vector2(position).add(new Vector2(velc).scl(dt));
 		
 		velocity = new Vector2(vela.add(velb.scl(2)).add(velc).add(veld.scl(1.0f/2)).scl(1.0f/3)).sub(new Vector2(velocity).scl(1.0f/2));
@@ -154,6 +195,23 @@ public class Ship extends Actor {
 		angle = INITIAL_ANGLE;
 		position = initialPosition;
 		velocity.set(0,0);
+		boost = INITIAL_BOOST;
+	}
+	
+	/**
+	 * Called when ship begins boosting
+	 */
+	private void startBoosting() {
+		isBoosting = true;
+		sprite.setTexture(shipBoostTexture);
+	}
+	
+	/**
+	 * Called when ship stops boosting
+	 */
+	private void stopBoosting() {
+		isBoosting = false;
+		sprite.setTexture(shipTexture);
 	}
 	
 	/**
