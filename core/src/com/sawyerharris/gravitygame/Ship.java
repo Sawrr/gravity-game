@@ -2,6 +2,7 @@ package com.sawyerharris.gravitygame;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -23,6 +24,7 @@ public class Ship extends Actor {
 	/** Characteristic radius of ship used for drag listener */
 	private static final int DRAG_RADIUS = 40;
 	
+	private Screen screen;
 	private Vector2 initialPosition;
 	private Vector2 position;
 	private Vector2 velocity;
@@ -31,7 +33,8 @@ public class Ship extends Actor {
 	private Texture texture;
 	private Sprite sprite;
 	
-	public Ship(Vector2 initialPosition) {
+	public Ship(Screen screen, Vector2 initialPosition) {
+		this.screen = screen;
 		this.initialPosition = initialPosition;
 		this.position = initialPosition;
 		this.velocity = new Vector2(0,0);
@@ -47,9 +50,16 @@ public class Ship extends Actor {
 		
 		addListener(new DragListener() {
 			public void dragStop(InputEvent event, float x, float y, int pointer) {
-				System.out.println("x: " + (x + getX()) + " y: " + (y + getY()));
+				dragShip(x, y);
 			}
 		});
+	}
+	
+	private void dragShip(float x, float y) {
+		if (screen instanceof GameScreen) {
+			GameScreen gs = (GameScreen) screen;
+			gs.setStateFiring(new Vector2(-x, -y));
+		}
 	}
 	
 	/**
@@ -117,6 +127,10 @@ public class Ship extends Actor {
 	 */
 	public Vector2 getPosition() {
 		return position;
+	}
+	
+	public void setVelocity(Vector2 velocity) {
+		this.velocity = velocity;
 	}
 	
 	/**

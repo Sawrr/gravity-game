@@ -25,9 +25,9 @@ public class GameCamera extends OrthographicCamera {
 	private final int worldWidth;
 	private final int worldHeight;
 	
-	private final float maxZoom;
+	public final float maxZoom;
 	public final float worldZoomLevel;
-	
+
 	/**
 	 * Create camera for given level
 	 * @param level
@@ -47,6 +47,7 @@ public class GameCamera extends OrthographicCamera {
 	 * @param dy
 	 */
 	public void pan(float dx, float dy) {
+		//TODO fix the jitter
 		translate(dx * PAN_SCALAR, dy * PAN_SCALAR);
 		clamp();
 	}
@@ -76,6 +77,7 @@ public class GameCamera extends OrthographicCamera {
 			position.x += dx/7f;
 			position.y += dy/7f;
 			zoom += dzoom/7f;
+			clamp();
 			return false;
 		} else {
 			return true;

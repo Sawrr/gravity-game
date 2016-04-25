@@ -7,6 +7,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -49,32 +50,35 @@ public class GameScreen implements Screen {
 		level = lvl;
 		theme = GravityGame.getThemes().get(level.getThemeName());
 		
+		// Viewport, camera, stage
 		viewCenterOnShip = true;
-		
 		viewport = new FillViewport(GravityGame.getScreenWidth(), GravityGame.getScreenHeight());
 		camera = new GameCamera(level);
 		camera.setToOrtho(false);
 		viewport.setCamera(camera);
 		stage = new Stage(viewport);
 		
+		// Input processing
 		InputMultiplexer mux = new InputMultiplexer();
 		mux.addProcessor(stage);
 		mux.addProcessor(new ScrollProcessor());
+		mux.addProcessor(new GestureDetector(new InputHandler(this, camera)));
 		Gdx.input.setInputProcessor(mux);
 
 		// Create background, planets, ship and add to stage
-		background = new Background(this, camera, level);
+		background = new Background(camera, level);
 		planets = new ArrayList<Planet>();
 		for (PlanetMeta planet : level.getPlanets()) {
 			planets.add(new Planet(planet, theme));
 		}
-		ship = new Ship(level.getShipOrigin());
+		ship = new Ship(this, level.getShipOrigin());
 		stage.addActor(background);		
 		for (Planet planet : planets) {
 			stage.addActor(planet);
 		}
 		stage.addActor(ship);
 		
+		// Starts in aiming mode
 		setStateAiming();
 		
 		Timer.schedule(new Task(){
@@ -96,6 +100,7 @@ public class GameScreen implements Screen {
 	private class ScrollProcessor extends InputAdapter {
 		@Override
 		public boolean scrolled(int amount) {
+			setStateAiming();
 			camera.zoom(GameCamera.SCROLL_TO_ZOOM * amount);
 			
 			// move the following to LevelEditorScreen
@@ -105,7 +110,6 @@ public class GameScreen implements Screen {
 			Vector2 coords = new Vector2(coords3d.x, coords3d.y);
 			for (Planet planet : planets) {
 				Vector2 loc = new Vector2(planet.getPosition());
-				System.out.println(loc.x + " " + loc.y + " | " + coords.x + " " + coords.y);
 				if (loc.sub(coords).len2() <= Math.pow(planet.getRadius(),2)) {
 					System.out.println("on planet");
 				}
@@ -119,7 +123,8 @@ public class GameScreen implements Screen {
 		ship.setTouchable(Touchable.enabled);
 	}
 	
-	public void setStateFiring() {
+	public void setStateFiring(Vector2 fireVector) {
+		ship.setVelocity(fireVector);
 		GravityGame.setState(GameState.FIRING);
 		ship.setTouchable(Touchable.disabled);
 	}
@@ -128,7 +133,7 @@ public class GameScreen implements Screen {
 		GravityGame.setState(GameState.VIEW_MOVING);
 		viewCenterOnShip = !viewCenterOnShip;
 		if (viewCenterOnShip) {
-			zoomTarget = camera.SHIP_ZOOM_LEVEL;
+			zoomTarget = GameCamera.SHIP_ZOOM_LEVEL;
 			moveTarget = ship.getPosition();
 		} else {
 			zoomTarget = camera.worldZoomLevel;
