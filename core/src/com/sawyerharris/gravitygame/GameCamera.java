@@ -1,6 +1,5 @@
 package com.sawyerharris.gravitygame;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -22,6 +21,8 @@ public class GameCamera extends OrthographicCamera {
 	public static final float SHIP_ZOOM_LEVEL = 1.0f;
 	
 	private static final float WORLD_ZOOM_LEVEL_SCALAR = 1.2f;
+	
+	public static final float SHIP_OFFSCREEN_BUFFER = 150;
 	
 	/** Dimensions of level */
 	private final int worldWidth;
@@ -49,7 +50,6 @@ public class GameCamera extends OrthographicCamera {
 	 * @param dy
 	 */
 	public void pan(float dx, float dy) {
-		//TODO fix the jitter
 		translate(dx * PAN_SCALAR, dy * PAN_SCALAR);
 		clamp();
 	}
@@ -72,7 +72,6 @@ public class GameCamera extends OrthographicCamera {
 	 * @return true when finished
 	 */
 	public boolean autoMove(Vector2 moveTarget, float zoomTarget) {
-		System.out.println(System.nanoTime());
 		float dx, dy, dzoom, oldZoom;
 		Vector3 oldPos = new Vector3(position);
 		oldZoom = zoom;

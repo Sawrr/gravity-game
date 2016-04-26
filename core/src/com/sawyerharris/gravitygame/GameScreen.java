@@ -3,13 +3,10 @@ package com.sawyerharris.gravitygame;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Timer;
@@ -65,8 +62,9 @@ public class GameScreen implements Screen {
 		// Input processing
 		InputMultiplexer mux = new InputMultiplexer();
 		mux.addProcessor(stage);
-		mux.addProcessor(new ScrollProcessor());
-		mux.addProcessor(new GestureDetector(100, 1.0f, 1.1f, 0.15f, new InputHandler(this, camera)));
+		InputHandler inp = new InputHandler(this, camera);
+		mux.addProcessor(inp.getGestureDetector());
+		mux.addProcessor(inp.getButtonProcessor());
 		Gdx.input.setInputProcessor(mux);
 
 		// Create background, planets, ship and add to stage
@@ -95,35 +93,6 @@ public class GameScreen implements Screen {
 		};
 		
 		Timer.schedule(physicsTask, DELTA_TIME, DELTA_TIME);
-	}
-	
-	/**
-	 * Used to detect mouse wheel scrolling
-	 * 
-	 * @author Sawyer Harris
-	 *
-	 */
-	private class ScrollProcessor extends InputAdapter {
-		@Override
-		public boolean scrolled(int amount) {
-			if (GravityGame.getState() == GameState.VIEW_MOVING) {
-				setStateAiming();
-			}
-			camera.zoom(GameCamera.SCROLL_TO_ZOOM * amount);
-			
-			// move the following to LevelEditorScreen
-			int x = Gdx.input.getX();
-			int y = Gdx.input.getY();
-			Vector3 coords3d = viewport.getCamera().unproject(new Vector3(x, y, 0));
-			Vector2 coords = new Vector2(coords3d.x, coords3d.y);
-			for (Planet planet : planets) {
-				Vector2 loc = new Vector2(planet.getPosition());
-				if (loc.sub(coords).len2() <= Math.pow(planet.getRadius(),2)) {
-					System.out.println("on planet");
-				}
-			}
-			return true;
-		}
 	}
 	
 	public void setStateAiming() {
@@ -184,6 +153,15 @@ public class GameScreen implements Screen {
 		if (x <= 0 || x > width || y <= 0 || y > height) {
 			reset();
 			return;
+		}
+		
+		float cameraTopEdgeX = camera.position.x + camera.zoom * (camera.viewportWidth / 2 - camera.SHIP_OFFSCREEN_BUFFER);
+		float cameraBotEdgeX = camera.position.x - camera.zoom * (camera.viewportWidth / 2 - camera.SHIP_OFFSCREEN_BUFFER);
+		float cameraTopEdgeY = camera.position.y + camera.zoom * (camera.viewportHeight / 2 - camera.SHIP_OFFSCREEN_BUFFER);
+		float cameraBotEdgeY = camera.position.y - camera.zoom * (camera.viewportHeight / 2 - camera.SHIP_OFFSCREEN_BUFFER);
+		
+		if (x > cameraTopEdgeX || x < cameraBotEdgeX || y > cameraTopEdgeY || y < cameraBotEdgeY) {
+			camera.zoom(0.000005f * ship.getVelocity().len());
 		}
 	}
 

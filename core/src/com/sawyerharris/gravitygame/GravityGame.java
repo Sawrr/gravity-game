@@ -88,6 +88,8 @@ public class GravityGame extends Game {
 		highestLevel = statusPrefs.getInteger(highestLevelStr);
 		soundOn = statusPrefs.getBoolean(soundOnStr);
 		
+		Gdx.input.setCatchBackKey(true);
+		
 		setScreen(new GameScreen(this, levels.get("testLevel")));
 		//setScreen(new MainMenuScreen());
 	}

@@ -156,8 +156,7 @@ public class Ship extends Actor {
 				
 			Vector2 boostVec = new Vector2(velocity).nor().scl(BOOST_SCALAR);
 			acc.add(boostVec);
-			boost--;		
-			System.out.println("boost :" + boost);
+			boost--;
 		} else {
 			if (isBoosting) {
 				stopBoosting();
