@@ -163,6 +163,8 @@ public class GameScreen implements Screen {
 		if (x > cameraTopEdgeX || x < cameraBotEdgeX || y > cameraTopEdgeY || y < cameraBotEdgeY) {
 			camera.zoom(0.000005f * ship.getVelocity().len());
 		}
+		
+		// TODO make this smoother and recenter view after failure
 	}
 
 	
