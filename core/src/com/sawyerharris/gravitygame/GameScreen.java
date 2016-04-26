@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
-import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.sawyerharris.gravitygame.GravityGame.GameState;
 import com.sawyerharris.gravitygame.Level.PlanetMeta;
 
@@ -36,7 +36,7 @@ public class GameScreen implements Screen {
 	private ArrayList<Planet> planets;
 	private Ship ship;
 
-	private FillViewport viewport;
+	private ScreenViewport viewport;
 	private GameCamera camera;
 	
 	private boolean viewCenterOnShip;
@@ -56,7 +56,7 @@ public class GameScreen implements Screen {
 		
 		// Viewport, camera, stage
 		viewCenterOnShip = true;
-		viewport = new FillViewport(GravityGame.getScreenWidth(), GravityGame.getScreenHeight());
+		viewport = new ScreenViewport();
 		camera = new GameCamera(level);
 		camera.setToOrtho(false);
 		viewport.setCamera(camera);
@@ -66,7 +66,7 @@ public class GameScreen implements Screen {
 		InputMultiplexer mux = new InputMultiplexer();
 		mux.addProcessor(stage);
 		mux.addProcessor(new ScrollProcessor());
-		mux.addProcessor(new GestureDetector(new InputHandler(this, camera)));
+		mux.addProcessor(new GestureDetector(100, 1.0f, 1.1f, 0.15f, new InputHandler(this, camera)));
 		Gdx.input.setInputProcessor(mux);
 
 		// Create background, planets, ship and add to stage

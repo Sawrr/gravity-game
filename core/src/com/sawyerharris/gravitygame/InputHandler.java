@@ -38,7 +38,8 @@ public class InputHandler extends GestureAdapter {
 	
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
-		if (count == 2) {
+		System.out.println(count);
+		if (count >= 0) {
 			if (screen instanceof GameScreen && GravityGame.getState() == GameState.AIMING) {
 				GameScreen gs = (GameScreen) screen;
 				gs.setStateViewMoving();

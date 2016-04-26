@@ -1,8 +1,10 @@
 package com.sawyerharris.gravitygame;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * Game camera
@@ -70,14 +72,20 @@ public class GameCamera extends OrthographicCamera {
 	 * @return true when finished
 	 */
 	public boolean autoMove(Vector2 moveTarget, float zoomTarget) {
-		float dx = moveTarget.x - position.x;
-		float dy = moveTarget.y - position.y;
-		float dzoom = zoomTarget - zoom;
-		if ((Math.hypot(dx, dy) > 3f) || Math.abs(dzoom) > 3f) {
-			position.x += dx/7f;
-			position.y += dy/7f;
-			zoom += dzoom/7f;
-			clamp();
+		System.out.println(System.nanoTime());
+		float dx, dy, dzoom, oldZoom;
+		Vector3 oldPos = new Vector3(position);
+		oldZoom = zoom;
+		dx = moveTarget.x - position.x;
+		dy = moveTarget.y - position.y;
+		dzoom = zoomTarget - zoom;
+		
+		position.x += dx/7f;
+		position.y += dy/7f;
+		zoom += dzoom/7f;
+		clamp();
+		
+		if (oldPos.sub(position).len() > 1f || Math.abs(oldZoom - zoom) > 1f) {
 			return false;
 		} else {
 			return true;

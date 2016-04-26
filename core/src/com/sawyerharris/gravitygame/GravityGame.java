@@ -19,6 +19,9 @@ import com.badlogic.gdx.graphics.Texture;
  * 
  */
 public class GravityGame extends Game {
+	public static final int DESKTOP_WIDTH = 720 / 2;
+	public static final int DESKTOP_HEIGHT = 1280 / 2;
+	
 	/** Map of themes */
 	private static Map<String, Theme> themes = new HashMap<String, Theme>();
 	/** Map of levels */
@@ -65,8 +68,8 @@ public class GravityGame extends Game {
 			screenWidth = Gdx.graphics.getWidth();
 			screenHeight = Gdx.graphics.getHeight();
 		} else {
-			screenWidth = 720;
-			screenHeight = 1280;
+			screenWidth = DESKTOP_WIDTH;
+			screenHeight = DESKTOP_HEIGHT;
 		}
 		aspectRatio = screenWidth / (float) screenHeight;
 		
@@ -86,6 +89,7 @@ public class GravityGame extends Game {
 		soundOn = statusPrefs.getBoolean(soundOnStr);
 		
 		setScreen(new GameScreen(this, levels.get("testLevel")));
+		//setScreen(new MainMenuScreen());
 	}
 	
 	/**
