@@ -6,24 +6,24 @@ themeName: testTheme
 width: 1440
 height: 2560
 shipOrigin: {
-	x: 500
+	x: 720
 	y: 500
 }
 planets: [
 	{
 		position: {
-			x: 400
-			y: 500
+			x: 720
+			y: 1000
 		}
-		radius: 20
+		radius: 50
 		home: false
 	}
 	{
 		position: {
-			x: 750
-			y: 750
+			x: 720
+			y: 1500
 		}
-		radius: 50
+		radius: 75
 		home: true
 	}
 ]

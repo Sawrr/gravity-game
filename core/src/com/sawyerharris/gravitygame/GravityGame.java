@@ -19,8 +19,9 @@ import com.badlogic.gdx.graphics.Texture;
  * 
  */
 public class GravityGame extends Game {
-	public static final int DESKTOP_WIDTH = 720 / 2;
-	public static final int DESKTOP_HEIGHT = 1280 / 2;
+	public static final int DESKTOP_WIDTH = 720;
+	public static final int DESKTOP_HEIGHT = 1280;
+	public static final int DESKTOP_SCALAR = 2;
 	
 	/** Map of themes */
 	private static Map<String, Theme> themes = new HashMap<String, Theme>();
@@ -125,7 +126,7 @@ public class GravityGame extends Game {
 	 * Renders game via screen
 	 */
 	@Override
-	public void render () {
+	public void render() {
 		super.render();
 	}
 	

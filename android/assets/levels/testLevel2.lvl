@@ -6,7 +6,7 @@ themeName: testTheme
 width: 1440
 height: 2560
 shipOrigin: {
-	x: 500
+	x: 720
 	y: 500
 }
 planets: [

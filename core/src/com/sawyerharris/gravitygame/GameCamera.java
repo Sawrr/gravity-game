@@ -20,7 +20,7 @@ public class GameCamera extends OrthographicCamera {
 	/** Value of zoom when centering on ship */
 	public static final float SHIP_ZOOM_LEVEL = 1.0f;
 	
-	private static final float WORLD_ZOOM_LEVEL_SCALAR = 1.2f;
+	private static final float WORLD_ZOOM_LEVEL_SCALAR = 1.0f;
 	
 	public static final float SHIP_OFFSCREEN_BUFFER = 150;
 	

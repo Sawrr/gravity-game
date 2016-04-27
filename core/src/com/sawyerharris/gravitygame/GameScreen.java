@@ -2,6 +2,7 @@ package com.sawyerharris.gravitygame;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -11,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.sawyerharris.gravitygame.GravityGame.GameState;
 import com.sawyerharris.gravitygame.Level.PlanetMeta;
 
@@ -33,7 +34,7 @@ public class GameScreen implements Screen {
 	private ArrayList<Planet> planets;
 	private Ship ship;
 
-	private ScreenViewport viewport;
+	private FillViewport viewport;
 	private GameCamera camera;
 	
 	private boolean viewCenterOnShip;
@@ -53,7 +54,7 @@ public class GameScreen implements Screen {
 		
 		// Viewport, camera, stage
 		viewCenterOnShip = true;
-		viewport = new ScreenViewport();
+		viewport = new FillViewport(GravityGame.getScreenWidth(), GravityGame.getScreenHeight());
 		camera = new GameCamera(level);
 		camera.setToOrtho(false);
 		viewport.setCamera(camera);
@@ -124,6 +125,7 @@ public class GameScreen implements Screen {
 	private void physicsUpdate() {
 		ship.update(DELTA_TIME, planets);
 		checkForCollisions();
+		checkShipPosition();
 	}
 	
 	private void checkForCollisions() {
@@ -154,19 +156,31 @@ public class GameScreen implements Screen {
 			reset();
 			return;
 		}
-		
-		float cameraTopEdgeX = camera.position.x + camera.zoom * (camera.viewportWidth / 2 - camera.SHIP_OFFSCREEN_BUFFER);
-		float cameraBotEdgeX = camera.position.x - camera.zoom * (camera.viewportWidth / 2 - camera.SHIP_OFFSCREEN_BUFFER);
-		float cameraTopEdgeY = camera.position.y + camera.zoom * (camera.viewportHeight / 2 - camera.SHIP_OFFSCREEN_BUFFER);
-		float cameraBotEdgeY = camera.position.y - camera.zoom * (camera.viewportHeight / 2 - camera.SHIP_OFFSCREEN_BUFFER);
-		
-		if (x > cameraTopEdgeX || x < cameraBotEdgeX || y > cameraTopEdgeY || y < cameraBotEdgeY) {
-			camera.zoom(0.000005f * ship.getVelocity().len());
-		}
-		
-		// TODO make this smoother and recenter view after failure
 	}
 
+	private void checkShipPosition() {
+		float x = ship.getPosition().x;
+		float y = ship.getPosition().y;
+		
+		float cameraTopEdgeX = camera.position.x + camera.zoom * (camera.viewportWidth / 2 - GameCamera.SHIP_OFFSCREEN_BUFFER);
+		float cameraBotEdgeX = camera.position.x - camera.zoom * (camera.viewportWidth / 2 - GameCamera.SHIP_OFFSCREEN_BUFFER);
+		float cameraTopEdgeY = camera.position.y + camera.zoom * (camera.viewportHeight / 2 - GameCamera.SHIP_OFFSCREEN_BUFFER);
+		float cameraBotEdgeY = camera.position.y - camera.zoom * (camera.viewportHeight / 2 - GameCamera.SHIP_OFFSCREEN_BUFFER);
+		
+		if (x > cameraTopEdgeX || x < cameraBotEdgeX || y > cameraTopEdgeY || y < cameraBotEdgeY) {
+			camera.zoom(0.000001f * ship.getVelocity().len());
+			if (x > cameraTopEdgeX) {
+				camera.pan(x - cameraTopEdgeX, 0);
+			} else if (x < cameraBotEdgeX) {
+				camera.pan(x - cameraBotEdgeX, 0);
+			}
+			if (y > cameraTopEdgeY) {
+				camera.pan(0, y - cameraTopEdgeY);
+			} else if (y < cameraBotEdgeY) {
+				camera.pan(0, y - cameraBotEdgeY);
+			}
+		}
+	}
 	
 	/**
 	 * Resets level to initial state
@@ -207,9 +221,9 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		//viewport.update(width, height);
-	}
+		if (Gdx.app.getType() == ApplicationType.Desktop)
+			viewport.update(width , height);
+		}
 
 	@Override
 	public void pause() {
