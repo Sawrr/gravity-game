@@ -31,9 +31,9 @@ public class InputHandler {
 	public class GestureProcessor extends GestureAdapter {
 		@Override
 		public boolean pan(float x, float y, float deltaX, float deltaY) {
-			if (screen instanceof GameScreen && GravityGame.getState() == GameState.VIEW_MOVING) {
+			if (screen instanceof GameScreen) {
 				GameScreen gs = (GameScreen) screen;
-				gs.setStateAiming();
+				gs.getCamera().setAutoMoving(false);
 			}
 			camera.pan(-deltaX, deltaY);
 			return true;
@@ -41,9 +41,9 @@ public class InputHandler {
 		
 		@Override
 		public boolean zoom(float initialDistance, float distance) {
-			if (screen instanceof GameScreen && GravityGame.getState() == GameState.VIEW_MOVING) {
+			if (screen instanceof GameScreen) {
 				GameScreen gs = (GameScreen) screen;
-				gs.setStateAiming();
+				gs.getCamera().setAutoMoving(false);
 			}
 			float zoomDistance = TOUCH_TO_ZOOM * (initialDistance - distance);
 			camera.zoom(zoomDistance);
@@ -53,12 +53,10 @@ public class InputHandler {
 		
 		@Override
 		public boolean tap(float x, float y, int count, int button) {
-			if (count >= 0) {
-				if (screen instanceof GameScreen && GravityGame.getState() == GameState.AIMING) {
-					GameScreen gs = (GameScreen) screen;
-					gs.setStateViewMoving();
-				}	
-			}
+			if (screen instanceof GameScreen && GravityGame.getState() == GameState.AIMING) {
+				GameScreen gs = (GameScreen) screen;
+				gs.toggleShipWorldAutoMove();
+			}	
 			return true;
 		}
 	}
@@ -80,9 +78,7 @@ public class InputHandler {
 		public boolean scrolled(int amount) {
 			if (screen instanceof GameScreen) {
 				GameScreen gs = (GameScreen) screen;
-				if (GravityGame.getState() == GameState.VIEW_MOVING) {
-					gs.setStateAiming();
-				}
+				gs.getCamera().setAutoMoving(false);
 				camera.zoom(GameCamera.SCROLL_TO_ZOOM * amount);
 			}
 			

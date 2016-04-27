@@ -21,7 +21,8 @@ import com.badlogic.gdx.graphics.Texture;
 public class GravityGame extends Game {
 	public static final int DESKTOP_WIDTH = 720;
 	public static final int DESKTOP_HEIGHT = 1280;
-	public static final int DESKTOP_SCALAR = 2;
+	public static final int DESKTOP_SCREEN_WIDTH = 360;
+	public static final int DESKTOP_SCREEN_HEIGHT = 640;
 	
 	/** Map of themes */
 	private static Map<String, Theme> themes = new HashMap<String, Theme>();
@@ -196,6 +197,6 @@ public class GravityGame extends Game {
 	 * 
 	 */
 	public enum GameState {
-		MENU, LEVEL_EDITOR, VIEW_MOVING, AIMING, FIRING, LEVEL_FAILURE, LEVEL_SUCCESS
+		MENU, LEVEL_EDITOR, AIMING, FIRING, LEVEL_FAILURE, LEVEL_SUCCESS
 	}
 }

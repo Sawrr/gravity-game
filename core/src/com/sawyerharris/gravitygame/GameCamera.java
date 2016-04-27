@@ -13,16 +13,14 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class GameCamera extends OrthographicCamera {
 	/** Scalar for panning camera */
-	private static final float PAN_SCALAR = 0.5f;
+	private static final float PAN_SCALAR = 0.75f;
 	/** Scalar for converting scrolling to zoom distance */
 	public static final float SCROLL_TO_ZOOM = 0.05f;
 	
 	/** Value of zoom when centering on ship */
 	public static final float SHIP_ZOOM_LEVEL = 1.0f;
-	
-	private static final float WORLD_ZOOM_LEVEL_SCALAR = 1.0f;
-	
-	public static final float SHIP_OFFSCREEN_BUFFER = 150;
+	/** Distance between ship and edge of screen that triggers camera following */
+	public static final float SHIP_OFFSCREEN_BUFFER = 250;
 	
 	/** Dimensions of level */
 	private final int worldWidth;
@@ -30,6 +28,9 @@ public class GameCamera extends OrthographicCamera {
 	
 	public final float maxZoom;
 	public final float worldZoomLevel;
+	
+	/** Is the camera currently auto moving */
+	private boolean isAutoMoving;
 
 	/**
 	 * Create camera for given level
@@ -41,7 +42,8 @@ public class GameCamera extends OrthographicCamera {
 		maxZoom = Math.min(worldWidth/GravityGame.getScreenWidth(), 
 				worldHeight/GravityGame.getScreenHeight());
 		worldZoomLevel = Math.min(worldWidth/GravityGame.getScreenWidth(), 
-				worldHeight/GravityGame.getScreenHeight()) / WORLD_ZOOM_LEVEL_SCALAR;
+				worldHeight/GravityGame.getScreenHeight());
+		isAutoMoving = false;
 	}
 	
 	/**
@@ -67,11 +69,13 @@ public class GameCamera extends OrthographicCamera {
 	
 	/**
 	 * Automatically moves the camera to the targets
+	 * If zoomTarget = 0, do not alter zoom
 	 * @param moveTarget
 	 * @param zoomTarget
-	 * @return true when finished
 	 */
-	public boolean autoMove(Vector2 moveTarget, float zoomTarget) {
+	public void autoMove(Vector2 moveTarget, float zoomTarget) {
+		isAutoMoving = true;
+		
 		float dx, dy, dzoom, oldZoom;
 		Vector3 oldPos = new Vector3(position);
 		oldZoom = zoom;
@@ -81,13 +85,13 @@ public class GameCamera extends OrthographicCamera {
 		
 		position.x += dx/7f;
 		position.y += dy/7f;
-		zoom += dzoom/7f;
+		if (zoomTarget != 0 ) {
+			zoom += dzoom/7f;
+		}
 		clamp();
 		
-		if (oldPos.sub(position).len() > 1f || Math.abs(oldZoom - zoom) > 1f) {
-			return false;
-		} else {
-			return true;
+		if (oldPos.sub(position).len() < 1f && Math.abs(oldZoom - zoom) < 1f) {
+			isAutoMoving = false;
 		}
 	}
 	
@@ -100,5 +104,20 @@ public class GameCamera extends OrthographicCamera {
 		position.x = MathUtils.clamp(position.x, effectiveViewportWidth / 2f, worldWidth - effectiveViewportWidth / 2f);
 		position.y = MathUtils.clamp(position.y, effectiveViewportHeight / 2f, worldHeight - effectiveViewportHeight / 2f);
 	}
-
+	
+	/**
+	 * Returns whether camera is auto moving
+	 * @return isAutoMoving
+	 */
+	public boolean isAutoMoving() {
+		return isAutoMoving;
+	}
+	
+	/**
+	 * Sets whether camera is auto moving
+	 * @param isAutoMoving
+	 */
+	public void setAutoMoving(boolean isAutoMoving) {
+		this.isAutoMoving = isAutoMoving;
+	}
 }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Timer;
@@ -25,6 +26,8 @@ import com.sawyerharris.gravitygame.Level.PlanetMeta;
 public class GameScreen implements Screen {
 	/** Time between physics updates */
 	public static final float DELTA_TIME = 0.001f;
+	/** Vertical offset for centering on ship */
+	private static final Vector2 SHIP_VIEW_OFFSET = new Vector2(0, 350);
 	
 	private GravityGame game;
 	private Stage stage;
@@ -43,6 +46,10 @@ public class GameScreen implements Screen {
 	
 	private Task physicsTask;
 	
+	private final Vector2 worldMoveTarget;
+	private Vector2 lastCamPosition;
+	private float lastCamZoom;
+	
 	/**
 	 * Constructor creates GameScreen for a given Level
 	 * @param level
@@ -51,6 +58,8 @@ public class GameScreen implements Screen {
 		game = gam;
 		level = lvl;
 		theme = GravityGame.getThemes().get(level.getThemeName());
+		
+		worldMoveTarget = new Vector2(level.getWidth() / 2, level.getHeight() / 2);
 		
 		// Viewport, camera, stage
 		viewCenterOnShip = true;
@@ -81,7 +90,13 @@ public class GameScreen implements Screen {
 		}
 		stage.addActor(ship);
 		
-		// Starts in aiming mode
+		/* Sets camera zoom and position to entire level,
+		 * then sets mode to aiming which centers view on ship
+		 */
+		camera.position.set(worldMoveTarget.x, worldMoveTarget.y, 0);
+		camera.zoom = camera.worldZoomLevel;
+		lastCamPosition = new Vector2(ship.getPosition()).add(SHIP_VIEW_OFFSET);
+		lastCamZoom = GameCamera.SHIP_ZOOM_LEVEL;
 		setStateAiming();
 		
 		physicsTask = new Task(){
@@ -96,27 +111,48 @@ public class GameScreen implements Screen {
 		Timer.schedule(physicsTask, DELTA_TIME, DELTA_TIME);
 	}
 	
+	/**
+	 * Player is aiming ship
+	 */
 	public void setStateAiming() {
 		GravityGame.setState(GameState.AIMING);
 		ship.setTouchable(Touchable.enabled);
+		zoomTarget = lastCamZoom;
+		moveTarget = lastCamPosition;
+		camera.setAutoMoving(true);
 	}
 	
+	/**
+	 * Ship has been fired
+	 * @param fireVector
+	 */
 	public void setStateFiring(Vector2 fireVector) {
 		ship.setVelocity(fireVector);
 		GravityGame.setState(GameState.FIRING);
 		ship.setTouchable(Touchable.disabled);
+		
+		lastCamZoom = camera.zoom;
+		lastCamPosition = new Vector2(camera.position.x, camera.position.y);
+		
+		zoomTarget = 0;
+		// moveTarget is set in render method
+		camera.setAutoMoving(true);
 	}
 	
-	public void setStateViewMoving() {
-		GravityGame.setState(GameState.VIEW_MOVING);
+	/**
+	 * Toggle between centering camera on ship and world
+	 * Triggers a camera auto move
+	 */
+	public void toggleShipWorldAutoMove() {
 		viewCenterOnShip = !viewCenterOnShip;
 		if (viewCenterOnShip) {
 			zoomTarget = GameCamera.SHIP_ZOOM_LEVEL;
-			moveTarget = ship.getPosition();
+			moveTarget = new Vector2(ship.getPosition()).add(SHIP_VIEW_OFFSET);
 		} else {
 			zoomTarget = camera.worldZoomLevel;
 			moveTarget = new Vector2(level.getWidth() / 2, level.getHeight() / 2);
 		}
+		camera.setAutoMoving(true);
 	}
 	
 	/**
@@ -125,9 +161,14 @@ public class GameScreen implements Screen {
 	private void physicsUpdate() {
 		ship.update(DELTA_TIME, planets);
 		checkForCollisions();
-		checkShipPosition();
+		if (!camera.isAutoMoving()) {
+			checkShipPosition();
+		}
 	}
 	
+	/**
+	 * Checks if the ship has collided or gone out of bounds
+	 */
 	private void checkForCollisions() {
 		// Check for planet collisions
 		for (Planet planet : planets) {
@@ -158,6 +199,10 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	/**
+	 * Checks whether ship position is almost off screen
+	 * If so the camera must adjust
+	 */
 	private void checkShipPosition() {
 		float x = ship.getPosition().x;
 		float y = ship.getPosition().y;
@@ -198,6 +243,14 @@ public class GameScreen implements Screen {
 		return ship;
 	}
 	
+	/**
+	 * Returns the camera
+	 * @return camera
+	 */
+	public GameCamera getCamera() {
+		return camera;
+	}
+	
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
@@ -209,11 +262,11 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		if (GravityGame.getState() == GameState.VIEW_MOVING) {
-			boolean finished = camera.autoMove(moveTarget, zoomTarget);
-			if (finished) {
-				setStateAiming();
+		if (camera.isAutoMoving()) {
+			if (GravityGame.getState() == GameState.FIRING) {
+				moveTarget = new Vector2(ship.getPosition()).add(SHIP_VIEW_OFFSET);
 			}
+			camera.autoMove(moveTarget, zoomTarget);
 		}
 		
 		stage.draw();

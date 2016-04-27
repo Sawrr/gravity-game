@@ -7,8 +7,8 @@ import com.sawyerharris.gravitygame.GravityGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = GravityGame.DESKTOP_WIDTH / GravityGame.DESKTOP_SCALAR;
-		config.height = GravityGame.DESKTOP_HEIGHT / GravityGame.DESKTOP_SCALAR;
+		config.width = GravityGame.DESKTOP_SCREEN_WIDTH;
+		config.height = GravityGame.DESKTOP_SCREEN_HEIGHT;
 		config.resizable = false;
 		new LwjglApplication(new GravityGame(), config);
 	}
