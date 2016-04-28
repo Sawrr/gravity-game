@@ -1,5 +1,8 @@
 package com.sawyerharris.gravitygame;
 
+import java.util.ArrayList;
+
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
@@ -18,11 +21,20 @@ import com.sawyerharris.gravitygame.Level.PlanetMeta;
  *
  */
 public class Planet extends Actor {
-	/** Mass area density of planets */
-	private static final int density = 1500;
+	/** Mass area DENSITY of planets */
+	private static final int DENSITY = 1500;
+	
+	/** Minimum allowed radius */
+	private static final float MIN_RADIUS = 30;
+	/** Maximum allowed radius */
+	private static final float MAX_RADIUS = 200;
+	/** The minimum radius at which a planet can be grabbed or zoomed */
+	private static final int MIN_RADIUS_BOUND = 150;
+	/** Default radius when planet is added in level editor */
+	private static final int DEFAULT_RADIUS = 100;
 	
 	/** Whether planet is the home planet */
-	private final boolean home;
+	private boolean home;
 	
 	private Vector2 position;
 	private int radius;
@@ -30,38 +42,80 @@ public class Planet extends Actor {
 	
 	private Texture texture;
 	private Theme theme;
-	
+		
 	/**
 	 * Constructor converts PlanetMeta into actual Planet
 	 * @param planet PlanetMeta data
 	 * @param theme Theme of level
 	 */
-	public Planet(PlanetMeta planet, Theme theme) {
+	public Planet(PlanetMeta planet, Theme theme, Screen screen) {
 		this.home = planet.getHome();
 		this.position = planet.getPosition();
 		this.radius = planet.getRadius();
 		// Normalized pi because units are irrelevant
-		this.mass = density * radius * radius;
+		this.mass = DENSITY * radius * radius;
 		
+		addListeners(screen);
 		setTheme(theme);
-		setBounds(position.x - radius, position.y - radius, 2 * radius, 2 * radius);
+		updateBounds();
+	}
+	
+	/**
+	 * Constructor used by level editor to add planets
+	 * @param position
+	 * @param theme
+	 */
+	public Planet(Vector2 pos, Theme theme, Screen screen) {
+		this.home = false;
+		this.position = pos;
+		this.radius = DEFAULT_RADIUS;
+		// Normalized pi because units are irrelevant
+		this.mass = DENSITY * radius * radius;
 		
-		if (GravityGame.getState() == GameState.LEVEL_EDITOR) {
-			addListener(new DragListener() {
-				@Override		
-				public void drag(InputEvent event, float x, float y, int pointer) {
-				System.out.println("planet x: " + (x + getX()) + " y: " + (y + getY()));
-				}
-			});
+		addListeners(screen);
+		setTheme(theme);
+		updateBounds();
 		
-			addListener(new ActorGestureListener() {
+	}
+	
+	private void addListeners(final Screen screen) {
+		// Add listeners
+		if (screen instanceof LevelEditorScreen && GravityGame.getState() == GameState.LEVEL_EDITOR) {
+			addListener(new ActorGestureListener(0.001f, 0.4f, 1.1f, 0.15f) {				
 				@Override
 				public void zoom(InputEvent event, float initialDistance, float distance) {
-					System.out.println("Planet zoom: " + distance);
-			}
+					changeRadiusBy((int) ((distance - initialDistance) / 100));
+					updateBounds();
+				}
+				
+				@Override		
+				public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
+					position.add(deltaX, deltaY);
+					updateBounds();
+				}
+					
+				@Override
+				public void tap(InputEvent event, float x, float y, int pointer, int button) {
+					if (home) {
+						remove();
+					} else {
+						setHome(true);
+					}					
+				}
 			});
 		} else {
 			setTouchable(Touchable.disabled);
+		}
+	}
+	
+	private void updateBounds() {
+		int radBound = Math.max(radius, MIN_RADIUS_BOUND);
+		setBounds(position.x - radBound, position.y - radBound, 2 * radBound, 2 * radBound);
+	}
+	
+	public void changeRadiusBy(int amount) {
+		if (radius + amount <= MAX_RADIUS && radius + amount >= MIN_RADIUS) {
+			radius += amount;	
 		}
 	}
 	
@@ -87,6 +141,11 @@ public class Planet extends Actor {
 				this.theme = theme;
 			}
 		}
+	}
+	
+	public void setHome(boolean home) {
+		this.home = home;
+		setTheme(theme);
 	}
 		
 	public boolean isHome() {

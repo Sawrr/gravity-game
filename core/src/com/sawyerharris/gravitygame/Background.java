@@ -1,8 +1,13 @@
 package com.sawyerharris.gravitygame;
 
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.sawyerharris.gravitygame.GravityGame.GameState;
 
 /**
  * Draws the background image with parallax
@@ -17,15 +22,13 @@ public class Background extends Actor {
 	private int bgWidth;
 	private int bgHeight;
 	
-	public Background(GameCamera camera, Level level) {
+	public Background(final Screen screen, GameCamera camera, Level level) {
 		this.camera = camera;
 		this.level = level;
 		this.theme = GravityGame.getThemes().get(level.getThemeName());
 		this.texture = GravityGame.getTextures().get(theme.getBackground());
 		this.bgWidth = texture.getWidth();
 		this.bgHeight = texture.getHeight();
-		
-		setBounds(0, 0, GravityGame.getScreenWidth() * camera.maxZoom, GravityGame.getScreenHeight() * camera.maxZoom);
 	}
 	
 	@Override

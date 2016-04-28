@@ -1,10 +1,15 @@
 package com.sawyerharris.gravitygame;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.sawyerharris.gravitygame.GravityGame.GameState;
 
 public class InputHandler {
@@ -56,7 +61,12 @@ public class InputHandler {
 			if (screen instanceof GameScreen && GravityGame.getState() == GameState.AIMING) {
 				GameScreen gs = (GameScreen) screen;
 				gs.toggleShipWorldAutoMove();
-			}	
+			} else if (screen instanceof LevelEditorScreen && GravityGame.getState() == GameState.LEVEL_EDITOR) {
+				LevelEditorScreen les = (LevelEditorScreen) screen;
+				Vector3 coords3d = camera.unproject(new Vector3(x, y, 0));
+				Vector2 coords = new Vector2(coords3d.x, coords3d.y);
+				les.addPlanet(coords);
+			}
 			return true;
 		}
 	}
@@ -81,20 +91,11 @@ public class InputHandler {
 				gs.getCamera().setAutoMoving(false);
 				camera.zoom(GameCamera.SCROLL_TO_ZOOM * amount);
 			}
-			
-			// TODO if screen instanceof LevelEditorScreen && state = leveleditor
-			/*
-			int x = Gdx.input.getX();
-			int y = Gdx.input.getY();
-			Vector3 coords3d = viewport.getCamera().unproject(new Vector3(x, y, 0));
-			Vector2 coords = new Vector2(coords3d.x, coords3d.y);
-			for (Planet planet : planets) {
-				Vector2 loc = new Vector2(planet.getPosition());
-				if (loc.sub(coords).len2() <= Math.pow(planet.getRadius(),2)) {
-					System.out.println("on planet");
-				}
+			if (screen instanceof LevelEditorScreen && GravityGame.getState() == GameState.LEVEL_EDITOR) {
+				LevelEditorScreen les = (LevelEditorScreen) screen;
+				les.scrollCheckForPlanet(amount);
 			}
-			*/
+			
 			return true;
 		}
 	}

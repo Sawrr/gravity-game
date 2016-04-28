@@ -13,6 +13,8 @@ import com.badlogic.gdx.math.Vector2;
  * 
  */
 public class Level {
+	public static final Level DEFAULT_LEVEL = new Level();
+	
 	private String name;
 	private LevelType type;
 	private String message;
@@ -21,6 +23,42 @@ public class Level {
 	private int height;
 	private Vector2 shipOrigin;
 	private ArrayList<PlanetMeta> planets;
+	
+	/**
+	 * Empty constructor creates default level
+	 * Used by JSON serialization and LevelEditorScreen
+	 */
+	public Level() {
+		name = "";
+		type = LevelType.CUSTOM;
+		message = "";
+		themeName = LevelEditorScreen.DEFAULT_THEME.getName();
+		width = LevelEditorScreen.CUSTOM_LEVEL_WIDTH;
+		height = LevelEditorScreen.CUSTOM_LEVEL_HEIGHT;
+		shipOrigin = LevelEditorScreen.DEFAULT_SHIP_ORIGIN;
+		planets = new ArrayList<PlanetMeta>();
+	}
+	
+	/**
+	 * Constructor used by level editor to
+	 * create custom levels
+	 */
+	public Level(String name, String themeName, Vector2 origin, ArrayList<Planet> planetArray) {
+		type = LevelType.CUSTOM;
+		width = LevelEditorScreen.CUSTOM_LEVEL_WIDTH;
+		height = LevelEditorScreen.CUSTOM_LEVEL_HEIGHT;
+		
+		setName(name);
+		setThemeName(themeName);
+		shipOrigin = origin;
+		planets = new ArrayList<PlanetMeta>();
+		for (Planet planet : planetArray) {
+			PlanetMeta planetMeta = new PlanetMeta(planet.getPosition(), 
+									planet.getRadius(), planet.isHome());
+			planets.add(planetMeta);
+		}
+	}
+	
 	
 	/**
 	 * Type of level
@@ -42,6 +80,17 @@ public class Level {
 		private Vector2 position;
 		private int radius;
 		private boolean home;
+		
+		/**
+		 * Empty constructor used by JSON serialization
+		 */
+		public PlanetMeta() {}
+		
+		private PlanetMeta(Vector2 position, int radius, boolean home) {
+			this.position = position;
+			this.radius = radius;
+			this.home = home;
+		}
 		
 		public Vector2 getPosition() {
 			return position;

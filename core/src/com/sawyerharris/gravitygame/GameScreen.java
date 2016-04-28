@@ -8,7 +8,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Timer;
@@ -20,7 +19,7 @@ import com.sawyerharris.gravitygame.Level.PlanetMeta;
 /**
  * Game screen for when the game is being played
  * 
- * @author Sawyer
+ * @author Sawyer Harris
  *
  */
 public class GameScreen implements Screen {
@@ -78,10 +77,10 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(mux);
 
 		// Create background, planets, ship and add to stage
-		background = new Background(camera, level);
+		background = new Background(this, camera, level);
 		planets = new ArrayList<Planet>();
 		for (PlanetMeta planet : level.getPlanets()) {
-			planets.add(new Planet(planet, theme));
+			planets.add(new Planet(planet, theme, this));
 		}
 		ship = new Ship(this, level.getShipOrigin());
 		stage.addActor(background);		
