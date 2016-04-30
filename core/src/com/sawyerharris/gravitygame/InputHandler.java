@@ -1,6 +1,5 @@
 package com.sawyerharris.gravitygame;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
@@ -8,8 +7,6 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.sawyerharris.gravitygame.GravityGame.GameState;
 
 public class InputHandler {
@@ -28,7 +25,6 @@ public class InputHandler {
 		this.buttonProcessor = new ButtonProcessor();
 	}
 	
-
 	public GestureDetector getGestureDetector() {
 		return gestureDetector;
 	}
@@ -91,7 +87,7 @@ public class InputHandler {
 				gs.getCamera().setAutoMoving(false);
 				camera.zoom(GameCamera.SCROLL_TO_ZOOM * amount);
 			}
-			if (screen instanceof LevelEditorScreen && GravityGame.getState() == GameState.LEVEL_EDITOR) {
+			if (screen instanceof LevelEditorScreen) {
 				LevelEditorScreen les = (LevelEditorScreen) screen;
 				les.scrollCheckForPlanet(amount);
 			}

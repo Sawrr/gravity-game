@@ -38,6 +38,8 @@ public class LevelEditorScreen implements Screen {
 	private FillViewport viewport;
 	private GameCamera camera;
 	
+	// TODO instead of using planets, use stage.getActors
+	
 	public LevelEditorScreen(GravityGame gam, Level lvl) {
 		game = gam;
 		

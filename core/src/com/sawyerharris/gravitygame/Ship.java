@@ -9,9 +9,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.sawyerharris.gravitygame.GravityGame.GameState;
 
 /**
@@ -65,9 +62,40 @@ public class Ship extends Actor {
 		this.angle = INITIAL_ANGLE;
 		this.boost = INITIAL_BOOST;
 		this.isBoosting = false;
-		setBounds(position.x - TOUCH_RADIUS, position.y - TOUCH_RADIUS, 
-				2 * TOUCH_RADIUS, 2 * TOUCH_RADIUS);
-		
+
+		updateBounds();
+		loadTextures();
+
+		addListener(new ShipGestureListener(this));
+	}
+	
+	/**
+	 * Called when ship is flung in Aiming mode
+	 * @param velocityX
+	 * @param velocityY
+	 */
+	public void fling(Vector2 initialVelocity) {
+		if (screen instanceof GameScreen && GravityGame.getState() == GameState.AIMING) {
+			GameScreen gs = (GameScreen) screen;
+			gs.setStateFiring(initialVelocity.scl(FLING_SCALAR));
+		}
+	}
+	
+	/**
+	 * Called when ship is panned in Level Editor mode
+	 * @param deltaPos
+	 */
+	public void pan(Vector2 deltaPos) {
+		if (screen instanceof LevelEditorScreen) {
+			position.add(deltaPos);
+			updateBounds();
+		}
+	}
+	
+	/**
+	 * Loads ship textures into fields
+	 */
+	private void loadTextures() {
 		shipTexture = GravityGame.getTextures().get(AssetLoader.SHIP_IMG);
 		if (shipTexture == null) {
 			System.out.println("Error: " + AssetLoader.SHIP_IMG + " not found");
@@ -79,41 +107,13 @@ public class Ship extends Actor {
 			System.exit(1);
 		}
 		sprite = new Sprite(shipTexture);
-
-		addListener(new DragListener() {
-			public void dragStop(InputEvent event, float x, float y, int pointer) {
-				dragShip(x, y);
-			}
-		});
-		
-		addListener(new ActorGestureListener() {
-			@Override
-			public void fling(InputEvent event, float velocityX, float velocityY, int button) {
-				flingShip(velocityX, velocityY);
-			}
-		});
 	}
 	
 	/**
-	 * Called when ship is flung
-	 * @param velocityX
-	 * @param velocityY
+	 * Updates bounds of ship for gestures
 	 */
-	private void flingShip(float velocityX, float velocityY) {
-		if (screen instanceof GameScreen  && GravityGame.getState() == GameState.AIMING) {
-			GameScreen gs = (GameScreen) screen;
-			Vector2 initialVelocity = new Vector2(velocityX * FLING_SCALAR, velocityY * FLING_SCALAR);
-			gs.setStateFiring(initialVelocity);
-		}
-	}
-	
-	/**
-	 * Called when ship is dragged
-	 * @param x
-	 * @param y
-	 */
-	private void dragShip(float x, float y) {
-		// TODO If level editor, drag ship around
+	public void updateBounds() {
+		setBounds(position.x - TOUCH_RADIUS, position.y - TOUCH_RADIUS, 2 * TOUCH_RADIUS, 2 * TOUCH_RADIUS);
 	}
 	
 	/**
@@ -168,7 +168,7 @@ public class Ship extends Actor {
 	/**
 	 * Updates position and velocity using Runge-Kutta 4th order method
 	 */
-	public void RK4(float dt, ArrayList<Planet> planets) {
+	private void RK4(float dt, ArrayList<Planet> planets) {
 		Vector2 vela = new Vector2(velocity).add(computeAccel(position, planets).scl(dt / 2));
 		Vector2 posa = new Vector2(position).add(new Vector2(velocity).scl(dt / 2));
 		
@@ -211,14 +211,6 @@ public class Ship extends Actor {
 	private void stopBoosting() {
 		isBoosting = false;
 		sprite.setTexture(shipTexture);
-	}
-	
-	/**
-	 * Sets the position (NOT scene2d)
-	 * @param position
-	 */
-	public void setPosition(Vector2 position) {
-		this.position = position;
 	}
 	
 	/**

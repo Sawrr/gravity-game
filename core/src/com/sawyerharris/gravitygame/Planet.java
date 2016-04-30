@@ -1,17 +1,11 @@
 package com.sawyerharris.gravitygame;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import com.sawyerharris.gravitygame.GravityGame.GameState;
 import com.sawyerharris.gravitygame.Level.PlanetMeta;
 
 /**
@@ -31,7 +25,7 @@ public class Planet extends Actor {
 	/** The minimum radius at which a planet can be grabbed or zoomed */
 	private static final int MIN_RADIUS_BOUND = 150;
 	/** Default radius when planet is added in level editor */
-	private static final int DEFAULT_RADIUS = 100;
+	private static final int DEFAULT_RADIUS = 50;
 	
 	/** Whether planet is the home planet */
 	private boolean home;
@@ -42,7 +36,7 @@ public class Planet extends Actor {
 	
 	private Texture texture;
 	private Theme theme;
-		
+	
 	/**
 	 * Constructor converts PlanetMeta into actual Planet
 	 * @param planet PlanetMeta data
@@ -52,67 +46,55 @@ public class Planet extends Actor {
 		this.home = planet.getHome();
 		this.position = planet.getPosition();
 		this.radius = planet.getRadius();
-		// Normalized pi because units are irrelevant
-		this.mass = DENSITY * radius * radius;
 		
-		addListeners(screen);
-		setTheme(theme);
-		updateBounds();
+		initializePlanet(theme, screen);
 	}
 	
 	/**
 	 * Constructor used by level editor to add planets
-	 * @param position
-	 * @param theme
+	 * @param pos Initial position of ship
+	 * @param theme Theme of level
 	 */
 	public Planet(Vector2 pos, Theme theme, Screen screen) {
 		this.home = false;
 		this.position = pos;
 		this.radius = DEFAULT_RADIUS;
+		
+		initializePlanet(theme, screen);
+	}
+	
+	/**
+	 * Used by constructors
+	 * Adds listeners, sets mass, theme, and bounds
+	 * @param theme
+	 * @param screen
+	 */
+	private void initializePlanet(Theme theme, Screen screen) {
 		// Normalized pi because units are irrelevant
 		this.mass = DENSITY * radius * radius;
 		
-		addListeners(screen);
-		setTheme(theme);
-		updateBounds();
-		
-	}
-	
-	private void addListeners(final Screen screen) {
-		// Add listeners
-		if (screen instanceof LevelEditorScreen && GravityGame.getState() == GameState.LEVEL_EDITOR) {
-			addListener(new ActorGestureListener(0.001f, 0.4f, 1.1f, 0.15f) {				
-				@Override
-				public void zoom(InputEvent event, float initialDistance, float distance) {
-					changeRadiusBy((int) ((distance - initialDistance) / 100));
-					updateBounds();
-				}
-				
-				@Override		
-				public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
-					position.add(deltaX, deltaY);
-					updateBounds();
-				}
-					
-				@Override
-				public void tap(InputEvent event, float x, float y, int pointer, int button) {
-					if (home) {
-						remove();
-					} else {
-						setHome(true);
-					}					
-				}
-			});
+		if (screen instanceof LevelEditorScreen) {
+			addListener(new PlanetGestureListener(this, 5f, 0.4f, 1.1f, 0.15f));
 		} else {
 			setTouchable(Touchable.disabled);
 		}
+		
+		setTheme(theme);
+		updateBounds();
 	}
 	
-	private void updateBounds() {
+	/**
+	 * Updates bounds of planet for gestures
+	 */
+	public void updateBounds() {
 		int radBound = Math.max(radius, MIN_RADIUS_BOUND);
 		setBounds(position.x - radBound, position.y - radBound, 2 * radBound, 2 * radBound);
 	}
 	
+	/**
+	 * Changes planet radius by amount
+	 * @param amount
+	 */
 	public void changeRadiusBy(int amount) {
 		if (radius + amount <= MAX_RADIUS && radius + amount >= MIN_RADIUS) {
 			radius += amount;	
@@ -143,15 +125,23 @@ public class Planet extends Actor {
 		}
 	}
 	
+	/**
+	 * Sets whether planet is the home planet
+	 * @param home
+	 */
 	public void setHome(boolean home) {
 		this.home = home;
 		setTheme(theme);
 	}
-		
+	
+	/**
+	 * Returns whether planet is the home planet
+	 * @return home
+	 */
 	public boolean isHome() {
 		return home;
 	}
-	
+		
 	/**
 	 * Returns planet position
 	 * @return position
