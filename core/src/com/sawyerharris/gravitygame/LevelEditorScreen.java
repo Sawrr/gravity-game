@@ -1,12 +1,11 @@
 package com.sawyerharris.gravitygame;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.sawyerharris.gravitygame.Level.PlanetMeta;
@@ -33,12 +32,9 @@ public class LevelEditorScreen implements Screen {
 	private Theme theme;
 	private Background background;
 	private Ship ship;
-	private ArrayList<Planet> planets;
 	
 	private FillViewport viewport;
 	private GameCamera camera;
-	
-	// TODO instead of using planets, use stage.getActors
 	
 	public LevelEditorScreen(GravityGame gam, Level lvl) {
 		game = gam;
@@ -60,19 +56,15 @@ public class LevelEditorScreen implements Screen {
 		theme = GravityGame.getThemes().get(level.getThemeName());
 		background = new Background(this, camera, level);
 		ship = new Ship(this, level.getShipOrigin());
-		planets = new ArrayList<Planet>();
-		for (PlanetMeta planet : level.getPlanets()) {
-			planets.add(new Planet(planet, theme, this));
-		}
 		
 		camera.zoom = camera.worldZoomLevel;
 		camera.position.set(level.getWidth() / 2, level.getHeight() / 2, 0);
 		
 		stage.addActor(background);
-		stage.addActor(ship);
-		for (Planet planet : planets) {
-			stage.addActor(planet);
+		for (PlanetMeta planet : level.getPlanets()) {
+			stage.addActor(new Planet(planet, theme, this));
 		}
+		stage.addActor(ship);
 		
 		// Input processing
 		InputMultiplexer mux = new InputMultiplexer();
@@ -83,22 +75,33 @@ public class LevelEditorScreen implements Screen {
 		Gdx.input.setInputProcessor(mux);
 	}
 	
+	/**
+	 * Adds planet to the level editor screen at position
+	 * @param position
+	 */
 	public void addPlanet(Vector2 position) {
 		Planet planet = new Planet(position, DEFAULT_THEME, this);
-		planets.add(planet);
 		stage.addActor(planet);
 	}
 	
+	/**
+	 * Checks for mouse over planet when scrolling
+	 * @param amount scroll amount
+	 * @return whether mouse is over planet
+	 */
 	public boolean scrollCheckForPlanet(int amount) {
 		int x = Gdx.input.getX();
 		int y = Gdx.input.getY();
 		Vector3 coords3d = camera.unproject(new Vector3(x, y, 0));
 		Vector2 coords = new Vector2(coords3d.x, coords3d.y);
-		for (Planet planet : planets) {
-			Vector2 loc = new Vector2(planet.getPosition());
-			if (loc.sub(coords).len2() <= Math.pow(planet.getRadius(),2)) {
-				planet.changeRadiusBy(amount * SCROLL_TO_RADIUS_CHANGE);
-				return true;
+		for (Actor actor : stage.getActors()) {
+			if (actor instanceof Planet) {
+				Planet planet = (Planet) actor;
+				Vector2 loc = new Vector2(planet.getPosition());
+				if (loc.sub(coords).len2() <= Math.pow(planet.getRadius(),2)) {
+					planet.changeRadiusBy(amount * SCROLL_TO_RADIUS_CHANGE);
+					return true;
+				}
 			}
 		}
 		// No planet detected
@@ -109,7 +112,6 @@ public class LevelEditorScreen implements Screen {
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -120,19 +122,16 @@ public class LevelEditorScreen implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -143,8 +142,6 @@ public class LevelEditorScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
+		stage.dispose();
 	}
-
 }
