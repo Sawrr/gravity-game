@@ -30,7 +30,7 @@ public class Ship extends Actor {
 	/** Initial angle ship faces */
 	private static final float INITIAL_ANGLE = 90;
 	/** Initial amount of boost */
-	private static final int INITIAL_BOOST = 2750;
+	public static final int INITIAL_BOOST = 2750;
 	/** Boost velocity scalar */
 	private static final float BOOST_SCALAR = 200f;
 	
@@ -211,6 +211,14 @@ public class Ship extends Actor {
 	private void stopBoosting() {
 		isBoosting = false;
 		sprite.setTexture(shipTexture);
+	}
+	
+	/**
+	 * Returns amount of boost remaining
+	 * @return boost
+	 */
+	public int getBoost() {
+		return boost;
 	}
 	
 	/**

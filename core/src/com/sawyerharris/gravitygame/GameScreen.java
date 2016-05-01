@@ -35,6 +35,8 @@ public class GameScreen implements Screen {
 	private Background background;
 	private ArrayList<Planet> planets;
 	private Ship ship;
+	
+	private Overlay overlay;
 
 	private FillViewport viewport;
 	private GameCamera camera;
@@ -97,6 +99,8 @@ public class GameScreen implements Screen {
 		lastCamPosition = new Vector2(ship.getPosition()).add(SHIP_VIEW_OFFSET);
 		lastCamZoom = GameCamera.SHIP_ZOOM_LEVEL;
 		setStateAiming();
+		
+		overlay = new Overlay(level, ship, camera);
 		
 		physicsTask = new Task(){
 			@Override
@@ -269,6 +273,7 @@ public class GameScreen implements Screen {
 		}
 		
 		stage.draw();
+		overlay.drawBoostBar();
 	}
 
 	@Override

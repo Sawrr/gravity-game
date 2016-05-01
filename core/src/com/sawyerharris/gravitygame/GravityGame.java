@@ -100,13 +100,13 @@ public class GravityGame extends Game {
 		
 		Gdx.input.setCatchBackKey(true);
 		
-		//setScreen(new GameScreen(this, levels.get("testLevel")));
+		setScreen(new GameScreen(this, levels.get("testLevel")));
 		//setScreen(new MainMenuScreen());
 		
-		state = GameState.LEVEL_EDITOR;
+		//state = GameState.LEVEL_EDITOR;
 		
-		//setScreen(new LevelEditorScreen(this, levels.get("testLevel")));
-		setScreen(new LevelEditorScreen(this, null, 0));
+		//setScreen(new LevelEditorScreen(this, levels.get("testLevel"), 0, null));
+		//setScreen(new LevelEditorScreen(this, null, 0, "customLevel"));
 	}
 	
 	/**

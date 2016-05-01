@@ -1,5 +1,7 @@
 package com.sawyerharris.gravitygame;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -27,6 +29,7 @@ public class LevelEditorScreen implements Screen {
 	
 	private GravityGame game;
 	private Level level;
+	private String name;
 	private int id;
 	private Stage stage;
 	
@@ -37,15 +40,19 @@ public class LevelEditorScreen implements Screen {
 	private FillViewport viewport;
 	private GameCamera camera;
 	
-	public LevelEditorScreen(GravityGame gam, Level lvl, int levelId) {
+	public LevelEditorScreen(GravityGame gam, Level lvl, int levelId, String levelName) {
 		game = gam;
 		id = levelId;
 		
 		if (lvl != null) {
 			level = lvl;
+			name = level.getName();
 		} else {
 			level = Level.DEFAULT_LEVEL;
+			name = levelName;
 		}
+		
+		theme = GravityGame.getThemes().get(level.getThemeName());
 		
 		// Viewport, camera, stage
 		viewport = new FillViewport(GravityGame.getScreenWidth(), GravityGame.getScreenHeight());
@@ -115,7 +122,14 @@ public class LevelEditorScreen implements Screen {
 	 * Saves level to custom levels
 	 */
 	public void saveLevel() {
-		AssetLoader.saveCustomLevels(GravityGame.getCustomLevels(), level, id);
+		ArrayList<Planet> planets = new ArrayList<Planet>();
+		for (Actor actor : stage.getActors()) {
+			if (actor instanceof Planet) {
+				planets.add((Planet) actor);
+			}
+		}
+		Level save = new Level(name, theme.getName(), ship.getPosition(), planets);
+		AssetLoader.saveCustomLevels(GravityGame.getCustomLevels(), save, id);
 	}
 	
 	@Override
