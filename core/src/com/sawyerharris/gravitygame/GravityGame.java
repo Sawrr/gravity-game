@@ -32,9 +32,11 @@ public class GravityGame extends Game {
 	private static List<String> levelNames = new ArrayList<String>();
 	/** Map of Textures */
 	private static Map<String, Texture> textures = new HashMap<String, Texture>();
+	/** List of custom levels */
+	private static ArrayList<Level> customLevels = new ArrayList<Level>();
 	
 	/** Name of the status preferences file */
-	private static String statusPrefsName = "com.sawyerharris.gravitygame.status";
+	private static final String statusPrefsName = "com.sawyerharris.gravitygame.status";
 	/** Tracks user progress and settings */
 	private static Preferences statusPrefs;
 	/** Status Preferences Names */
@@ -43,7 +45,9 @@ public class GravityGame extends Game {
 	private static String soundOnStr = "soundOn";
 	
 	/** Name of the custom levels file */
-	private static String customLevelPrefsName = "com.sawyerharris.gravitygame.customlevels";
+	private static final String customLevelPrefsName = "com.sawyerharris.gravitygame.customlevels";
+	/** Name of JSON string stored in customLevelPrefs */
+	public static final String customLevelPrefsStr = "customLevelsStr";
 	/** Contains player's custom levels */
 	private static Preferences customLevelPrefs;
 	
@@ -90,6 +94,10 @@ public class GravityGame extends Game {
 		highestLevel = statusPrefs.getInteger(highestLevelStr);
 		soundOn = statusPrefs.getBoolean(soundOnStr);
 		
+		customLevelPrefs = Gdx.app.getPreferences(customLevelPrefsName);
+		String customLevelsStr = customLevelPrefs.getString(customLevelPrefsStr);
+		AssetLoader.loadCustomLevels(customLevels, customLevelsStr);
+		
 		Gdx.input.setCatchBackKey(true);
 		
 		//setScreen(new GameScreen(this, levels.get("testLevel")));
@@ -97,8 +105,8 @@ public class GravityGame extends Game {
 		
 		state = GameState.LEVEL_EDITOR;
 		
-		setScreen(new LevelEditorScreen(this, levels.get("testLevel")));
-		//setScreen(new LevelEditorScreen(this, null));
+		//setScreen(new LevelEditorScreen(this, levels.get("testLevel")));
+		setScreen(new LevelEditorScreen(this, null, 0));
 	}
 	
 	/**
@@ -178,6 +186,14 @@ public class GravityGame extends Game {
 	 */
 	public static Map<String, Texture> getTextures() {
 		return textures;
+	}
+	
+	public static Preferences getCustomLevelPrefs() {
+		return customLevelPrefs;
+	}
+	
+	public static ArrayList<Level> getCustomLevels() {
+		return customLevels;
 	}
 	
 	public static void setState(GameState s) {

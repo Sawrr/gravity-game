@@ -27,6 +27,7 @@ public class LevelEditorScreen implements Screen {
 	
 	private GravityGame game;
 	private Level level;
+	private int id;
 	private Stage stage;
 	
 	private Theme theme;
@@ -36,8 +37,9 @@ public class LevelEditorScreen implements Screen {
 	private FillViewport viewport;
 	private GameCamera camera;
 	
-	public LevelEditorScreen(GravityGame gam, Level lvl) {
+	public LevelEditorScreen(GravityGame gam, Level lvl, int levelId) {
 		game = gam;
+		id = levelId;
 		
 		if (lvl != null) {
 			level = lvl;
@@ -107,6 +109,13 @@ public class LevelEditorScreen implements Screen {
 		// No planet detected
 		camera.zoom(amount * GameCamera.SCROLL_TO_ZOOM);
 		return false;
+	}
+	
+	/**
+	 * Saves level to custom levels
+	 */
+	public void saveLevel() {
+		AssetLoader.saveCustomLevels(GravityGame.getCustomLevels(), level, id);
 	}
 	
 	@Override

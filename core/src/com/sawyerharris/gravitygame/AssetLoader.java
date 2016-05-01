@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -168,5 +169,21 @@ public class AssetLoader {
 			System.out.println("Error: image not found: " + HOME_PLANET_IMG);
 			System.exit(1);
 		}
+	}
+	
+	public static void loadCustomLevels(ArrayList<Level> customLevels, String customLevelsStr) {
+		ArrayList<Level> list = JSON.fromJson(ArrayList.class, customLevelsStr);
+		customLevels.addAll(list);
+	}
+	
+	public static void saveCustomLevels(ArrayList<Level> customLevels, Level level, int id) {
+		if (id >= customLevels.size()) {
+			customLevels.add(level);
+		} else {
+			customLevels.set(id, level);
+		}
+		Preferences prefs = GravityGame.getCustomLevelPrefs();
+		prefs.putString(GravityGame.customLevelPrefsStr, JSON.toJson(customLevels));
+		prefs.flush();
 	}
 }
