@@ -37,6 +37,12 @@ public class GameScreen implements Screen {
 	private Ship ship;
 	
 	private Overlay overlay;
+	private boolean showHeader;
+	private float bannerAlpha;
+	private float textAlpha;
+	private Task fadeInTask;
+	private Task fadeOutTask;
+	private Task headerShowTask;
 
 	private FillViewport viewport;
 	private GameCamera camera;
@@ -101,6 +107,16 @@ public class GameScreen implements Screen {
 		setStateAiming();
 		
 		overlay = new Overlay(level, ship);
+		showHeader = true;
+		
+		fadeInTask = new Task(){
+			@Override
+			public void run() {
+				fadeInHeader();
+			}
+		};
+		
+		Timer.schedule(fadeInTask, DELTA_TIME, DELTA_TIME);
 		
 		physicsTask = new Task(){
 			@Override
@@ -238,6 +254,49 @@ public class GameScreen implements Screen {
 		setStateAiming();
 	}
 	
+	public void fadeInHeader() {
+		float ratio = Overlay.BANNER_MAX_ALPHA / Overlay.TEXT_MAX_ALPHA;
+		float inc = Overlay.ALPHA_INCREMENT;
+		textAlpha += inc;
+		bannerAlpha += inc * ratio;
+		
+		if (textAlpha >= Overlay.TEXT_MAX_ALPHA || bannerAlpha >= Overlay.BANNER_MAX_ALPHA) {
+			textAlpha = Overlay.TEXT_MAX_ALPHA;
+			bannerAlpha = Overlay.BANNER_MAX_ALPHA;
+			fadeInTask.cancel();
+			
+			if (headerShowTask == null) {
+				headerShowTask = new Task() {
+					@Override
+					public void run() {
+						fadeOutTask = new Task() {
+							@Override
+							public void run() {
+								fadeOutHeader();
+							}
+						};
+						Timer.schedule(fadeOutTask, DELTA_TIME, DELTA_TIME);
+					}
+				};
+				Timer.schedule(headerShowTask, Overlay.HEADER_SHOW_TIME);
+			}
+		}
+	}
+	
+	public void fadeOutHeader() {
+		float ratio = Overlay.BANNER_MAX_ALPHA / Overlay.TEXT_MAX_ALPHA;
+		float inc = Overlay.ALPHA_INCREMENT;
+		textAlpha -= inc;
+		bannerAlpha -= inc * ratio;
+		
+		if (textAlpha < 0f || bannerAlpha < 0f) {
+			textAlpha = 0f;
+			bannerAlpha = 0f;
+			fadeOutTask.cancel();
+			showHeader = false;
+		}
+	}
+	
 	/**
 	 * Returns the screen's ship
 	 * @return ship
@@ -274,8 +333,9 @@ public class GameScreen implements Screen {
 		
 		stage.draw();
 		overlay.drawBoostBar();
-		float alpha = (float) Math.pow(Math.sin(System.nanoTime() / (double) 1000000000), 2) / 3;
-		overlay.drawLevelHeader(alpha);
+		if (showHeader) {
+			overlay.drawLevelHeader(bannerAlpha, textAlpha);
+		}
 	}
 
 	/**
@@ -310,7 +370,16 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		physicsTask.cancel();
-		stage.dispose();		
+		if (fadeInTask != null) {
+			fadeInTask.cancel();	
+		}
+		if (fadeOutTask != null) {
+			fadeOutTask.cancel();	
+		}
+		if (headerShowTask != null) {
+			headerShowTask.cancel();	
+		}
+		stage.dispose();
 	}
 
 }

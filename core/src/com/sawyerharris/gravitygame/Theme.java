@@ -1,5 +1,7 @@
 package com.sawyerharris.gravitygame;
 
+import com.badlogic.gdx.graphics.Color;
+
 /**
  * Level theme
  * Immutable: fields may only be set by libgdx JSON deserialization
@@ -14,6 +16,7 @@ public class Theme {
 	private String music;
 	private float paraScalar;
 	private float srcViewWidth;
+	private Color color;
 		
 	/**
 	 * Returns name of theme
@@ -61,5 +64,13 @@ public class Theme {
 	 */
 	public float getSrcViewWidth() {
 		return srcViewWidth;
+	}
+	
+	/**
+	 * Returns the theme's banner color
+	 * @return color
+	 */
+	public Color getColor() {
+		return color;
 	}
 }

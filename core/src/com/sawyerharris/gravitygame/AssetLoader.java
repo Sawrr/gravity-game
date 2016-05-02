@@ -7,6 +7,7 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
@@ -185,5 +186,9 @@ public class AssetLoader {
 		Preferences prefs = GravityGame.getCustomLevelPrefs();
 		prefs.putString(GravityGame.customLevelPrefsStr, JSON.toJson(customLevels));
 		prefs.flush();
+	}
+	
+	public static FileHandle loadFont() {
+		return Gdx.files.internal("fonts/tcm.TTF");
 	}
 }

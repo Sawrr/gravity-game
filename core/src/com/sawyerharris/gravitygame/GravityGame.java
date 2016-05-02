@@ -25,6 +25,7 @@ public class GravityGame extends Game {
 	public static final int DESKTOP_SCREEN_WIDTH = 360;
 	public static final int DESKTOP_SCREEN_HEIGHT = 640;
 	
+	/** Path of ttf font */
 	public static FileHandle fontPath;
 	
 	/** Map of themes */
@@ -90,9 +91,7 @@ public class GravityGame extends Game {
 		AssetLoader.loadThemeTextures(textures, themes);
 		AssetLoader.loadOtherTextures(textures);
 		textures = Collections.unmodifiableMap(textures);
-		
-		// Load font TODO move this to AssetLoader
-		fontPath = Gdx.files.internal("fonts/tcm.TTF");
+		fontPath = AssetLoader.loadFont();
 		
 		statusPrefs = Gdx.app.getPreferences(statusPrefsName);
 		//currentLevel = statusPrefs.getInteger(currentLevelStr);

@@ -5,4 +5,5 @@ planet: planet.png
 music: music.mp3
 paraScalar: 0.1f
 srcViewWidth: 750f
+color: {r: 0.5, g:0, b:1, a:1}
 }

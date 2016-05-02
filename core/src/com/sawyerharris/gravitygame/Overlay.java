@@ -13,10 +13,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.Align;
 
 public class Overlay {
+	public static final float HEADER_SHOW_TIME = 3f;
+	public static final float BANNER_MAX_ALPHA = 0.4f;
+	public static final float TEXT_MAX_ALPHA = 1f;
+	public static final float ALPHA_INCREMENT = 0.001f;
+	
 	private static final float BAR_WIDTH = 15;
 	private static final float BAR_HEIGHT = 150;
 	
-	private static final float BANNER_OFFSET = 100;
+	private static final float BANNER_OFFSET = 80;
 	private static final float NAME_OFFSET = 20;
 	private static final float MSG_OFFSET = 20;
 	private static final float LOWER_OFFSET = 20;
@@ -29,6 +34,7 @@ public class Overlay {
 	private int boost;
 	
 	private Level level;
+	private Theme theme;
 	private Ship ship;
 	private ShapeRenderer sr;
 	private SpriteBatch sb;
@@ -40,6 +46,7 @@ public class Overlay {
 	
 	public Overlay(Level level, Ship ship) {
 		this.level = level;
+		this.theme = GravityGame.getThemes().get(level.getThemeName());
 		this.ship = ship;
 		
 		sr = new ShapeRenderer();
@@ -55,10 +62,15 @@ public class Overlay {
 		screenHeight = Gdx.graphics.getHeight();
 	}
 	
-	public void drawLevelHeader(float alpha) {
+	public void drawLevelHeader(float bannerAlpha, float textAlpha) {
+		// Apply transparency
+		Color bannerColor = theme.getColor();
+		Color textColor = new Color(1f, 1f, 1f, 1f);
+		bannerColor.a = bannerAlpha;
+		textColor.a = textAlpha;
 		
-		GlyphLayout name = new GlyphLayout(nameFont, level.getName(), Color.WHITE, screenWidth, Align.center, true);
-		GlyphLayout msg = new GlyphLayout(msgFont, level.getMessage(), Color.WHITE, screenWidth - 2 * MSG_MARGIN, Align.center, true);
+		GlyphLayout name = new GlyphLayout(nameFont, level.getName(), textColor, screenWidth, Align.center, true);
+		GlyphLayout msg = new GlyphLayout(msgFont, level.getMessage(), textColor, screenWidth - 2 * MSG_MARGIN, Align.center, true);
 		
 		float bannerHeight = NAME_OFFSET + name.height + LOWER_OFFSET;;
 		
@@ -68,16 +80,18 @@ public class Overlay {
 		
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		
 		sr.begin(ShapeType.Filled);
-		sr.setColor(new Color(0.3f, 0f, 1f, alpha));
+		sr.setColor(bannerColor);
 		sr.rect(0, screenHeight - BANNER_OFFSET - bannerHeight, screenWidth, bannerHeight);
 		sr.end();
-		Gdx.gl.glDisable(GL20.GL_BLEND);
 		
 		sb.begin();
 		nameFont.draw(sb, name, 0, screenHeight - BANNER_OFFSET - NAME_OFFSET);
 		msgFont.draw(sb, msg, MSG_MARGIN, screenHeight - BANNER_OFFSET - NAME_OFFSET - name.height - MSG_OFFSET);
 		sb.end();
+		
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 	
 	public void drawBoostBar() {
