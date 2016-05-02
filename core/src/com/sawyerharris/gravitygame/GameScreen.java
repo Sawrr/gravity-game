@@ -100,7 +100,7 @@ public class GameScreen implements Screen {
 		lastCamZoom = GameCamera.SHIP_ZOOM_LEVEL;
 		setStateAiming();
 		
-		overlay = new Overlay(level, ship, camera);
+		overlay = new Overlay(level, ship);
 		
 		physicsTask = new Task(){
 			@Override
@@ -274,8 +274,15 @@ public class GameScreen implements Screen {
 		
 		stage.draw();
 		overlay.drawBoostBar();
+		float alpha = (float) Math.pow(Math.sin(System.nanoTime() / (double) 1000000000), 2) / 3;
+		overlay.drawLevelName(alpha);
 	}
 
+	/**
+	 * Called when window is resized
+	 * Game is not resizable so only called once
+	 * during initialization
+	 */
 	@Override
 	public void resize(int width, int height) {
 		if (Gdx.app.getType() == ApplicationType.Desktop)

@@ -1,7 +1,7 @@
 {
-name: testLevel
+name: 1-1: Getting Started
 type: OFFICIAL
-message: this is a message
+message: Fling your spaceship towards the home planet
 themeName: testTheme
 width: 1440
 height: 2560

@@ -10,6 +10,7 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
@@ -23,6 +24,8 @@ public class GravityGame extends Game {
 	public static final int DESKTOP_HEIGHT = 1280;
 	public static final int DESKTOP_SCREEN_WIDTH = 360;
 	public static final int DESKTOP_SCREEN_HEIGHT = 640;
+	
+	public static FileHandle fontPath;
 	
 	/** Map of themes */
 	private static Map<String, Theme> themes = new HashMap<String, Theme>();
@@ -88,6 +91,9 @@ public class GravityGame extends Game {
 		AssetLoader.loadOtherTextures(textures);
 		textures = Collections.unmodifiableMap(textures);
 		
+		// Load font
+		fontPath = Gdx.files.internal("fonts/tcm.TTF");
+		
 		statusPrefs = Gdx.app.getPreferences(statusPrefsName);
 		//currentLevel = statusPrefs.getInteger(currentLevelStr);
 		currentLevel = 0;
@@ -100,7 +106,7 @@ public class GravityGame extends Game {
 		
 		Gdx.input.setCatchBackKey(true);
 		
-		setScreen(new GameScreen(this, levels.get("testLevel")));
+		setScreen(new GameScreen(this, levels.get("1-1: Getting Started")));
 		//setScreen(new MainMenuScreen());
 		
 		//state = GameState.LEVEL_EDITOR;
