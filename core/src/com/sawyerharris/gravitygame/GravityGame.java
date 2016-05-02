@@ -101,7 +101,7 @@ public class GravityGame extends Game {
 		
 		customLevelPrefs = Gdx.app.getPreferences(customLevelPrefsName);
 		String customLevelsStr = customLevelPrefs.getString(customLevelPrefsStr);
-		AssetLoader.loadCustomLevels(customLevels, customLevelsStr);
+		//AssetLoader.loadCustomLevels(customLevels, customLevelsStr);
 		
 		Gdx.input.setCatchBackKey(true);
 		

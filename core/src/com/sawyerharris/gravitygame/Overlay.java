@@ -18,16 +18,16 @@ public class Overlay {
 	public static final float TEXT_MAX_ALPHA = 1f;
 	public static final float ALPHA_INCREMENT = 0.001f;
 	
-	private static final float BAR_WIDTH = 15;
-	private static final float BAR_HEIGHT = 150;
+	private static final float BAR_WIDTH = 30;
+	private static final float BAR_HEIGHT = 300;
 	
-	private static final float BANNER_OFFSET = 80;
-	private static final float NAME_OFFSET = 20;
-	private static final float MSG_OFFSET = 20;
-	private static final float LOWER_OFFSET = 20;
-	private static final float MSG_MARGIN = 50;
-	private static final int NAME_FONT_SIZE = 22;
-	private static final int MSG_FONT_SIZE = 19;
+	private static final float BANNER_OFFSET = 160;
+	private static final float NAME_OFFSET = 40;
+	private static final float MSG_OFFSET = 40;
+	private static final float LOWER_OFFSET = 40;
+	private static final float MSG_MARGIN = 100;
+	private static final int NAME_FONT_SIZE = 44;
+	private static final int MSG_FONT_SIZE = 38;
 	
 	private int screenWidth;
 	private int screenHeight;
@@ -44,13 +44,15 @@ public class Overlay {
 	private BitmapFont nameFont;
 	private BitmapFont msgFont;
 	
-	public Overlay(Level level, Ship ship) {
+	public Overlay(Level level, Ship ship, GameCamera camera) {
 		this.level = level;
 		this.theme = GravityGame.getThemes().get(level.getThemeName());
 		this.ship = ship;
 		
 		sr = new ShapeRenderer();
 		sb = new SpriteBatch();
+		sr.setProjectionMatrix(camera.combined);
+		sb.setProjectionMatrix(camera.combined);
 		gen = new FreeTypeFontGenerator(GravityGame.fontPath);
 		nameParam = new FreeTypeFontParameter();
 		nameParam.size = NAME_FONT_SIZE;
@@ -58,8 +60,8 @@ public class Overlay {
 		msgParam.size = MSG_FONT_SIZE;
 		nameFont = gen.generateFont(nameParam);
 		msgFont = gen.generateFont(msgParam);
-		screenWidth = Gdx.graphics.getWidth();
-		screenHeight = Gdx.graphics.getHeight();
+		screenWidth = GravityGame.getScreenWidth();
+		screenHeight = GravityGame.getScreenHeight();
 	}
 	
 	public void drawLevelHeader(float bannerAlpha, float textAlpha) {

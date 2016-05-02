@@ -106,7 +106,7 @@ public class GameScreen implements Screen {
 		lastCamZoom = GameCamera.SHIP_ZOOM_LEVEL;
 		setStateAiming();
 		
-		overlay = new Overlay(level, ship);
+		overlay = new Overlay(level, ship, camera);
 		showHeader = true;
 		
 		fadeInTask = new Task(){
