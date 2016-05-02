@@ -1,7 +1,6 @@
 {
-name: testLevel2
+name: 1-2: A Little Bit Harder Now
 type: OFFICIAL
-message: this is a message
 themeName: testTheme
 width: 1440
 height: 2560

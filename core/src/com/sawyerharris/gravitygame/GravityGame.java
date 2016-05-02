@@ -91,7 +91,7 @@ public class GravityGame extends Game {
 		AssetLoader.loadOtherTextures(textures);
 		textures = Collections.unmodifiableMap(textures);
 		
-		// Load font
+		// Load font TODO move this to AssetLoader
 		fontPath = Gdx.files.internal("fonts/tcm.TTF");
 		
 		statusPrefs = Gdx.app.getPreferences(statusPrefsName);
@@ -106,7 +106,7 @@ public class GravityGame extends Game {
 		
 		Gdx.input.setCatchBackKey(true);
 		
-		setScreen(new GameScreen(this, levels.get("1-1: Getting Started")));
+		setScreen(new GameScreen(this, levels.get("testLevel")));
 		//setScreen(new MainMenuScreen());
 		
 		//state = GameState.LEVEL_EDITOR;

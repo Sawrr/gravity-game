@@ -102,7 +102,7 @@ public class AssetLoader {
 				for (String name : levelNames) {
 					FileHandle file = Gdx.files.internal(LEVEL_FOLDER + name + LEVEL_SUFFIX);
 					Level level = JSON.fromJson(Level.class, file);
-					levels.put(level.getName(), level);
+					levels.put(name, level);
 				}
 			} else {
 				System.out.println("Error: Level folder not found");

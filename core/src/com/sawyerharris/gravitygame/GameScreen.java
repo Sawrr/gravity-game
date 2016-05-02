@@ -275,7 +275,7 @@ public class GameScreen implements Screen {
 		stage.draw();
 		overlay.drawBoostBar();
 		float alpha = (float) Math.pow(Math.sin(System.nanoTime() / (double) 1000000000), 2) / 3;
-		overlay.drawLevelName(alpha);
+		overlay.drawLevelHeader(alpha);
 	}
 
 	/**
