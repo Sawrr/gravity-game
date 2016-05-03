@@ -28,6 +28,8 @@ public class GameScreen implements Screen {
 	/** Vertical offset for centering on ship */
 	private static final Vector2 SHIP_VIEW_OFFSET = new Vector2(0, 350);
 	
+	private boolean testing;
+	
 	private GravityGame game;
 	private Stage stage;
 	private Level level;
@@ -61,10 +63,11 @@ public class GameScreen implements Screen {
 	 * Constructor creates GameScreen for a given Level
 	 * @param level
 	 */
-	public GameScreen(GravityGame gam, Level lvl) {		
+	public GameScreen(GravityGame gam, Level lvl, boolean test) {		
 		game = gam;
 		level = lvl;
 		theme = GravityGame.getThemes().get(level.getThemeName());
+		testing = test;
 		
 		worldMoveTarget = new Vector2(level.getWidth() / 2, level.getHeight() / 2);
 		
@@ -106,7 +109,7 @@ public class GameScreen implements Screen {
 		lastCamZoom = GameCamera.SHIP_ZOOM_LEVEL;
 		setStateAiming();
 		
-		overlay = new Overlay(level, ship, camera);
+		overlay = new Overlay(level, ship, this);
 		showHeader = true;
 		
 		fadeInTask = new Task(){
@@ -195,7 +198,7 @@ public class GameScreen implements Screen {
 			if (dist <= Ship.COLLISION_RADIUS + planet.getRadius()) {
 				if (planet.isHome()) {
 					// TODO success and then reset
-					game.nextLevel();
+					homePlanetReached();
 					return;
 				} else {
 					// TODO explosion and then reset
@@ -243,6 +246,17 @@ public class GameScreen implements Screen {
 			} else if (y < cameraBotEdgeY) {
 				camera.pan(0, y - cameraBotEdgeY);
 			}
+		}
+	}
+	
+	/**
+	 * Called when home planet has been reached
+	 */
+	public void homePlanetReached() {
+		if (!testing) {
+			game.nextLevel();
+		} else {
+			game.resumeLevelEditing();
 		}
 	}
 	
@@ -345,9 +359,10 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void resize(int width, int height) {
-		if (Gdx.app.getType() == ApplicationType.Desktop)
-			viewport.update(width , height);
+		if (Gdx.app.getType() == ApplicationType.Desktop) {
+			viewport.update(width, height);
 		}
+	}
 
 	@Override
 	public void pause() {
@@ -380,6 +395,7 @@ public class GameScreen implements Screen {
 			headerShowTask.cancel();	
 		}
 		stage.dispose();
+		overlay.dispose();
 	}
 
 }

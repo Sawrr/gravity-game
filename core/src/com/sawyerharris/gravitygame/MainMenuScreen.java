@@ -28,7 +28,7 @@ public class MainMenuScreen implements Screen {
     private static final float BUTTON_SPACING = 10f;
     
 	public MainMenuScreen() {
-		skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+		skin = GravityGame.getSkin();
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 	}

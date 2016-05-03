@@ -1,6 +1,7 @@
 package com.sawyerharris.gravitygame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -10,7 +11,13 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 
 public class Overlay {
 	public static final float HEADER_SHOW_TIME = 3f;
@@ -36,6 +43,7 @@ public class Overlay {
 	private Level level;
 	private Theme theme;
 	private Ship ship;
+	private Screen screen;
 	private ShapeRenderer sr;
 	private SpriteBatch sb;
 	private FreeTypeFontGenerator gen;
@@ -44,15 +52,25 @@ public class Overlay {
 	private BitmapFont nameFont;
 	private BitmapFont msgFont;
 	
-	public Overlay(Level level, Ship ship, GameCamera camera) {
+	private Stage stage;
+	private FillViewport viewport;
+	private TextButton testButton;
+	private Skin skin;
+	
+	public Overlay(Level level, Ship ship, Screen screen) {
 		this.level = level;
 		this.theme = GravityGame.getThemes().get(level.getThemeName());
 		this.ship = ship;
+		this.screen = screen;
+		
+		viewport = new FillViewport(GravityGame.getScreenWidth(), GravityGame.getScreenHeight());
+		stage = new Stage(viewport);
+		skin = GravityGame.getSkin();
 		
 		sr = new ShapeRenderer();
 		sb = new SpriteBatch();
-		sr.setProjectionMatrix(camera.combined);
-		sb.setProjectionMatrix(camera.combined);
+		sr.setProjectionMatrix(viewport.getCamera().combined);
+		sb.setProjectionMatrix(viewport.getCamera().combined);
 		gen = new FreeTypeFontGenerator(GravityGame.fontPath);
 		nameParam = new FreeTypeFontParameter();
 		nameParam.size = NAME_FONT_SIZE;
@@ -70,6 +88,8 @@ public class Overlay {
 		Color textColor = new Color(1f, 1f, 1f, 1f);
 		bannerColor.a = bannerAlpha;
 		textColor.a = textAlpha;
+		
+		System.out.println(level.getMessage());
 		
 		GlyphLayout name = new GlyphLayout(nameFont, level.getName(), textColor, screenWidth, Align.center, true);
 		GlyphLayout msg = new GlyphLayout(msgFont, level.getMessage(), textColor, screenWidth - 2 * MSG_MARGIN, Align.center, true);
@@ -111,7 +131,31 @@ public class Overlay {
 		sr.end();
 	}
 	
-	public void drawBackButton() {
-		
+	public void createLevelEditorButtons() {
+		testButton = new TextButton("Test", skin);
+		testButton.setX(0);
+		testButton.setY(screenHeight - 200);
+		testButton.setWidth(200);
+		testButton.setHeight(200);
+		testButton.addListener(new ActorGestureListener(){
+			@Override
+			public void tap(InputEvent event, float x, float y, int pointer, int button) {
+				LevelEditorScreen les = (LevelEditorScreen) screen;
+				les.testLevel();
+			}
+		});
+		stage.addActor(testButton);
+	}
+	
+	public void drawLevelEditorButtons() {
+		stage.draw();
+	}
+	
+	public Stage getStage() {
+		return stage;
+	}
+	
+	public void dispose() {
+		stage.dispose();
 	}
 }

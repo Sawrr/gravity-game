@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.sawyerharris.gravitygame.GravityGame.GameState;
 import com.sawyerharris.gravitygame.Level.PlanetMeta;
 
 /**
@@ -30,8 +32,11 @@ public class LevelEditorScreen implements Screen {
 	private GravityGame game;
 	private Level level;
 	private String name;
+	// Id for saved custom levels
 	private int id;
 	private Stage stage;
+	
+	private Overlay overlay;
 	
 	private Theme theme;
 	private Background background;
@@ -40,17 +45,11 @@ public class LevelEditorScreen implements Screen {
 	private FillViewport viewport;
 	private GameCamera camera;
 	
-	public LevelEditorScreen(GravityGame gam, Level lvl, int levelId, String levelName) {
+	public LevelEditorScreen(GravityGame gam, Level lvl, int levelId) {
 		game = gam;
+		level = lvl;
+		name = level.getName();
 		id = levelId;
-		
-		if (lvl != null) {
-			level = lvl;
-			name = level.getName();
-		} else {
-			level = Level.DEFAULT_LEVEL;
-			name = levelName;
-		}
 		
 		theme = GravityGame.getThemes().get(level.getThemeName());
 		
@@ -75,13 +74,19 @@ public class LevelEditorScreen implements Screen {
 		}
 		stage.addActor(ship);
 		
+		overlay = new Overlay(level, ship, this);
+		overlay.createLevelEditorButtons();
+		
 		// Input processing
 		InputMultiplexer mux = new InputMultiplexer();
 		mux.addProcessor(stage);
 		InputHandler inp = new InputHandler(this, camera);
+		mux.addProcessor(overlay.getStage());
 		mux.addProcessor(inp.getGestureDetector());
 		mux.addProcessor(inp.getButtonProcessor());
 		Gdx.input.setInputProcessor(mux);
+		
+		GravityGame.setState(GameState.LEVEL_EDITOR);
 	}
 	
 	/**
@@ -119,16 +124,33 @@ public class LevelEditorScreen implements Screen {
 	}
 	
 	/**
-	 * Saves level to custom levels
+	 * Constructs level object based on state of LevelEditorScreen
 	 */
-	public void saveLevel() {
+	public Level constructLevel() {
 		ArrayList<Planet> planets = new ArrayList<Planet>();
 		for (Actor actor : stage.getActors()) {
 			if (actor instanceof Planet) {
 				planets.add((Planet) actor);
 			}
 		}
-		Level save = new Level(name, theme.getName(), ship.getPosition(), planets);
+		return new Level(name, theme.getName(), ship.getPosition(), planets);
+	}
+	
+	/**
+	 * Tests level being edited
+	 */
+	public void testLevel() {
+		Level test = constructLevel();
+		GravityGame.setTempLevel(test);
+		dispose();
+		game.setScreen(new GameScreen(game, test, true));
+	}
+	
+	/**
+	 * Saves level to custom levels
+	 */
+	public void saveLevel() {
+		Level save = constructLevel();
 		AssetLoader.saveCustomLevels(GravityGame.getCustomLevels(), save, id);
 	}
 	
@@ -140,11 +162,14 @@ public class LevelEditorScreen implements Screen {
 	@Override
 	public void render(float delta) {
 		stage.draw();
+		overlay.drawLevelEditorButtons();
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
+		if (Gdx.app.getType() == ApplicationType.Desktop) {
+			viewport.update(width, height);
+		}
 	}
 
 	@Override
@@ -166,5 +191,6 @@ public class LevelEditorScreen implements Screen {
 	@Override
 	public void dispose() {
 		stage.dispose();
+		overlay.dispose();
 	}
 }

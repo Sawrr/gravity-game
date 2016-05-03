@@ -195,6 +195,7 @@ public class Ship extends Actor {
 		position = initialPosition;
 		velocity.set(0,0);
 		boost = INITIAL_BOOST;
+		sprite.setTexture(shipTexture);
 	}
 	
 	/**

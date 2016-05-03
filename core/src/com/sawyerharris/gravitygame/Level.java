@@ -47,6 +47,7 @@ public class Level {
 		type = LevelType.CUSTOM;
 		width = LevelEditorScreen.CUSTOM_LEVEL_WIDTH;
 		height = LevelEditorScreen.CUSTOM_LEVEL_HEIGHT;
+		message = "";
 		
 		setName(name);
 		setThemeName(themeName);

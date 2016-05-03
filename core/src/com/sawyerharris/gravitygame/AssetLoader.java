@@ -7,8 +7,8 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 
@@ -35,6 +35,8 @@ public class AssetLoader {
 	public static final String ART_FOLDER = "art/";
 	/** Json object for reading files */
 	private static final Json JSON = new Json();
+	
+	private static final String SKIN = "skin/uiskin.json";
 	
 	/** Image name of ship */
 	public static final String SHIP_IMG = "ship.png";
@@ -190,5 +192,9 @@ public class AssetLoader {
 	
 	public static FileHandle loadFont() {
 		return Gdx.files.internal("fonts/tcm.TTF");
+	}
+	
+	public static Skin loadSkin() {
+		return new Skin(Gdx.files.internal(SKIN));
 	}
 }

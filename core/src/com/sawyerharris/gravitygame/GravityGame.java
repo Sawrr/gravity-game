@@ -12,6 +12,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 /**
  * Gravity Game
@@ -25,8 +26,13 @@ public class GravityGame extends Game {
 	public static final int DESKTOP_SCREEN_WIDTH = 360;
 	public static final int DESKTOP_SCREEN_HEIGHT = 640;
 	
+	private static Level tempLevel;
+	private int customLevelEditId;
+	
 	/** Path of ttf font */
 	public static FileHandle fontPath;
+	
+	private static Skin skin;
 	
 	/** Map of themes */
 	private static Map<String, Theme> themes = new HashMap<String, Theme>();
@@ -92,6 +98,7 @@ public class GravityGame extends Game {
 		AssetLoader.loadOtherTextures(textures);
 		textures = Collections.unmodifiableMap(textures);
 		fontPath = AssetLoader.loadFont();
+		skin = AssetLoader.loadSkin();
 		
 		statusPrefs = Gdx.app.getPreferences(statusPrefsName);
 		//currentLevel = statusPrefs.getInteger(currentLevelStr);
@@ -105,13 +112,41 @@ public class GravityGame extends Game {
 		
 		Gdx.input.setCatchBackKey(true);
 		
-		setScreen(new GameScreen(this, levels.get("testLevel")));
-		//setScreen(new MainMenuScreen());
+		//playLevel(levels.get(levelNames.get("testLevel")), false);
+		setScreen(new MainMenuScreen());
 		
-		//state = GameState.LEVEL_EDITOR;
-		
-		//setScreen(new LevelEditorScreen(this, levels.get("testLevel"), 0, null));
-		//setScreen(new LevelEditorScreen(this, null, 0, "customLevel"));
+		state = GameState.LEVEL_EDITOR;
+		Level myCustomLevel = new Level();
+		myCustomLevel.setName("myCustLevel");
+		editLevel(myCustomLevel, 0);
+	}
+	
+	/**
+	 * Starts playing a given level
+	 * @param level given level
+	 * @param testing whether in level editor test mode
+	 */
+	public void playLevel(Level level, boolean testing) {
+		getScreen().dispose();
+		setScreen(new GameScreen(this, level, testing));
+	}
+	
+	/**
+	 * Starts editing the given level at custom level index id
+	 * @param level given level object
+	 * @param id index of custom level array
+	 */
+	public void editLevel(Level level, int id) {
+		customLevelEditId = id;
+		getScreen().dispose();
+		setScreen(new LevelEditorScreen(this, level, id));
+	}
+	
+	/**
+	 * Returns to level editing after testing
+	 */
+	public void resumeLevelEditing() {
+		editLevel(tempLevel, customLevelEditId);
 	}
 	
 	/**
@@ -126,8 +161,7 @@ public class GravityGame extends Game {
 		}
 		statusPrefs.flush();
 		try {
-			getScreen().dispose();
-			setScreen(new GameScreen(this, levels.get(levelNames.get(currentLevel))));
+			playLevel(levels.get(levelNames.get(currentLevel)), false);
 		} catch (IndexOutOfBoundsException e) {
 			allLevelsFinished();
 		}
@@ -199,6 +233,18 @@ public class GravityGame extends Game {
 	
 	public static ArrayList<Level> getCustomLevels() {
 		return customLevels;
+	}
+	
+	public static Skin getSkin() {
+		return skin;
+	}
+	
+	public static void setTempLevel(Level lvl) {
+		tempLevel = lvl;
+	}
+	
+	public static Level getTempLevel() {
+		return tempLevel;
 	}
 	
 	public static void setState(GameState s) {
