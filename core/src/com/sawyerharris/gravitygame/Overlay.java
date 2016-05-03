@@ -158,7 +158,7 @@ public class Overlay {
 			@Override
 			public void tap(InputEvent event, float x, float y, int pointer, int button) {
 				LevelEditorScreen les = (LevelEditorScreen) screen;
-				les.saveLevel();
+				les.saveLevelAndQuit();
 			}
 		});
 		stage.addActor(saveButton);

@@ -205,6 +205,7 @@ public class AssetLoader {
 	}
 	
 	public static void loadCustomLevels(ArrayList<Level> customLevels, String customLevelsStr) {
+		// TODO handle this casting
 		ArrayList<Level> list = JSON.fromJson(ArrayList.class, customLevelsStr);
 		customLevels.addAll(list);
 	}

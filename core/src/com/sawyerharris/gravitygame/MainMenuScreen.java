@@ -3,14 +3,13 @@ package com.sawyerharris.gravitygame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Application.ApplicationType;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FillViewport;
@@ -71,13 +70,12 @@ public class MainMenuScreen implements Screen {
         playGameButton.setHeight(BUTTON_HEIGHT);
         playGameButton.getLabel().setFontScale(3f);
         currentY -= (BUTTON_HEIGHT + BUTTON_SPACING);         
-        playGameButton.addListener(new ClickListener() {
+        playGameButton.addListener(new ActorGestureListener() {
         	@Override
-        	public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+        	public void tap(InputEvent event, float x, float y, int pointer, int button) {
         		int current = GravityGame.getCurrentLevel();
         		Level level = GravityGame.getLevels().get(GravityGame.getLevelNames().get(current));
         		game.playLevel(level, false);
-        		return true;
         	}
         });
         stage.addActor(playGameButton);
@@ -92,7 +90,7 @@ public class MainMenuScreen implements Screen {
         levelSelectButton.addListener(new ClickListener() {
         	@Override
         	public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-        		// TODO level select screen
+        		game.setScreen(new LevelSelectScreen(game));
         		return true;
         	}
         });

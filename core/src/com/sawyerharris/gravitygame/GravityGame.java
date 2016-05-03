@@ -201,12 +201,25 @@ public class GravityGame extends Game {
 	}
 	
 	/**
+	 * Returns to main menu
+	 */
+	public void toMainMenu() {
+		setState(GameState.MENU);
+		getScreen().dispose();
+		setScreen(new MainMenuScreen(this));
+	}
+	
+	/**
 	 * Announces congrats at beating all levels
 	 */
 	public void allLevelsFinished() {
 		System.out.println("allLevelsFinished");
+		currentLevel = 0;
+		statusPrefs.putInteger(currentLevelStr, currentLevel);
+		statusPrefs.flush();
+		
 		// TODO congrats at beating the game, go back to main menu
-		System.exit(0);
+		toMainMenu();
 	}
 	
 	/**
@@ -217,7 +230,7 @@ public class GravityGame extends Game {
 		// TODO congrats screen on beating tutorial, go back to main menu
 		statusPrefs.putBoolean(tutorialCompletedStr, true);
 		statusPrefs.flush();
-		System.exit(0);
+		toMainMenu();
 	}
 	
 	/**
@@ -230,6 +243,16 @@ public class GravityGame extends Game {
 	
 	public static int getCurrentLevel() {
 		return currentLevel;
+	}
+	
+	public static void setCurrentLevel(int current) {
+		currentLevel = current;
+		statusPrefs.putInteger(currentLevelStr, currentLevel);
+		statusPrefs.flush();
+	}
+	
+	public static int getHighestLevel() {
+		return highestLevel;
 	}
 	
 	public static float getAspectRatio() {

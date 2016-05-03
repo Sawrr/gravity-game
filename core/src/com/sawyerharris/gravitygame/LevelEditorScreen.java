@@ -175,11 +175,12 @@ public class LevelEditorScreen implements Screen {
 	}
 	
 	/**
-	 * Saves level to custom levels
+	 * Saves level to custom levels and goes back to main menu
 	 */
-	public void saveLevel() {
+	public void saveLevelAndQuit() {
 		Level save = constructLevel();
 		AssetLoader.saveCustomLevels(GravityGame.getCustomLevels(), save, id);
+		game.toMainMenu();
 	}
 	
 	@Override
