@@ -35,7 +35,7 @@ public class Level {
 		themeName = LevelEditorScreen.DEFAULT_THEME.getName();
 		width = LevelEditorScreen.CUSTOM_LEVEL_WIDTH;
 		height = LevelEditorScreen.CUSTOM_LEVEL_HEIGHT;
-		shipOrigin = LevelEditorScreen.DEFAULT_SHIP_ORIGIN;
+		shipOrigin = new Vector2(LevelEditorScreen.DEFAULT_SHIP_X, LevelEditorScreen.DEFAULT_SHIP_Y);
 		planets = new ArrayList<PlanetMeta>();
 	}
 	
@@ -48,10 +48,10 @@ public class Level {
 		width = LevelEditorScreen.CUSTOM_LEVEL_WIDTH;
 		height = LevelEditorScreen.CUSTOM_LEVEL_HEIGHT;
 		message = "";
+		shipOrigin = new Vector2(origin);
 		
 		setName(name);
 		setThemeName(themeName);
-		shipOrigin = origin;
 		planets = new ArrayList<PlanetMeta>();
 		for (Planet planet : planetArray) {
 			PlanetMeta planetMeta = new PlanetMeta(planet.getPosition(), 

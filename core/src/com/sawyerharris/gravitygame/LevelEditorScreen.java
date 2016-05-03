@@ -26,7 +26,8 @@ public class LevelEditorScreen implements Screen {
 	public static final int CUSTOM_LEVEL_WIDTH = 1440;
 	public static final int CUSTOM_LEVEL_HEIGHT = 2560;
 	public static final Theme DEFAULT_THEME = GravityGame.getThemes().get("testTheme");
-	public static final Vector2 DEFAULT_SHIP_ORIGIN = new Vector2(CUSTOM_LEVEL_WIDTH / 2, 500);
+	public static final int DEFAULT_SHIP_X = CUSTOM_LEVEL_WIDTH / 2;
+	public static final int DEFAULT_SHIP_Y = 500;
 	private static final int SCROLL_TO_RADIUS_CHANGE = 5;
 	
 	private GravityGame game;
@@ -45,6 +46,12 @@ public class LevelEditorScreen implements Screen {
 	private FillViewport viewport;
 	private GameCamera camera;
 	
+	/**
+	 * Constructor
+	 * @param gam game instance
+	 * @param lvl level to be edited
+	 * @param levelId index of custom level array
+	 */
 	public LevelEditorScreen(GravityGame gam, Level lvl, int levelId) {
 		game = gam;
 		level = lvl;
@@ -124,6 +131,22 @@ public class LevelEditorScreen implements Screen {
 	}
 	
 	/**
+	 * Checks if level has a home planet
+	 * @return if level has home planet
+	 */
+	public boolean checkHomePlanetExists() {
+		for (Actor actor : stage.getActors()) {
+			if (actor instanceof Planet) {
+				Planet planet = (Planet) actor;
+				if (planet.isHome()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * Constructs level object based on state of LevelEditorScreen
 	 */
 	public Level constructLevel() {
@@ -140,10 +163,13 @@ public class LevelEditorScreen implements Screen {
 	 * Tests level being edited
 	 */
 	public void testLevel() {
-		Level test = constructLevel();
-		GravityGame.setTempLevel(test);
-		dispose();
-		game.setScreen(new GameScreen(game, test, true));
+		if (checkHomePlanetExists()) {
+			Level test = constructLevel();
+			GravityGame.setTempLevel(test);
+			game.playLevel(test, true);
+		} else {
+			// TODO cannot test level without a home planet
+		}
 	}
 	
 	/**

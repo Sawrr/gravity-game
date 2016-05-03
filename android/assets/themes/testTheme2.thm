@@ -1,0 +1,9 @@
+{
+name: testTheme2
+background: spacebg2.jpg
+planet: planet.png
+music: music.mp3
+paraScalar: 0.1f
+srcViewWidth: 750f
+color: {r: 0, g:0.5, b:1, a:1}
+}

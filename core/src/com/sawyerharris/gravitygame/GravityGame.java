@@ -108,7 +108,7 @@ public class GravityGame extends Game {
 		
 		customLevelPrefs = Gdx.app.getPreferences(customLevelPrefsName);
 		String customLevelsStr = customLevelPrefs.getString(customLevelPrefsStr);
-		//AssetLoader.loadCustomLevels(customLevels, customLevelsStr);
+		AssetLoader.loadCustomLevels(customLevels, customLevelsStr);
 		
 		Gdx.input.setCatchBackKey(true);
 		
@@ -116,9 +116,10 @@ public class GravityGame extends Game {
 		setScreen(new MainMenuScreen());
 		
 		state = GameState.LEVEL_EDITOR;
-		Level myCustomLevel = new Level();
-		myCustomLevel.setName("myCustLevel");
-		editLevel(myCustomLevel, 0);
+		editLevel(customLevels.get(0), 0);
+		//Level myCustomLevel = new Level();
+		//myCustomLevel.setName("myCustLevel");
+		//editLevel(myCustomLevel, 0);
 	}
 	
 	/**

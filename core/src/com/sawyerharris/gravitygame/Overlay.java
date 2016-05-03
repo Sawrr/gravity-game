@@ -55,6 +55,7 @@ public class Overlay {
 	private Stage stage;
 	private FillViewport viewport;
 	private TextButton testButton;
+	private TextButton saveButton;
 	private Skin skin;
 	
 	public Overlay(Level level, Ship ship, Screen screen) {
@@ -134,9 +135,10 @@ public class Overlay {
 	public void createLevelEditorButtons() {
 		testButton = new TextButton("Test", skin);
 		testButton.setX(0);
-		testButton.setY(screenHeight - 200);
-		testButton.setWidth(200);
-		testButton.setHeight(200);
+		testButton.setY(screenHeight - 100);
+		testButton.setWidth(screenWidth / 2);
+		testButton.setHeight(100);
+		testButton.getLabel().setFontScale(3f);
 		testButton.addListener(new ActorGestureListener(){
 			@Override
 			public void tap(InputEvent event, float x, float y, int pointer, int button) {
@@ -145,6 +147,21 @@ public class Overlay {
 			}
 		});
 		stage.addActor(testButton);
+		
+		saveButton = new TextButton("Save and Quit", skin);
+		saveButton.setX(screenWidth / 2);
+		saveButton.setY(screenHeight - 100);
+		saveButton.setWidth(screenWidth / 2);
+		saveButton.setHeight(100);
+		saveButton.getLabel().setFontScale(3f);
+		saveButton.addListener(new ActorGestureListener(){
+			@Override
+			public void tap(InputEvent event, float x, float y, int pointer, int button) {
+				LevelEditorScreen les = (LevelEditorScreen) screen;
+				les.saveLevel();
+			}
+		});
+		stage.addActor(saveButton);
 	}
 	
 	public void drawLevelEditorButtons() {
