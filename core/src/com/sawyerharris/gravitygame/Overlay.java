@@ -36,6 +36,8 @@ public class Overlay {
 	private static final int NAME_FONT_SIZE = 44;
 	private static final int MSG_FONT_SIZE = 38;
 	
+	private static final float BUTTON_FONT_SCALE = 3f;
+	
 	private int screenWidth;
 	private int screenHeight;
 	private int boost;
@@ -90,8 +92,6 @@ public class Overlay {
 		bannerColor.a = bannerAlpha;
 		textColor.a = textAlpha;
 		
-		System.out.println(level.getMessage());
-		
 		GlyphLayout name = new GlyphLayout(nameFont, level.getName(), textColor, screenWidth, Align.center, true);
 		GlyphLayout msg = new GlyphLayout(msgFont, level.getMessage(), textColor, screenWidth - 2 * MSG_MARGIN, Align.center, true);
 		
@@ -138,7 +138,7 @@ public class Overlay {
 		testButton.setY(screenHeight - 100);
 		testButton.setWidth(screenWidth / 2);
 		testButton.setHeight(100);
-		testButton.getLabel().setFontScale(3f);
+		testButton.getLabel().setFontScale(BUTTON_FONT_SCALE);
 		testButton.addListener(new ActorGestureListener(){
 			@Override
 			public void tap(InputEvent event, float x, float y, int pointer, int button) {
@@ -153,7 +153,7 @@ public class Overlay {
 		saveButton.setY(screenHeight - 100);
 		saveButton.setWidth(screenWidth / 2);
 		saveButton.setHeight(100);
-		saveButton.getLabel().setFontScale(3f);
+		saveButton.getLabel().setFontScale(BUTTON_FONT_SCALE);
 		saveButton.addListener(new ActorGestureListener(){
 			@Override
 			public void tap(InputEvent event, float x, float y, int pointer, int button) {

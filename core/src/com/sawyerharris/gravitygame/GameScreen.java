@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.sawyerharris.gravitygame.GravityGame.GameState;
+import com.sawyerharris.gravitygame.Level.LevelType;
 import com.sawyerharris.gravitygame.Level.PlanetMeta;
 
 /**
@@ -254,7 +255,13 @@ public class GameScreen implements Screen {
 	 */
 	public void homePlanetReached() {
 		if (!testing) {
-			game.nextLevel();
+			if (level.getLevelType() == LevelType.OFFICIAL) {
+				game.nextLevel();	
+			} else if (level.getLevelType() == LevelType.TUTORIAL) {
+				game.nextTutorialLevel();
+			} else {
+				// TODO back to custom level select menu
+			}
 		} else {
 			game.resumeLevelEditing();
 		}

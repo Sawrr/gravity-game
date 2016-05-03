@@ -93,6 +93,8 @@ public class LevelEditorScreen implements Screen {
 		mux.addProcessor(inp.getButtonProcessor());
 		Gdx.input.setInputProcessor(mux);
 		
+		// TODO fix order of processing on buttons
+		
 		GravityGame.setState(GameState.LEVEL_EDITOR);
 	}
 	

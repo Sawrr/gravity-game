@@ -40,6 +40,10 @@ public class GravityGame extends Game {
 	private static Map<String, Level> levels = new HashMap<String, Level>();
 	/** Ordered list of levels */
 	private static List<String> levelNames = new ArrayList<String>();
+	/** Map of tutorial levels */
+	private static Map<String, Level> tutorialLevels = new HashMap<String, Level>();
+	/** Ordered list of tutorial levels */
+	private static List<String> tutorialLevelNames = new ArrayList<String>();
 	/** Map of Textures */
 	private static Map<String, Texture> textures = new HashMap<String, Texture>();
 	/** List of custom levels */
@@ -52,6 +56,7 @@ public class GravityGame extends Game {
 	/** Status Preferences Names */
 	private static String currentLevelStr = "currentLevel";
 	private static String highestLevelStr = "highestLevel";
+	private static String tutorialCompletedStr = "tutorialCompleted";
 	private static String soundOnStr = "soundOn";
 	
 	/** Name of the custom levels file */
@@ -64,7 +69,11 @@ public class GravityGame extends Game {
 	/** Game status variables */
 	private static int currentLevel;
 	private static int highestLevel;
+	private static boolean tutorialCompleted;
 	private static boolean soundOn;
+	
+	// Not saved
+	private static int currentTutorialLevel;
 	
 	/** State of the game */
 	private static GameState state;
@@ -91,9 +100,15 @@ public class GravityGame extends Game {
 		
 		AssetLoader.loadThemes(themes);
 		themes = Collections.unmodifiableMap(themes);
+		
 		AssetLoader.loadLevels(levels, levelNames);
 		levels = Collections.unmodifiableMap(levels);
 		levelNames = Collections.unmodifiableList(levelNames);
+		
+		AssetLoader.loadTutorialLevels(tutorialLevels, tutorialLevelNames);
+		tutorialLevels = Collections.unmodifiableMap(tutorialLevels);
+		tutorialLevelNames = Collections.unmodifiableList(tutorialLevelNames);
+		
 		AssetLoader.loadThemeTextures(textures, themes);
 		AssetLoader.loadOtherTextures(textures);
 		textures = Collections.unmodifiableMap(textures);
@@ -102,7 +117,8 @@ public class GravityGame extends Game {
 		
 		statusPrefs = Gdx.app.getPreferences(statusPrefsName);
 		//currentLevel = statusPrefs.getInteger(currentLevelStr);
-		currentLevel = 0;
+		tutorialCompleted = statusPrefs.getBoolean(tutorialCompletedStr);
+		currentTutorialLevel = 0;
 		highestLevel = statusPrefs.getInteger(highestLevelStr);
 		soundOn = statusPrefs.getBoolean(soundOnStr);
 		
@@ -112,11 +128,15 @@ public class GravityGame extends Game {
 		
 		Gdx.input.setCatchBackKey(true);
 		
-		//playLevel(levels.get(levelNames.get("testLevel")), false);
-		setScreen(new MainMenuScreen());
+		setState(GameState.MENU);
+		setScreen(new MainMenuScreen(this));
 		
-		state = GameState.LEVEL_EDITOR;
-		editLevel(customLevels.get(0), 0);
+		if (!tutorialCompleted) {
+			playLevel(tutorialLevels.get(tutorialLevelNames.get(0)), false);			
+		}
+		
+		//playLevel(levels.get(levelNames.get(0)), false);
+		//editLevel(customLevels.get(0), 0);
 		//Level myCustomLevel = new Level();
 		//myCustomLevel.setName("myCustLevel");
 		//editLevel(myCustomLevel, 0);
@@ -169,10 +189,34 @@ public class GravityGame extends Game {
 	}
 	
 	/**
+	 * Advances game to next tutorial level
+	 */
+	public void nextTutorialLevel() {
+		currentTutorialLevel++;
+		try {
+			playLevel(tutorialLevels.get(tutorialLevelNames.get(currentTutorialLevel)), false);
+		} catch (IndexOutOfBoundsException e) {
+			tutorialFinished();
+		}
+	}
+	
+	/**
 	 * Announces congrats at beating all levels
 	 */
 	public void allLevelsFinished() {
 		System.out.println("allLevelsFinished");
+		// TODO congrats at beating the game, go back to main menu
+		System.exit(0);
+	}
+	
+	/**
+	 * Announces congrats at finishing the tutorial
+	 */
+	public void tutorialFinished() {
+		System.out.println("tutorialFinished");
+		// TODO congrats screen on beating tutorial, go back to main menu
+		statusPrefs.putBoolean(tutorialCompletedStr, true);
+		statusPrefs.flush();
 		System.exit(0);
 	}
 	
@@ -182,6 +226,10 @@ public class GravityGame extends Game {
 	@Override
 	public void render() {
 		super.render();
+	}
+	
+	public static int getCurrentLevel() {
+		return currentLevel;
 	}
 	
 	public static float getAspectRatio() {
@@ -213,11 +261,27 @@ public class GravityGame extends Game {
 	}
 	
 	/**
+	 * Returns unmodifiable map of tutorial levels
+	 * @return tutorialLevels
+	 */
+	public static Map<String, Level> getTutorialLevels() {
+		return tutorialLevels;
+	}
+	
+	/**
 	 * Returns unmodifiable list of level names
 	 * @return levelNames
 	 */
 	public static List<String> getLevelNames() {
 		return levelNames;
+	}
+	
+	/**
+	 * Returns unmodifiable list of tutorial level names
+	 * @return tutorialLevelNames
+	 */
+	public static List<String> getTutorialLevelNames() {
+		return tutorialLevelNames;
 	}
 	
 	/**

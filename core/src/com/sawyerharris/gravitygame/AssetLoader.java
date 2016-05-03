@@ -25,8 +25,12 @@ public class AssetLoader {
 	private static final String THEME_LIST = "themes.txt";
 	/** Name of themes folder in assets */
 	private static final String THEME_FOLDER = "themes/";
+	/** Suffix of theme files */
+	private static final String THEME_SUFFIX = ".thm";
 	/** Name of file containing level names */
 	private static final String LEVEL_LIST = "levels.txt";
+	/** Name of file containing tutorial level names */
+	private static final String TUTORIAL_LEVEL_LIST = "tutorialLevels.txt";
 	/** Name of levels folder in assets */
 	private static final String LEVEL_FOLDER = "levels/";
 	/** Suffix of level files */
@@ -67,7 +71,7 @@ public class AssetLoader {
 			FileHandle themeDir = Gdx.files.internal(THEME_FOLDER);
 			if (themeDir.exists()) {
 				for (String name : themeList) {
-					FileHandle file = Gdx.files.internal(THEME_FOLDER + name);
+					FileHandle file = Gdx.files.internal(THEME_FOLDER + name + THEME_SUFFIX);
 					Theme theme = JSON.fromJson(Theme.class, file);
 					themes.put(theme.getName(), theme);
 				}
@@ -113,6 +117,32 @@ public class AssetLoader {
 			}
 		} else {
 			System.out.println("Error: Level list not found");
+			System.exit(1);
+		}
+	}
+	
+	/**
+	 * Loads tutorial levels into Map parameter
+	 * @param levels
+	 */
+	public static void loadTutorialLevels(Map<String, Level> levels, List<String> levelNames) {				
+		FileHandle levelListFile = Gdx.files.internal(TUTORIAL_LEVEL_LIST);
+		if (levelListFile.exists()) {
+			ArrayList<String> list = JSON.fromJson(LevelList.class, levelListFile).levelNames;
+			levelNames.addAll(list);
+			FileHandle levelDir = Gdx.files.internal(LEVEL_FOLDER);
+			if (levelDir.exists()) {
+				for (String name : levelNames) {
+					FileHandle file = Gdx.files.internal(LEVEL_FOLDER + name + LEVEL_SUFFIX);
+					Level level = JSON.fromJson(Level.class, file);
+					levels.put(name, level);
+				}
+			} else {
+				System.out.println("Error: tutorial level folder not found");
+				System.exit(1);
+			}
+		} else {
+			System.out.println("Error: tutorial level list not found");
 			System.exit(1);
 		}
 	}
