@@ -1,5 +1,0 @@
-{
-themeNames: [
-	testTheme, testTheme2
-]
-}

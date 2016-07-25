@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.sawyerharris.gravitygame.GravityGame;
+import com.sawyerharris.gravitygame.game.GravityGame;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override

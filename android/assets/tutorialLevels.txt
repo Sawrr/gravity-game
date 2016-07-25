@@ -1,5 +1,0 @@
-{
-levelNames: [
-	tutorialLevel
-]
-}

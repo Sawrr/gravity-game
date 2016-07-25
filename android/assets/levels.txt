@@ -1,5 +1,0 @@
-{
-levelNames: [
-	testLevel, testLevel2
-]
-}
