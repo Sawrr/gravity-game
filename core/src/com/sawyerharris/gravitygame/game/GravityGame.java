@@ -2,6 +2,12 @@ package com.sawyerharris.gravitygame.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.sawyerharris.gravitygame.manager.AssetManager;
+import com.sawyerharris.gravitygame.manager.LevelManager;
+import com.sawyerharris.gravitygame.manager.ThemeManager;
+import com.sawyerharris.gravitygame.screen.LevelEditScreen;
+import com.sawyerharris.gravitygame.screen.LevelPlayScreen;
 import com.sawyerharris.gravitygame.screen.MenuScreen;
 
 /**
@@ -42,6 +48,24 @@ public class GravityGame extends Game {
 			throw new IllegalStateException("Cannot call GravityGame.getInstance() before create() has been called.");
 		}
 		return game;
+	}
+
+	/**
+	 * Returns the asset manager so game assets may be accessed.
+	 * 
+	 * @return assets
+	 */
+	public AssetManager getAssets() {
+		return assets;
+	}
+
+	/**
+	 * Returns the player status.
+	 * 
+	 * @return status
+	 */
+	public PlayerStatus getPlayerStatus() {
+		return status;
 	}
 
 	@Override

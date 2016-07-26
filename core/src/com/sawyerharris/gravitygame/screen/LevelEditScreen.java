@@ -3,7 +3,9 @@ package com.sawyerharris.gravitygame.screen;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class LevelEditScreen extends LevelScreen {
-
+	/** Level name that will be applied if the user saves */
+	private String customLevelName;
+	
 	public LevelEditScreen(Batch batch) {
 		super(batch);
 		// TODO Auto-generated constructor stub
@@ -43,6 +45,18 @@ public class LevelEditScreen extends LevelScreen {
 	public void touchDown(int screenX, int screenY, int pointer, int button) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public void testLevel() {
+		
+	}
+	
+	public void saveLevel() {
+		
+	}
+	
+	public void uploadLevel() {
+		
 	}
 
 }

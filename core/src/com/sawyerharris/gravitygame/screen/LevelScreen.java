@@ -21,7 +21,7 @@ public abstract class LevelScreen extends GameScreen {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public loadLevel(Level level) {
+	public void loadLevel(Level level) {
 		
 	}
 }

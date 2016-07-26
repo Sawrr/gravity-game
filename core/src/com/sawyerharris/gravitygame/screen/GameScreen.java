@@ -51,34 +51,39 @@ public abstract class GameScreen extends ScreenAdapter {
 	}
 
 	/**
-	 * Called when the screen is panned
+	 * Called when the screen is panned.
 	 */
 	public abstract void pan(float x, float y, float deltaX, float deltaY);
 
 	/**
-	 * Called when the screen is zoomed
+	 * Called when the screen is zoomed.
 	 */
 	public abstract void zoom(float initialDistance, float distance);
 
 	/**
-	 * Called when the screen is tapped
+	 * Called when the screen is tapped.
 	 */
 	public abstract void tap(float x, float y, int count, int button);
 
 	/**
-	 * Called when a key is pressed
+	 * Called when a key is pressed.
 	 */
 	public abstract void keyDown(int keycode);
 
 	/**
-	 * Called when the mouse wheel is scrolled
+	 * Called when the mouse wheel is scrolled.
 	 */
 	public abstract void scrolled(int amount);
 
 	/**
-	 * Called when the screen is touched
+	 * Called when the screen is touched.
 	 */
 	public abstract void touchDown(int screenX, int screenY, int pointer, int button);
+	
+	/**
+	 * Called when the touch on the screen is released.
+	 */
+	public abstract void touchUp(int screenX, int screenY, int pointer, int button);
 
 	@Override
 	public void render(float delta) {
@@ -111,7 +116,7 @@ public abstract class GameScreen extends ScreenAdapter {
 			super(HALF_TAP_SQUARE_SIZE, TAP_COUNT_INTERVAL, LONG_PRESS_DURATION, MAX_FLING_DELAY,
 					detector.new ScreenGestureAdapter());
 		}
-
+		
 		@Override
 		public boolean keyDown(int keycode) {
 			GameScreen.this.keyDown(keycode);
@@ -127,6 +132,12 @@ public abstract class GameScreen extends ScreenAdapter {
 		@Override
 		public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 			GameScreen.this.touchDown(screenX, screenY, pointer, button);
+			return true;
+		}
+		
+		@Override
+		public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+			GameScreen.this.touchUp(screenX, screenY, pointer, button);
 			return true;
 		}
 
