@@ -2,7 +2,6 @@ package com.sawyerharris.gravitygame.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.sawyerharris.gravitygame.manager.AssetManager;
 import com.sawyerharris.gravitygame.manager.LevelManager;
 import com.sawyerharris.gravitygame.manager.ThemeManager;
@@ -36,7 +35,7 @@ public class GravityGame extends Game {
 
 	/** Player status */
 	private PlayerStatus status;
-
+	
 	/**
 	 * Gets the singleton game instance.
 	 * 

@@ -26,7 +26,7 @@ public class Ship extends Actor {
 	public static final int MAX_BOOST = 0;
 	/** Scalar for how much boost is applied */
 	private static final float BOOST_SCALAR = 0;
-	
+
 	/** Screen that contains this ship */
 	private LevelScreen screen;
 	/** Initial position of ship */
@@ -48,6 +48,12 @@ public class Ship extends Actor {
 	/** If the ship is using boost */
 	private boolean boosting;
 
+	/**
+	 * Constructs a ship on the given LevelScreen.
+	 * 
+	 * @param scrn
+	 *            level screen
+	 */
 	public Ship(LevelScreen scrn) {
 		sprite = new ShipSprite();
 		reset();
@@ -87,16 +93,25 @@ public class Ship extends Actor {
 		});
 	}
 
+	/**
+	 * Start using boost.
+	 */
 	public void startBoosting() {
 		sprite.setAnimation(GravityGame.getInstance().getAssets().getShipAnimation(style, "boost"));
 		boosting = true;
 	}
 
+	/**
+	 * Stop using boost.
+	 */
 	public void stopBoosting() {
 		sprite.setAnimation(GravityGame.getInstance().getAssets().getShipAnimation(style, "default"));
 		boosting = false;
 	}
 
+	/**
+	 * Resets ship to initial state.
+	 */
 	public void reset() {
 		style = GravityGame.getInstance().getPlayerStatus().getShipStyle();
 		setPosition(initialPosition);
@@ -105,22 +120,40 @@ public class Ship extends Actor {
 		boost = MAX_BOOST;
 	}
 
+	/**
+	 * Sets whether the ship can be fired.
+	 * 
+	 * @param fling
+	 *            true if flinging is enabled
+	 */
 	public void setFlingable(boolean fling) {
 		flingable = fling;
 	}
 
+	/**
+	 * Sets whether the ship can be moved.
+	 * 
+	 * @param pan
+	 *            true is panning is enabled
+	 */
 	public void setPannable(boolean pan) {
 		pannable = pan;
 	}
 
 	/**
 	 * Returns the ship's position.
+	 * 
 	 * @return Vector2 of position
 	 */
 	public Vector2 getPosition() {
 		return new Vector2(getX(), getY());
 	}
-	
+
+	/**
+	 * Sets the ship's position.
+	 * 
+	 * @param pos
+	 */
 	public void setPosition(Vector2 pos) {
 		if (pos.x < 0 || pos.x > GameScreen.WORLD_WIDTH || pos.y < 0 || pos.y > GameScreen.WORLD_HEIGHT) {
 			throw new IllegalArgumentException("Ship position out of bounds.");
@@ -131,10 +164,20 @@ public class Ship extends Actor {
 				sprite.getHeight() * sprite.getScaleY());
 	}
 
+	/**
+	 * Returns the ship's initial position.
+	 * 
+	 * @return initialPosition
+	 */
 	public Vector2 getInitialPosition() {
 		return initialPosition;
 	}
 
+	/**
+	 * Sets the ship's initial position.
+	 * 
+	 * @param pos
+	 */
 	public void setInitialPosition(Vector2 pos) {
 		if (pos.x < 0 || pos.x > GameScreen.WORLD_WIDTH || pos.y < 0 || pos.y > GameScreen.WORLD_HEIGHT) {
 			throw new IllegalArgumentException("Ship position out of bounds.");
@@ -149,7 +192,7 @@ public class Ship extends Actor {
 	 */
 	public void physicsUpdate(float dt, ArrayList<Planet> planets) {
 		pos.set(getPosition());
-		
+
 		Vector2 vela = new Vector2(vel).add(computeAccel(pos, planets).scl(dt / 2));
 		Vector2 posa = new Vector2(pos).add(new Vector2(vel).scl(dt / 2));
 
@@ -170,20 +213,37 @@ public class Ship extends Actor {
 		setPosition(pos);
 	}
 
-	private Vector2 computeGravityForce(Vector2 shipPosition, ArrayList<Planet> planets) {
-		Vector2 force = new Vector2(0, 0);
+	/**
+	 * Computes the acceleration of the ship due to the gravity of the planets.
+	 * 
+	 * @param shipPosition
+	 *            position of ship
+	 * @param planets
+	 *            list of planets
+	 * @return acceleration
+	 */
+	private Vector2 computeGravityAccel(Vector2 shipPosition, ArrayList<Planet> planets) {
+		Vector2 acc = new Vector2(0, 0);
 		for (Planet planet : planets) {
 			Vector2 r = new Vector2(pos);
 			r.sub(planet.getPosition());
 			float rcube = (float) Math.pow(r.len(), 3);
-			force.add(r.scl(-planet.getMass() / rcube));
+			acc.add(r.scl(-planet.getMass() / rcube));
 		}
-		return force;
+		return acc;
 	}
-	
 
+	/**
+	 * Computes the acceleration of the ship due to gravity and boost.
+	 * 
+	 * @param shipPosition
+	 *            position of ship
+	 * @param planets
+	 *            list of planets
+	 * @return acceleration
+	 */
 	private Vector2 computeAccel(Vector2 shipPosition, ArrayList<Planet> planets) {
-		Vector2 acc = computeGravityForce(shipPosition, planets);
+		Vector2 acc = computeGravityAccel(shipPosition, planets);
 		if (boosting) {
 			if (boost > 0) {
 				Vector2 boostVec = new Vector2(vel).nor().scl(BOOST_SCALAR);
@@ -196,16 +256,29 @@ public class Ship extends Actor {
 		}
 		return acc;
 	}
-	
+
 	@Override
 	public void draw(Batch batch, float alpha) {
 		sprite.draw(batch, alpha);
 	}
 
+	/**
+	 * Animated ship sprite.
+	 * 
+	 * @author Sawyer Harris
+	 *
+	 */
 	private class ShipSprite extends Sprite {
+		/** Animation state time */
 		private float time;
+		/** Animation */
 		private Animation animation;
 
+		/**
+		 * Sets the sprite's animation.
+		 * 
+		 * @param anim
+		 */
 		public void setAnimation(Animation anim) {
 			animation = anim;
 			time = 0;

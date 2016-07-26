@@ -26,7 +26,7 @@ public class Level {
 	private ArrayList<PlanetMeta> planets;
 
 	/**
-	 * Default constructor, used only by JSON deserialization.
+	 * Empty constructor, used only by JSON deserialization.
 	 */
 	public Level() {
 	}
