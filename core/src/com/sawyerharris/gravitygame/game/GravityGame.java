@@ -1,13 +1,23 @@
 package com.sawyerharris.gravitygame.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.sawyerharris.gravitygame.manager.AssetManager;
 import com.sawyerharris.gravitygame.manager.LevelManager;
 import com.sawyerharris.gravitygame.manager.ThemeManager;
+import com.sawyerharris.gravitygame.screen.GameStage;
 import com.sawyerharris.gravitygame.screen.LevelEditScreen;
 import com.sawyerharris.gravitygame.screen.LevelPlayScreen;
 import com.sawyerharris.gravitygame.screen.MenuScreen;
+import com.sawyerharris.gravitygame.ui.BorderedItem;
+import com.sawyerharris.gravitygame.ui.TextItem;
+import com.sawyerharris.gravitygame.ui.TextureItem;
 
 /**
  * Singleton Game class. An application listener that delegates the render
@@ -35,6 +45,9 @@ public class GravityGame extends Game {
 
 	/** Player status */
 	private PlayerStatus status;
+
+	// Begin test
+	private Stage stage;
 	
 	/**
 	 * Gets the singleton game instance.
@@ -77,15 +90,30 @@ public class GravityGame extends Game {
 
 		batch = new SpriteBatch();
 
-		menuScreen = new MenuScreen(batch);
-		levelEditScreen = new LevelEditScreen(batch);
-		levelPlayScreen = new LevelPlayScreen(batch);
+		//menuScreen = new MenuScreen(batch);
+		//levelEditScreen = new LevelEditScreen(batch);
+		//levelPlayScreen = new LevelPlayScreen(batch);
 
 		assets = new AssetManager();
 		levels = new LevelManager();
 		themes = new ThemeManager();
 
 		status = new PlayerStatus();
+		
+		// Begin testing
+		stage = new GameStage();
+		TextItem item = new TextItem(250, 50, 250, 100, new Color(1, 0, 0.5f, 0.5f), Touchable.enabled, "Da bes level kek\nAuthor: hedgehog hero\nUploaded: 7/26/2016", 18) {
+			@Override
+			public void click() {
+				System.out.println("kekboz");
+			}
+		};
+		stage.addActor(item);
+		
+		TextureItem item2 = new TextureItem(250, 500, 250, 250, new Color(0, 1, 0.5f, 0.5f), Touchable.enabled, assets.getTestRegion());
+		stage.addActor(item2);
+		
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
@@ -96,6 +124,10 @@ public class GravityGame extends Game {
 
 	@Override
 	public void render() {
-		super.render();
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		stage.draw();
+		//super.render();
 	}
 }

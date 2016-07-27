@@ -1,7 +1,10 @@
 package com.sawyerharris.gravitygame.manager;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class AssetManager {
 
@@ -27,6 +30,15 @@ public class AssetManager {
 	public void dispose() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public FileHandle getFont() {
+		return Gdx.files.internal("fonts/tcm.TTF");
+	}
+
+	public TextureRegion getTestRegion() {
+		Texture texture = new Texture(Gdx.files.internal("test.png"));
+		return new TextureRegion(texture);
 	}
 
 }

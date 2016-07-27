@@ -4,7 +4,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 /**
@@ -23,7 +22,7 @@ public abstract class GameScreen extends ScreenAdapter {
 	public static final float WORLD_HEIGHT = 0;
 
 	/** Stage holds actors to be drawn */
-	private Stage stage;
+	private GameStage stage;
 	/** Camera manages the location and zoom of the world to be drawn */
 	private GameCamera camera;
 	/** Viewport sets the camera's width, height based on the physical screen */
@@ -42,7 +41,7 @@ public abstract class GameScreen extends ScreenAdapter {
 		camera = new GameCamera();
 		viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
 		background = new ParallaxBackground(camera, batch);
-		stage = new Stage(viewport, batch);
+		stage = new GameStage(viewport, batch);
 
 		detector = new ScreenGestureDetector();
 
