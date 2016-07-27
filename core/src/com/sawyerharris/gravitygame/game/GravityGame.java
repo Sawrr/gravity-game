@@ -16,6 +16,7 @@ import com.sawyerharris.gravitygame.screen.LevelEditScreen;
 import com.sawyerharris.gravitygame.screen.LevelPlayScreen;
 import com.sawyerharris.gravitygame.screen.MenuScreen;
 import com.sawyerharris.gravitygame.ui.BorderedItem;
+import com.sawyerharris.gravitygame.ui.ScrollPanel;
 import com.sawyerharris.gravitygame.ui.TextItem;
 import com.sawyerharris.gravitygame.ui.TextureItem;
 
@@ -110,8 +111,21 @@ public class GravityGame extends Game {
 		};
 		stage.addActor(item);
 		
-		TextureItem item2 = new TextureItem(250, 500, 250, 250, new Color(0, 1, 0.5f, 0.5f), Touchable.enabled, assets.getTestRegion());
+		TextureItem item2 = new TextureItem(250, 300, 250, 250, new Color(0, 1, 0.5f, 0.5f), Touchable.enabled, assets.getTestRegion());
 		stage.addActor(item2);
+		
+		Color spColor = new Color(0, 1, 0.5f, 0.5f);
+		ScrollPanel sp = new ScrollPanel(25, 250, 200, 400, spColor, 100){
+			@Override
+			public void click(int index) {
+				System.out.println(index);
+			}
+		};
+		sp.addTextItem("test", 18);
+		sp.addTextItem("hoo", 18);
+		sp.addTextItem("yah", 18);
+		//sp.addTextItem("boiz", 18);
+		stage.addActor(sp);
 		
 		Gdx.input.setInputProcessor(stage);
 	}

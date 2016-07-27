@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.sawyerharris.gravitygame.ui.BorderedItem;
+import com.sawyerharris.gravitygame.ui.ScrollPanel;
 
 public class GameStage extends Stage {
 
@@ -33,6 +34,11 @@ public class GameStage extends Stage {
 	public void addActor(Actor actor) {
 		if (actor instanceof BorderedItem) {
 			items.add((BorderedItem) actor);
+			if (actor instanceof ScrollPanel) {
+				for (Actor child : ((ScrollPanel) actor).getChildren()) {
+					items.add((BorderedItem) child);
+				}
+			}
 		}
 		super.addActor(actor);
 	}

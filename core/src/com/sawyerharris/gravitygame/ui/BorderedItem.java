@@ -3,8 +3,10 @@ package com.sawyerharris.gravitygame.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -64,7 +66,7 @@ public abstract class BorderedItem extends Group {
 			});
 		}
 	}
-
+	
 	/**
 	 * Called when this item is clicked.
 	 */
@@ -79,23 +81,86 @@ public abstract class BorderedItem extends Group {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
+		Group parent = this.getParent();
+		
 		float x = getX();
 		float y = getY();
 		float width = getWidth();
 		float height = getHeight();
+		
+		float drawHeight = height;
+		float drawY = y;
+		float drawTopBorder = BORDER_WIDTH;
+		float drawBotBorder = BORDER_WIDTH;
+		
+		if (parent != null && parent instanceof ScrollPanel) {
+			x += parent.getX();
+			y += parent.getY();
+			
+			drawY = y;
+			
+			// Check for culling
+			if (parent.getCullingArea() != null) {			
+				Rectangle cull = new Rectangle(parent.getCullingArea());
+				cull.setPosition(cull.x + parent.getX(), cull.y + parent.getY());
+				
+				float cullRight = cull.x + cull.width;
+				float cullLeft = cull.x;
+				float cullTop = cull.y + cull.height;
+				float cullBottom = cull.y;
+				
+				if (!(x <= cullRight && y <= cullTop && x + width >= cullLeft && y + height >= cullBottom)) {
+					return;
+				}
+			}
+			
+			if (y < parent.getY() + BORDER_WIDTH && y >= parent.getY()) {
+				drawY = parent.getY() + BORDER_WIDTH;
+				drawHeight = height - (parent.getY() + BORDER_WIDTH - y);
+				drawBotBorder = y - parent.getY();
+			} else if (y < parent.getY() && y + height >= parent.getY() + 2 * BORDER_WIDTH) {
+				drawY = parent.getY() + BORDER_WIDTH;
+				drawHeight = height - (parent.getY() + BORDER_WIDTH - y);
+				drawBotBorder = 0;
+			} else if (y + height < parent.getY() + 2 * BORDER_WIDTH && y + height >= parent.getY() + BORDER_WIDTH) {
+				drawY = parent.getY() + BORDER_WIDTH;
+				drawBotBorder = 0;
+				drawTopBorder = y + height - parent.getY() - BORDER_WIDTH;
+				drawHeight = drawTopBorder;
+			} else if (y + height > parent.getY() + parent.getHeight() - BORDER_WIDTH && y + height <= parent.getY() + parent.getHeight()) {
+				drawHeight = height - (y + height - parent.getY() - parent.getHeight() + BORDER_WIDTH);
+				drawTopBorder = BORDER_WIDTH - (y + height - parent.getY() - parent.getHeight() + BORDER_WIDTH);
+			} else if (y + height > parent.getY() + parent.getHeight() && y <= parent.getY() + parent.getHeight() - 2 * BORDER_WIDTH) {
+				drawHeight = height - (y + height - parent.getY() - parent.getHeight() + BORDER_WIDTH);
+				drawTopBorder = 0;
+			} else if (y > parent.getY() + parent.getHeight() - 2 * BORDER_WIDTH && y <= parent.getY() + parent.getHeight() - BORDER_WIDTH) {
+				drawTopBorder = 0;
+				drawBotBorder = parent.getY() + parent.getHeight() - BORDER_WIDTH - y;
+				drawHeight = drawBotBorder;
+			}
+		}
 
 		renderer.set(ShapeType.Filled);
-
+		
 		// Draw border
 		renderer.setColor(BORDER_COLOR);
-		renderer.rect(x, y, width, BORDER_WIDTH);
-		renderer.rect(x, y + height - BORDER_WIDTH, width, BORDER_WIDTH);
-		renderer.rect(x, y + BORDER_WIDTH, BORDER_WIDTH, height - 2 * BORDER_WIDTH);
-		renderer.rect(x + width - BORDER_WIDTH, y + BORDER_WIDTH, BORDER_WIDTH, height - 2 * BORDER_WIDTH);
+		
+		// Bottom
+		renderer.rect(x + BORDER_WIDTH, drawY, width - 2 * BORDER_WIDTH, drawBotBorder);
+		
+		// Top
+		renderer.rect(x + BORDER_WIDTH, drawY + drawHeight - drawTopBorder, width - 2 * BORDER_WIDTH, drawTopBorder);
+		
+		// Left
+		renderer.rect(x, drawY, BORDER_WIDTH, drawHeight);
+		
+		// Right
+		renderer.rect(x + width - BORDER_WIDTH, drawY, BORDER_WIDTH, drawHeight);
 
 		// Draw inside
 		renderer.setColor(getColor());
-		renderer.rect(getX() + BORDER_WIDTH, getY() + BORDER_WIDTH, getWidth() - BORDER_WIDTH * 2,
-				getHeight() - BORDER_WIDTH * 2);
+		renderer.rect(x + BORDER_WIDTH, drawY + drawBotBorder, width - BORDER_WIDTH * 2,
+				drawHeight - drawTopBorder - drawBotBorder);
+		
 	}
 }

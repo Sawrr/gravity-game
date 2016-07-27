@@ -30,6 +30,8 @@ public class TextItem extends BorderedItem {
 		font = generator.generateFont(param);
 		
 		textGL = new GlyphLayout(font, text, TEXT_COLOR, width - 2 * BORDER_WIDTH - 2 * TEXT_MARGIN, Align.center, true);
+		
+		System.out.println(x + " " + y + " " + width + " " + height);
 	}
 	
 	@Override
