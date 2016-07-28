@@ -17,18 +17,12 @@ public class TextItem extends BorderedItem {
 	private static final int TEXT_MARGIN = 10;
 	
 	private GlyphLayout textGL;
-	private FreeTypeFontGenerator generator;
-	private FreeTypeFontParameter param;
 	private BitmapFont font;
 	
 	public TextItem(float x, float y, float width, float height, Color color, Touchable touchable, String text, int fontSize) {
 		super(x, y, width, height, color, touchable);
-		
-		generator = new FreeTypeFontGenerator(GravityGame.getInstance().getAssets().getFont());
-		param = new FreeTypeFontParameter();
-		param.size = fontSize;
-		font = generator.generateFont(param);
-		
+
+		font = GravityGame.getInstance().getAssets().getFont(fontSize);
 		textGL = new GlyphLayout(font, text, TEXT_COLOR, width - 2 * BORDER_WIDTH - 2 * TEXT_MARGIN, Align.center, true);
 		
 		System.out.println(x + " " + y + " " + width + " " + height);

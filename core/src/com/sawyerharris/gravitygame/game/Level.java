@@ -43,7 +43,7 @@ public class Level {
 		this.name = name;
 		this.message = null;
 		this.type = LevelType.CUSTOM;
-		this.theme = GravityGame.getInstance().getAssets().getTheme("default");
+		this.theme = "default";
 		this.shipOrigin = shipOrigin;
 		this.planets = planets;
 	}

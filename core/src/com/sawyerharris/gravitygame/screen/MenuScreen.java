@@ -17,7 +17,12 @@ import com.sawyerharris.gravitygame.ui.BorderedItem;
 public class MenuScreen extends GameScreen {
 	private ArrayList<BorderedItem> items;
 	
-	private HashMap<String, Vector2> positions;
+	/*
+	 * Private node class has name, Vector2 position, previous
+	 * 
+	 * Private moveToNode method sets the current node and calls the camera to move to the position
+	 * when the back button is pressed, moveToNode will be called with the current node's previous as the destination unless previous is null
+	 */
 	
 	
 	public MenuScreen(Batch batch) {

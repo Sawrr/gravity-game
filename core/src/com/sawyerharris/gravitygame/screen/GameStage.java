@@ -50,6 +50,7 @@ public class GameStage extends Stage {
 	}
 	
 	private void drawItems() {
+		shapeRenderer.setProjectionMatrix(getCamera().combined);
 		shapeRenderer.begin();
 		for (BorderedItem item : items) {
 			item.drawItem(shapeRenderer);

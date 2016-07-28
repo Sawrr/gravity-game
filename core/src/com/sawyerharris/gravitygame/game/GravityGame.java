@@ -103,7 +103,7 @@ public class GravityGame extends Game {
 		
 		// Begin testing
 		stage = new GameStage();
-		TextItem item = new TextItem(250, 50, 250, 100, new Color(1, 0, 0.5f, 0.5f), Touchable.enabled, "Da bes level kek\nAuthor: hedgehog hero\nUploaded: 7/26/2016", 18) {
+		TextItem item = new TextItem(250, 50, 250, 100, new Color(1, 0, 0.5f, 0.5f), Touchable.enabled, "My Custom Level!\nAuthor: Sawyer\nUploaded: 7/26/2016", 18) {
 			@Override
 			public void click() {
 				System.out.println("kekboz");
@@ -121,30 +121,30 @@ public class GravityGame extends Game {
 				System.out.println(index);
 			}
 		};
-		sp.addTextItem("test", 18);
-		sp.addTextItem("hoo", 18);
-		sp.addTextItem("yah", 18);
-		sp.addTextItem("boiz", 18);
-		sp.addTextItem("bobo", 18);
-		sp.addTextItem("bobo1", 18);
-		sp.addTextItem("bobo2", 18);
-		sp.addTextItem("bobo3", 18);
-		sp.addTextItem("bobo4", 18);
-		sp.addTextItem("bobo5", 18);
-		sp.addTextItem("bobo6", 18);
-		sp.addTextItem("bobo7", 18);
-		sp.addTextItem("bobo8", 18);
-		sp.addTextItem("bobo9", 18);
-		sp.addTextItem("bobo9", 18);
-		sp.addTextItem("bobo9", 18);
-		sp.addTextItem("bobo9", 18);
-		sp.addTextItem("bobo9", 18);
-		sp.addTextItem("bobo9", 18);
-		sp.addTextItem("bobo9", 18);
-		sp.addTextItem("bobo9", 18);
-		sp.addTextItem("bobo9", 18);
-		sp.addTextItem("bobo9", 18);
-		sp.addTextItem("bobo9", 18);
+		sp.addTextItem("abc", 18);
+		sp.addTextItem("def", 18);
+		sp.addTextItem("ghi", 18);
+		sp.addTextItem("jkl", 18);
+		sp.addTextItem("mno", 18);
+		sp.addTextItem("pqr", 18);
+		sp.addTextItem("stu", 18);
+		sp.addTextItem("vwx", 18);
+		sp.addTextItem("yz", 18);
+		sp.addTextItem("hello", 18);
+		sp.addTextItem("goodbye", 18);
+		sp.addTextItem("1", 18);
+		sp.addTextItem("2", 18);
+		sp.addTextItem("3", 18);
+		sp.addTextItem("4", 18);
+		sp.addTextItem("5", 18);
+		sp.addTextItem("6", 18);
+		sp.addTextItem("7", 18);
+		sp.addTextItem("8", 18);
+		sp.addTextItem("9", 18);
+		sp.addTextItem("0", 18);
+		sp.addTextItem("three", 18);
+		sp.addTextItem("two", 18);
+		sp.addTextItem("one", 18);
 		stage.addActor(sp);
 		
 		Gdx.input.setInputProcessor(stage);
