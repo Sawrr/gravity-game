@@ -1,10 +1,7 @@
 package com.sawyerharris.gravitygame.ui;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -13,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
 public class ScrollPanel extends BorderedItem {
 
-	private static final float DRAG = 0.5f;
+	private static final float DRAG = 0.95f;
 
 	private Color color;
 	private float iHeight;
@@ -51,15 +48,14 @@ public class ScrollPanel extends BorderedItem {
 
 	private void scroll(float amount) {
 		scrollY += amount;
-		if (scrollY > 0) {
+		if (scrollY < 0) {
 			amount = amount - scrollY;
 			scrollY = 0;
 		}
-		float floor = -size * iHeight;
-		System.out.println(floor + " " + scrollY);
-		if (scrollY < floor) {
-			amount = amount - floor;
-			scrollY = floor;
+		float floor = size * iHeight + 2 * BorderedItem.BORDER_WIDTH;
+		if (scrollY - floor > -getHeight()) {
+			amount = -getHeight() - (scrollY - floor) + amount;
+			scrollY = floor - getHeight();
 		}
 		for (Actor actor : getChildren()) {
 			actor.moveBy(0, amount);
@@ -83,12 +79,8 @@ public class ScrollPanel extends BorderedItem {
 	
 	@Override
 	public void draw(Batch batch, float alpha) {
-		if (velocity > 0) {
-			velocity = Math.max(velocity - DRAG, 0);
-		} else {
-			velocity = Math.min(velocity + DRAG, 0);
-		}
 		if (velocity != 0) {
+			velocity *= DRAG;
 			scroll(velocity);
 		}
 		

@@ -22,9 +22,11 @@ public abstract class BorderedItem extends Group {
 	/** Color of the border */
 	private static final Color BORDER_COLOR = new Color(1, 1, 1, 0.5f);
 	/** Width of border */
-	protected static final int BORDER_WIDTH = 10;
+	public static final int BORDER_WIDTH = 10;
 	/** Amount to augment opacity when item is pressed */
 	private static final float ON_PRESS_OPACITY_MOD = 0.2f;
+	
+	private boolean touch;
 
 	/**
 	 * Constructs a bordered item from the given parameters.
@@ -46,8 +48,9 @@ public abstract class BorderedItem extends Group {
 		setColor(color);
 		setTouchable(touchable);
 		setBounds(x, y, width, height);
-
+		
 		if (isTouchable()) {
+			touch = true;
 			addListener(new ActorGestureListener() {
 				@Override
 				public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -110,7 +113,14 @@ public abstract class BorderedItem extends Group {
 				float cullBottom = cull.y;
 				
 				if (!(x <= cullRight && y <= cullTop && x + width >= cullLeft && y + height >= cullBottom)) {
+					if (touch) {
+						setTouchable(Touchable.disabled);
+					}
 					return;
+				} else {
+					if (touch) {
+						setTouchable(Touchable.enabled);
+					}
 				}
 			}
 			

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.sawyerharris.gravitygame.game.GravityGame;
+import com.sawyerharris.gravitygame.game.Theme;
 
 /**
  * Displays a space background with a parallax effect based on the camera's

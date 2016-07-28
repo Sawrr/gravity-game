@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.sawyerharris.gravitygame.ui.BorderedItem;
 
 /**
  * Menu screen holds many UI actors in its stage that provide menu
@@ -48,6 +49,12 @@ public class MenuScreen extends GameScreen {
 
 	@Override
 	public void touchDown(int screenX, int screenY, int pointer, int button) {
+	}
+	
+	@Override
+	public void touchUp(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

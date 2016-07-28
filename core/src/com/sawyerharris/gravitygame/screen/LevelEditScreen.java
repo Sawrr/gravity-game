@@ -47,6 +47,12 @@ public class LevelEditScreen extends LevelScreen {
 
 	}
 	
+	@Override
+	public void touchUp(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	public void testLevel() {
 		
 	}
@@ -58,5 +64,4 @@ public class LevelEditScreen extends LevelScreen {
 	public void uploadLevel() {
 		
 	}
-
 }

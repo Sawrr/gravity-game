@@ -124,7 +124,27 @@ public class GravityGame extends Game {
 		sp.addTextItem("test", 18);
 		sp.addTextItem("hoo", 18);
 		sp.addTextItem("yah", 18);
-		//sp.addTextItem("boiz", 18);
+		sp.addTextItem("boiz", 18);
+		sp.addTextItem("bobo", 18);
+		sp.addTextItem("bobo1", 18);
+		sp.addTextItem("bobo2", 18);
+		sp.addTextItem("bobo3", 18);
+		sp.addTextItem("bobo4", 18);
+		sp.addTextItem("bobo5", 18);
+		sp.addTextItem("bobo6", 18);
+		sp.addTextItem("bobo7", 18);
+		sp.addTextItem("bobo8", 18);
+		sp.addTextItem("bobo9", 18);
+		sp.addTextItem("bobo9", 18);
+		sp.addTextItem("bobo9", 18);
+		sp.addTextItem("bobo9", 18);
+		sp.addTextItem("bobo9", 18);
+		sp.addTextItem("bobo9", 18);
+		sp.addTextItem("bobo9", 18);
+		sp.addTextItem("bobo9", 18);
+		sp.addTextItem("bobo9", 18);
+		sp.addTextItem("bobo9", 18);
+		sp.addTextItem("bobo9", 18);
 		stage.addActor(sp);
 		
 		Gdx.input.setInputProcessor(stage);

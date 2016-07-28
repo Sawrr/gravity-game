@@ -49,6 +49,12 @@ public class LevelPlayScreen extends LevelScreen {
 		// TODO Auto-generated method stub
 
 	}
+	
+	@Override
+	public void touchUp(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	/**
 	 * Resets the level to its initial state.
