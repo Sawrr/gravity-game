@@ -1,19 +1,19 @@
 {
-name: test
-message: msg
+name: test2
+message: msg2
 type: OFFICIAL
-theme: themeOne
+theme: themeTwo
 shipOrigin: {
-	x: 25
-	y: 50
+	x: 26
+	y: 51
 }
 planets: [
 	{
 		position: {
-			x: 25
-			y: 25
+			x: 27
+			y: 26
 		}
-		radius: 34
+		radius: 38
 		homePlanet: true
 	}
 ]
