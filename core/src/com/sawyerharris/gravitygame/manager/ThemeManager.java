@@ -43,7 +43,7 @@ public class ThemeManager {
 		for (int i = 0; i < themeNames.length; i++) {
 			FileHandle themeFile = Gdx.files.internal(THEMES_FOLDER + themeNames[i]);
 			Theme theme = json.fromJson(Theme.class, themeFile);
-			themes.put(themeNames[i], theme);
+			themes.put(theme.getName(), theme);
 		}
 	}
 

@@ -1,5 +1,6 @@
 {
 name: test2
+author: Sawr
 message: msg2
 type: OFFICIAL
 theme: themeTwo

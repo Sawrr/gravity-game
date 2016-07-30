@@ -45,9 +45,6 @@ public class GravityGame extends Game {
 	/** Player status */
 	private PlayerStatus status;
 
-	// Begin test
-	private Stage stage;
-
 	/**
 	 * Gets the singleton game instance.
 	 * 
@@ -105,67 +102,20 @@ public class GravityGame extends Game {
 		}
 		game = this;
 
-		batch = new SpriteBatch();
-
-		// menuScreen = new MenuScreen(batch);
-		// levelEditScreen = new LevelEditScreen(batch);
-		// levelPlayScreen = new LevelPlayScreen(batch);
-
 		status = new PlayerStatus();
 		
 		assets = new AssetManager();
 		levels = new LevelManager();
 		themes = new ThemeManager();
+		
+		batch = new SpriteBatch();
 
-		// Begin testing
-		stage = new GameStage();
-		TextItem item = new TextItem(250, 50, 250, 100, new Color(1, 0, 0.5f, 0.5f), Touchable.enabled,
-				"My Custom Level!\nAuthor: Sawyer\nUploaded: 7/26/2016", 18) {
-			@Override
-			public void click() {
-				System.out.println("kekboz");
-			}
-		};
-		stage.addActor(item);
+		menuScreen = new MenuScreen(batch);
+		levelEditScreen = new LevelEditScreen(batch);
+		levelPlayScreen = new LevelPlayScreen(batch);
 
-		TextureItem item2 = new TextureItem(250, 200, 125, 125, new Color(0, 1, 0.5f, 0.5f), Touchable.enabled,
-				assets.getPlanet("earth"));
-		stage.addActor(item2);
-
-		Color spColor = new Color(0, 1, 0.5f, 0.5f);
-		ScrollPanel sp = new ScrollPanel(25, 250, 200, 400, spColor, 100) {
-			@Override
-			public void click(int index) {
-				System.out.println(index);
-			}
-		};
-		sp.addTextItem("abc", 18);
-		sp.addTextItem("def", 18);
-		sp.addTextItem("ghi", 18);
-		sp.addTextItem("jkl", 18);
-		sp.addTextItem("mno", 18);
-		sp.addTextItem("pqr", 18);
-		sp.addTextItem("stu", 18);
-		sp.addTextItem("vwx", 18);
-		sp.addTextItem("yz", 18);
-		sp.addTextItem("hello", 18);
-		sp.addTextItem("goodbye", 18);
-		sp.addTextItem("1", 18);
-		sp.addTextItem("2", 18);
-		sp.addTextItem("3", 18);
-		sp.addTextItem("4", 18);
-		sp.addTextItem("5", 18);
-		sp.addTextItem("6", 18);
-		sp.addTextItem("7", 18);
-		sp.addTextItem("8", 18);
-		sp.addTextItem("9", 18);
-		sp.addTextItem("0", 18);
-		sp.addTextItem("three", 18);
-		sp.addTextItem("two", 18);
-		sp.addTextItem("one", 18);
-		stage.addActor(sp);
-
-		Gdx.input.setInputProcessor(stage);
+		// Test
+		setScreen(menuScreen);
 	}
 
 	@Override
@@ -179,7 +129,6 @@ public class GravityGame extends Game {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		stage.draw();
-		// super.render();
+		super.render();
 	}
 }

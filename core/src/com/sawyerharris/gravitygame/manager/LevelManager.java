@@ -68,6 +68,14 @@ public class LevelManager {
 		loadOnlineLevels();
 	}
 
+	private boolean checkLevel(Level l) {
+		if (l.getName() == null || l.getAuthor() == null || l.getShipOrigin() == null || l.getTheme() == null
+				|| l.getType() == null || l.getPlanets() == null) {
+			return false;
+		}
+		return true;
+	}
+
 	private void prepareShipStyleUnlockList() {
 		styleUnlockLevelIndexList = new ArrayList<Integer>();
 		styleUnlockLevelIndexList.add(1);
@@ -108,6 +116,11 @@ public class LevelManager {
 		try {
 			@SuppressWarnings("unchecked")
 			ArrayList<Level> list = json.fromJson(ArrayList.class, Level.class, customLevelStr);
+			for (Level level : list) {
+				if (!checkLevel(level)) {
+					list.remove(level);
+				}
+			}
 			customLevels = list;
 		} catch (SerializationException e) {
 			System.out.println("Unable to load custom levels.");
@@ -141,7 +154,9 @@ public class LevelManager {
 				}
 				try {
 					Level level = json.fromJson(Level.class, inputLine);
-					onlineLevels.add(level);
+					if (checkLevel(level)) {
+						onlineLevels.add(level);
+					}
 				} catch (SerializationException e) {
 					// Invalid level formatting
 					e.printStackTrace(System.out);
@@ -254,15 +269,19 @@ public class LevelManager {
 
 	/**
 	 * Saves a custom level at the given index.
-	 * @param index index in which to save
-	 * @param level custom level to save
-	 * @throws IndexOutOfBoundsException if index < 0 || index >= customLevels.size()
+	 * 
+	 * @param index
+	 *            index in which to save
+	 * @param level
+	 *            custom level to save
+	 * @throws IndexOutOfBoundsException
+	 *             if index < 0 || index >= customLevels.size()
 	 */
 	public void saveLevel(int index, Level level) throws IndexOutOfBoundsException {
 		if (index == customLevels.size()) {
 			customLevels.add(index, level);
 		} else {
-			customLevels.set(index, level);	
+			customLevels.set(index, level);
 		}
 		prefs.putString("customLevels", json.toJson(customLevels));
 		prefs.flush();
@@ -273,11 +292,9 @@ public class LevelManager {
 	 * 
 	 * @param level
 	 *            Level to be uploaded
-	 * @param author
-	 *            author of level
 	 * @return true if level was successfully uploaded
 	 */
-	public boolean uploadLevel(Level level, String author) {
+	public boolean uploadLevel(Level level) {
 		// Check for valid level
 		if (level == null) {
 			return false;
@@ -290,7 +307,7 @@ public class LevelManager {
 		sb.append("&hash=");
 		sb.append(json.toJson(level).hashCode());
 		sb.append("&author=");
-		sb.append(author);
+		sb.append(level.getAuthor());
 		sb.append("&pass=s17gg");
 		try {
 			URL url = new URL(sb.toString());

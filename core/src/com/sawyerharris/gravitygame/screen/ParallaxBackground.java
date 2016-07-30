@@ -14,10 +14,11 @@ import com.sawyerharris.gravitygame.game.Theme;
  *
  */
 public class ParallaxBackground {
+	private static final float PARA_SCALAR = 0.2f;
+	/** Batch for drawing background */
+	private Batch batch;
 	/** Camera's position required for parallax */
 	private GameCamera camera;
-	/** Batch to draw to */
-	private Batch batch;
 	/** Texture of background */
 	private Texture texture;
 	/** Texture region to be drawn */
@@ -46,8 +47,16 @@ public class ParallaxBackground {
 	 * @param theme
 	 */
 	public void setTheme(Theme theme) {
-		// texture = GravityGame.getInstance().
-		// region =
+		this.theme = theme;
+		texture = GravityGame.getInstance().getAssets().getBackground(theme.getBackground());
+		int width = texture.getWidth();
+		int height = texture.getHeight();
+		float aspectRatio = camera.viewportWidth / camera.viewportHeight;
+		int srcViewWidth = theme.getSrcViewWidth();
+		int srcViewHeight = (int) (srcViewWidth / aspectRatio);
+		int x = (width - srcViewWidth) / 2;
+		int y = (height - srcViewHeight) / 2;
+		region = new TextureRegion(texture, x, y, srcViewWidth, srcViewHeight);
 	}
 
 	/**
@@ -58,5 +67,25 @@ public class ParallaxBackground {
 		if (theme == null) {
 			throw new IllegalStateException("Theme must be set before drawing background.");
 		}
+		
+		int width = texture.getWidth();
+		int height = texture.getHeight();
+		
+		int srcWidth = region.getRegionWidth();
+		int srcHeight = region.getRegionHeight();
+		
+		float aspectRatio = camera.viewportWidth / camera.viewportHeight;
+		
+		float norX = camera.position.x / camera.viewportWidth - 0.5f;
+		float norY = 1 - camera.position.y / camera.viewportHeight - 0.5f;
+		
+		int srcX = (int) ((width  - srcWidth) / 2 + norX * PARA_SCALAR * width);
+		int srcY = (int) ((height - srcHeight) / 2 + norY * PARA_SCALAR * height / aspectRatio);
+		
+		region.setRegion(srcX, srcY, srcWidth, srcHeight);
+		
+		batch.begin();
+		batch.draw(region, 0, 0, camera.viewportWidth, camera.viewportHeight);
+		batch.end();
 	}
 }

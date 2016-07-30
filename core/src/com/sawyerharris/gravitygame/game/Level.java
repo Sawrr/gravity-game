@@ -14,6 +14,8 @@ import com.badlogic.gdx.math.Vector2;
 public class Level {
 	/** Name of level */
 	private String name;
+	/** Author of level */
+	private String author;
 	/** Message to be shown when level is loaded */
 	private String message;
 	/** Type of level */
@@ -30,17 +32,19 @@ public class Level {
 	 */
 	public Level() {
 	}
-	
+
 	/**
 	 * Constructs a custom level with the given parameters. Custom levels have
 	 * no message and use the default theme.
 	 * 
 	 * @param name
+	 * @param author
 	 * @param shipOrigin
 	 * @param planets
 	 */
-	public Level(String name, Vector2 shipOrigin, ArrayList<PlanetMeta> planets) {
+	public Level(String name, String author, Vector2 shipOrigin, ArrayList<PlanetMeta> planets) {
 		this.name = name;
+		this.author = author;
 		this.message = null;
 		this.type = LevelType.CUSTOM;
 		this.theme = "default";
@@ -64,6 +68,15 @@ public class Level {
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	/**
+	 * Gets author of level.
+	 * 
+	 * @return author
+	 */
+	public String getAuthor() {
+		return author;
 	}
 
 	/**
@@ -101,7 +114,7 @@ public class Level {
 	public ArrayList<PlanetMeta> getPlanets() {
 		return planets;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -126,7 +139,7 @@ public class Level {
 		private int radius;
 		/** If the planet should be a home planet */
 		private boolean homePlanet;
-		
+
 		/**
 		 * Gets the initial position of the planet.
 		 * 

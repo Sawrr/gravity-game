@@ -2,7 +2,7 @@
 name: test
 background: bg1.png
 planet: earth
-srcViewWidth: 10
+srcViewWidth: 500
 color: {
 	r: 1
 	g: 1

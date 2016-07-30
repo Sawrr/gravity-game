@@ -4,6 +4,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 /**
@@ -18,8 +19,8 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
  */
 public abstract class GameScreen extends ScreenAdapter {
 	/** Width, height of world */
-	public static final float WORLD_WIDTH = 0;
-	public static final float WORLD_HEIGHT = 0;
+	public static final float WORLD_WIDTH = 1280;
+	public static final float WORLD_HEIGHT = 1920;
 
 	/** Stage holds actors to be drawn */
 	private GameStage stage;
@@ -43,7 +44,7 @@ public abstract class GameScreen extends ScreenAdapter {
 		background = new ParallaxBackground(camera, batch);
 		stage = new GameStage(viewport, batch);
 
-		detector = new ScreenGestureDetector();
+		detector = new ScreenGestureDetector(new ScreenGestureAdapter());
 
 		mux = new InputMultiplexer();
 		mux.addProcessor(detector);
@@ -102,20 +103,11 @@ public abstract class GameScreen extends ScreenAdapter {
 	 *
 	 */
 	private class ScreenGestureDetector extends GestureDetector {
-		/** Parameters used by gesture detector */
-		private static final float HALF_TAP_SQUARE_SIZE = 0;
-		private static final float TAP_COUNT_INTERVAL = 0;
-		private static final float LONG_PRESS_DURATION = 0;
-		private static final float MAX_FLING_DELAY = 0;
-
-		/**
-		 * Constructs the detector with the default parameters.
-		 */
-		public ScreenGestureDetector() {
-			super(HALF_TAP_SQUARE_SIZE, TAP_COUNT_INTERVAL, LONG_PRESS_DURATION, MAX_FLING_DELAY,
-					detector.new ScreenGestureAdapter());
-		}
 		
+		public ScreenGestureDetector(GestureListener listener) {
+			super(listener);
+		}
+
 		@Override
 		public boolean keyDown(int keycode) {
 			GameScreen.this.keyDown(keycode);
@@ -139,31 +131,31 @@ public abstract class GameScreen extends ScreenAdapter {
 			GameScreen.this.touchUp(screenX, screenY, pointer, button);
 			return true;
 		}
+	}
+	
+	/**
+	 * Listens for gestures and sends them to GameScreen instance.
+	 * 
+	 * @author Sawyer Harris
+	 *
+	 */
+	private class ScreenGestureAdapter extends GestureAdapter {
+		@Override
+		public boolean pan(float x, float y, float deltaX, float deltaY) {
+			GameScreen.this.pan(x, y, deltaX, deltaY);
+			return true;
+		}
 
-		/**
-		 * Listens for gestures and sends them to GameScreen instance.
-		 * 
-		 * @author Sawyer Harris
-		 *
-		 */
-		private class ScreenGestureAdapter extends GestureAdapter {
-			@Override
-			public boolean pan(float x, float y, float deltaX, float deltaY) {
-				GameScreen.this.pan(x, y, deltaX, deltaY);
-				return true;
-			}
+		@Override
+		public boolean zoom(float initialDistance, float distance) {
+			GameScreen.this.zoom(initialDistance, distance);
+			return true;
+		}
 
-			@Override
-			public boolean zoom(float initialDistance, float distance) {
-				GameScreen.this.zoom(initialDistance, distance);
-				return true;
-			}
-
-			@Override
-			public boolean tap(float x, float y, int count, int button) {
-				GameScreen.this.tap(x, y, count, button);
-				return true;
-			}
+		@Override
+		public boolean tap(float x, float y, int count, int button) {
+			GameScreen.this.tap(x, y, count, button);
+			return true;
 		}
 	}
 }
