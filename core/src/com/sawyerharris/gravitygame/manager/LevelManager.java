@@ -24,6 +24,7 @@ import com.sawyerharris.gravitygame.game.PlayerStatus;
  *
  */
 public class LevelManager {
+	/** URL of level server */
 	private static final String LEVEL_SERVER = "http://localhost:8080/?";
 
 	/** Name of Preferences file to load */
@@ -50,6 +51,9 @@ public class LevelManager {
 	/** Custom levels preferences */
 	private Preferences prefs;
 
+	/** List of level indexes that correspond to ship style unlocks */
+	ArrayList<Integer> styleUnlockLevelIndexList;
+
 	/**
 	 * Loads levels.
 	 */
@@ -57,10 +61,18 @@ public class LevelManager {
 		reader = new JsonReader();
 		json = new Json();
 
+		prepareShipStyleUnlockList();
 		loadLevels();
 		loadLevelStatus();
 		loadCustomLevels();
 		loadOnlineLevels();
+	}
+
+	private void prepareShipStyleUnlockList() {
+		styleUnlockLevelIndexList = new ArrayList<Integer>();
+		styleUnlockLevelIndexList.add(1);
+		styleUnlockLevelIndexList.add(3);
+		styleUnlockLevelIndexList.add(6);
 	}
 
 	private void loadLevels() {
@@ -94,13 +106,11 @@ public class LevelManager {
 		prefs = Gdx.app.getPreferences(PREFS_NAME);
 		String customLevelStr = prefs.getString("customLevels");
 		try {
-			String[] list = reader.parse(customLevelStr).asStringArray();
-			for (String levelStr : list) {
-				Level level = json.fromJson(Level.class, levelStr);
-				customLevels.add(level);
-			}
-		} catch (Exception e) {
-			System.out.println("Unable to load custom levels: " + e.getMessage());
+			@SuppressWarnings("unchecked")
+			ArrayList<Level> list = json.fromJson(ArrayList.class, Level.class, customLevelStr);
+			customLevels = list;
+		} catch (SerializationException e) {
+			System.out.println("Unable to load custom levels.");
 			e.printStackTrace(System.out);
 		}
 	}
@@ -175,10 +185,6 @@ public class LevelManager {
 				status.flush();
 			}
 			// Check for ship style unlocks
-			ArrayList<Integer> styleUnlockLevelIndexList = new ArrayList<Integer>();
-			styleUnlockLevelIndexList.add(1);
-			styleUnlockLevelIndexList.add(3);
-			styleUnlockLevelIndexList.add(6);
 			for (Integer index : styleUnlockLevelIndexList) {
 				if (currentLevel == index) {
 					status.setHighestShipStyle(index);
@@ -244,6 +250,22 @@ public class LevelManager {
 	 */
 	public void setOnTutorialLevels(boolean onTutorialLevels) {
 		this.onTutorialLevels = onTutorialLevels;
+	}
+
+	/**
+	 * Saves a custom level at the given index.
+	 * @param index index in which to save
+	 * @param level custom level to save
+	 * @throws IndexOutOfBoundsException if index < 0 || index >= customLevels.size()
+	 */
+	public void saveLevel(int index, Level level) throws IndexOutOfBoundsException {
+		if (index == customLevels.size()) {
+			customLevels.add(index, level);
+		} else {
+			customLevels.set(index, level);	
+		}
+		prefs.putString("customLevels", json.toJson(customLevels));
+		prefs.flush();
 	}
 
 	/**
