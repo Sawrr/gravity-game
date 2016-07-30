@@ -111,7 +111,7 @@ public class GravityGame extends Game {
 		};
 		stage.addActor(item);
 		
-		TextureItem item2 = new TextureItem(250, 300, 250, 250, new Color(0, 1, 0.5f, 0.5f), Touchable.enabled, assets.getTestRegion());
+		TextureItem item2 = new TextureItem(250, 200, 125, 125, new Color(0, 1, 0.5f, 0.5f), Touchable.enabled, assets.getPlanet("earth"));
 		stage.addActor(item2);
 		
 		Color spColor = new Color(0, 1, 0.5f, 0.5f);

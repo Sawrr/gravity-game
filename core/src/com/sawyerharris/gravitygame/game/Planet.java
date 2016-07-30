@@ -5,9 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.sawyerharris.gravitygame.screen.GameScreen;
 
 /**
@@ -47,8 +44,7 @@ public class Planet extends Actor {
 	 * @param touchable
 	 *            Touchable.enabled, disabled, or childrenOnly
 	 */
-	public Planet(Vector2 position, int radius, TextureRegion textureRegion, boolean homePlanet, Touchable touchable) {
-		setTouchable(touchable);
+	public Planet(Vector2 position, int radius, TextureRegion textureRegion, boolean homePlanet) {
 		region = textureRegion;
 
 		sprite = new Sprite(textureRegion);
@@ -57,28 +53,6 @@ public class Planet extends Actor {
 		setPosition(position);
 		setRadius(radius);
 		setHomePlanet(homePlanet);
-
-		if (isTouchable()) {
-			addListener(new ActorGestureListener() {
-				@Override
-				public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
-					try {
-						setPosition(new Vector2(x, y));
-					} catch (IllegalArgumentException e) {
-						//
-					}
-				}
-
-				@Override
-				public void zoom(InputEvent event, float initialDistance, float distance) {
-					try {
-						setRadius((int) (distance - initialDistance));
-					} catch (IllegalArgumentException e) {
-						//
-					}
-				}
-			});
-		}
 	}
 
 	/**

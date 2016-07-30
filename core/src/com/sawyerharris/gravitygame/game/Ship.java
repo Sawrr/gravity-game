@@ -8,12 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.sawyerharris.gravitygame.screen.GameScreen;
-import com.sawyerharris.gravitygame.screen.LevelEditScreen;
-import com.sawyerharris.gravitygame.screen.LevelScreen;
-import com.sawyerharris.gravitygame.screen.LevelPlayScreen;
 
 /**
  * Represents a Ship actor.
@@ -27,8 +22,6 @@ public class Ship extends Actor {
 	/** Scalar for how much boost is applied */
 	private static final float BOOST_SCALAR = 0;
 
-	/** Screen that contains this ship */
-	private LevelScreen screen;
 	/** Initial position of ship */
 	private Vector2 initialPosition;
 	/** Ship velocity used for physics update */
@@ -39,58 +32,17 @@ public class Ship extends Actor {
 	private ShipSprite sprite;
 	/** Index of ship style in animation list */
 	private int style;
-	/** Whether ship can be fired */
-	private boolean flingable;
-	/** Whether ship can be moved */
-	private boolean pannable;
 	/** Amount of boost remaining */
 	private int boost;
 	/** If the ship is using boost */
 	private boolean boosting;
 
 	/**
-	 * Constructs a ship on the given LevelScreen.
-	 * 
-	 * @param scrn
-	 *            level screen
+	 * Constructs a ship.
 	 */
-	public Ship(LevelScreen scrn) {
+	public Ship() {
 		sprite = new ShipSprite();
 		reset();
-
-		screen = scrn;
-		if (screen instanceof LevelPlayScreen) {
-			flingable = true;
-			pannable = false;
-		} else if (screen instanceof LevelEditScreen) {
-			flingable = false;
-			pannable = true;
-		} else {
-			throw new IllegalArgumentException(
-					"Screen containing ship must be either LevelPlayScreen or LevelEditScreen");
-		}
-
-		addListener(new ActorGestureListener() {
-			private static final float FLING_SCALAR = 0f;
-
-			@Override
-			public void fling(InputEvent event, float velX, float velY, int button) {
-				if (flingable) {
-					LevelPlayScreen lps = (LevelPlayScreen) screen;
-					vel = new Vector2(velX, velY).scl(FLING_SCALAR);
-					lps.fire();
-				}
-			}
-
-			@Override
-			public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
-				if (pannable) {
-					Vector2 pos = new Vector2(x, y);
-					setInitialPosition(pos);
-					setPosition(pos);
-				}
-			}
-		});
 	}
 
 	/**
@@ -118,26 +70,6 @@ public class Ship extends Actor {
 		vel.set(0, 0);
 		stopBoosting();
 		boost = MAX_BOOST;
-	}
-
-	/**
-	 * Sets whether the ship can be fired.
-	 * 
-	 * @param fling
-	 *            true if flinging is enabled
-	 */
-	public void setFlingable(boolean fling) {
-		flingable = fling;
-	}
-
-	/**
-	 * Sets whether the ship can be moved.
-	 * 
-	 * @param pan
-	 *            true is panning is enabled
-	 */
-	public void setPannable(boolean pan) {
-		pannable = pan;
 	}
 
 	/**

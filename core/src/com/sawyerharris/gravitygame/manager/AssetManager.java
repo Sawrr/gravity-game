@@ -13,6 +13,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -47,15 +49,20 @@ public class AssetManager implements Disposable {
 	private FileHandle fontName;
 	private FreeTypeFontGenerator generator;
 	private FreeTypeFontParameter param;
-	
+
 	/** Textures from which texture regions will be extracted */
 	private Texture shipsTexture;
 	private Texture planetsTexture;
+
+	/** JSON Reader */
+	private JsonReader reader;
 
 	/**
 	 * Loads assets and prepares font generation.
 	 */
 	public AssetManager() {
+		reader = new JsonReader();
+
 		loadShips();
 		loadPlanets();
 		loadBackgrounds();
@@ -66,26 +73,81 @@ public class AssetManager implements Disposable {
 
 	private void loadShips() {
 		shipAnimations = new ArrayList<ObjectMap<String, Animation>>();
-		//shipsTexture = new Texture(SHIPS_TEXTURE_FILE);
+		shipsTexture = new Texture(SHIPS_TEXTURE_FILE);
+		FileHandle file = Gdx.files.internal(SHIPS_META_FILE);
+		JsonValue meta = reader.parse(file);
+
+		int spriteDim = meta.getInt("spriteDim");
+		int animDuration = meta.getInt("animDuration");
+		int numBoostFrames = meta.getInt("numBoostFrames");
+		String[] styles = meta.get("shipStyleList").asStringArray();
+
+		for (int i = 0; i < styles.length; i++) {
+			Animation def = new Animation(0, new TextureRegion(shipsTexture, 0, i * spriteDim, spriteDim, spriteDim));
+			TextureRegion[] boostFrames = new TextureRegion[numBoostFrames];
+			for (int j = 0; j < numBoostFrames; j++) {
+				boostFrames[j] = new TextureRegion(shipsTexture, spriteDim * (1 + j), i * spriteDim, spriteDim,
+						spriteDim);
+			}
+			Animation boost = new Animation(animDuration, boostFrames);
+			ObjectMap<String, Animation> map = new ObjectMap<String, Animation>();
+			map.put("default", def);
+			map.put("boost", boost);
+			shipAnimations.add(map);
+		}
 	}
 
 	private void loadPlanets() {
 		planets = new ObjectMap<String, TextureRegion>();
-		//planetsTexture = new Texture(PLANETS_TEXTURE_FILE);
+		planetsTexture = new Texture(PLANETS_TEXTURE_FILE);
+		FileHandle file = Gdx.files.internal(PLANETS_META_FILE);
+		JsonValue meta = reader.parse(file);
+
+		int spriteDim = meta.getInt("spriteDim");
+		String[] planetList = meta.get("planetList").asStringArray();
+
+		for (int i = 0; i < planetList.length; i++) {
+			TextureRegion planet = new TextureRegion(planetsTexture, 0, spriteDim * i, spriteDim, spriteDim);
+			planets.put(planetList[i], planet);
+		}
 	}
 
 	private void loadBackgrounds() {
 		backgrounds = new ObjectMap<String, Texture>();
+		FileHandle file = Gdx.files.internal(BACKGROUNDS_META_FILE);
+		JsonValue meta = reader.parse(file);
+
+		String[] bgs = meta.asStringArray();
+		for (int i = 0; i < bgs.length; i++) {
+			FileHandle bgFile = Gdx.files.internal(BACKGROUNDS_FOLDER + bgs[i]);
+			backgrounds.put(bgs[i], new Texture(bgFile));
+		}
 	}
 
 	private void loadSounds() {
 		sounds = new ObjectMap<String, Sound>();
+		FileHandle file = Gdx.files.internal(SOUNDS_META_FILE);
+		JsonValue meta = reader.parse(file);
+
+		String[] soundNames = meta.asStringArray();
+		for (int i = 0; i < soundNames.length; i++) {
+			FileHandle soundFile = Gdx.files.internal(SOUNDS_FOLDER + soundNames[i]);
+			sounds.put(soundNames[i], Gdx.audio.newSound(soundFile));
+		}
 	}
 
 	private void loadMusic() {
 		music = new ObjectMap<String, Music>();
+		FileHandle file = Gdx.files.internal(MUSIC_META_FILE);
+		JsonValue meta = reader.parse(file);
+
+		String[] musicNames = meta.asStringArray();
+		for (int i = 0; i < musicNames.length; i++) {
+			FileHandle musicFile = Gdx.files.internal(MUSIC_FOLDER + musicNames[i]);
+			music.put(musicNames[i], Gdx.audio.newMusic(musicFile));
+		}
 	}
-	
+
 	private void prepareFontGenerator() {
 		fonts = new ObjectMap<Integer, BitmapFont>();
 
@@ -94,6 +156,15 @@ public class AssetManager implements Disposable {
 		param = new FreeTypeFontParameter();
 	}
 
+	/**
+	 * Returns the ship animation of the given style and animation name.
+	 * 
+	 * @param style
+	 *            index of ship style
+	 * @param animName
+	 *            animation name
+	 * @return ship animation
+	 */
 	public Animation getShipAnimation(int style, String animName) {
 		if (style < 0 || style >= shipAnimations.size()) {
 			throw new IndexOutOfBoundsException("Style index out of bounds.");
@@ -104,6 +175,13 @@ public class AssetManager implements Disposable {
 		return shipAnimations.get(style).get(animName);
 	}
 
+	/**
+	 * Returns the planet texture region of the given name.
+	 * 
+	 * @param planetName
+	 *            name of planet
+	 * @return planet texture region
+	 */
 	public TextureRegion getPlanet(String planetName) {
 		if (!planets.containsKey(planetName)) {
 			throw new IllegalArgumentException("Planet name does not exist");
@@ -111,6 +189,13 @@ public class AssetManager implements Disposable {
 		return planets.get(planetName);
 	}
 
+	/**
+	 * Returns the background texture of the given file name.
+	 * 
+	 * @param backgroundName
+	 *            name of background image file
+	 * @return background texture
+	 */
 	public Texture getBackground(String backgroundName) {
 		if (!backgrounds.containsKey(backgroundName)) {
 			throw new IllegalArgumentException("Background name does not exist");
@@ -118,6 +203,13 @@ public class AssetManager implements Disposable {
 		return backgrounds.get(backgroundName);
 	}
 
+	/**
+	 * Returns the sound of given file name.
+	 * 
+	 * @param soundName
+	 *            name of sound file
+	 * @return sound
+	 */
 	public Sound getSound(String soundName) {
 		if (!sounds.containsKey(soundName)) {
 			throw new IllegalArgumentException("Sound name does not exist");
@@ -125,6 +217,13 @@ public class AssetManager implements Disposable {
 		return sounds.get(soundName);
 	}
 
+	/**
+	 * Returns the music of given file name.
+	 * 
+	 * @param musicName
+	 *            name of sound file
+	 * @return music
+	 */
 	public Music getMusic(String musicName) {
 		if (!music.containsKey(musicName)) {
 			throw new IllegalArgumentException("Music does not exist");
@@ -132,6 +231,14 @@ public class AssetManager implements Disposable {
 		return music.get(musicName);
 	}
 
+	/**
+	 * Returns a bitmap font of the given font size. If a font of the given size
+	 * does not exist, it will be created.
+	 * 
+	 * @param size
+	 *            font size
+	 * @return bitmap font
+	 */
 	public BitmapFont getFont(int size) {
 		if (!fonts.containsKey(size)) {
 			param.size = size;
@@ -140,30 +247,25 @@ public class AssetManager implements Disposable {
 		return fonts.get(size);
 	}
 
-	public TextureRegion getTestRegion() {
-		Texture texture = new Texture(Gdx.files.internal("test.png"));
-		return new TextureRegion(texture);
-	}
-
 	@Override
 	public void dispose() {
-		//shipsTexture.dispose();
+		shipsTexture.dispose();
 		shipAnimations.clear();
-		//planetsTexture.dispose();
+		planetsTexture.dispose();
 		planets.clear();
-		for (ObjectMap.Entry entry : backgrounds) {
+		for (ObjectMap.Entry<String, Texture> entry : backgrounds) {
 			Texture text = (Texture) entry.value;
 			text.dispose();
 		}
-		for (ObjectMap.Entry entry : sounds) {
+		for (ObjectMap.Entry<String, Sound> entry : sounds) {
 			Sound sound = (Sound) entry.value;
 			sound.dispose();
 		}
-		for (ObjectMap.Entry entry : music) {
+		for (ObjectMap.Entry<String, Music> entry : music) {
 			Music music = (Music) entry.value;
 			music.dispose();
 		}
-		for (ObjectMap.Entry entry : fonts) {
+		for (ObjectMap.Entry<Integer, BitmapFont> entry : fonts) {
 			BitmapFont font = (BitmapFont) entry.value;
 			font.dispose();
 		}

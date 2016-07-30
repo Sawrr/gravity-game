@@ -1,0 +1,15 @@
+{
+
+  "spriteDim": 512,
+
+  "animDuration": 100,
+
+  "numBoostFrames": 2,
+
+  "shipStyleList": [
+
+      "default",
+"candy","sharpBlue","sharpPink"
+  ]
+
+}

@@ -1,0 +1,9 @@
+{
+  "spriteDim": 512,
+
+  "planetList": [
+
+      "earth","mars"
+  ]
+
+}
