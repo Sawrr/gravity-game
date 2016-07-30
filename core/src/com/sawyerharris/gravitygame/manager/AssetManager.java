@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
- * Loads and retrieves game assets including images, sounds, and fonts.
+ * Loads and retrieves game assets including images, audio, and fonts.
  * 
  * @author Sawyer Harris
  *

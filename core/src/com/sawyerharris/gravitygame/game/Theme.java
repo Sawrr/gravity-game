@@ -25,7 +25,7 @@ public class Theme {
 	 */
 	public Theme() {
 	}
-
+	
 	/**
 	 * Gets the name of the theme.
 	 * 
@@ -69,5 +69,11 @@ public class Theme {
 	 */
 	public Color getColor() {
 		return color;
+	}
+
+	@Override
+	public String toString() {
+		return "Theme [name=" + name + ", background=" + background + ", planet=" + planet + ", srcViewWidth="
+				+ srcViewWidth + ", color=" + color + "]";
 	}
 }

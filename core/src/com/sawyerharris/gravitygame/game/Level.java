@@ -30,7 +30,7 @@ public class Level {
 	 */
 	public Level() {
 	}
-
+	
 	/**
 	 * Constructs a custom level with the given parameters. Custom levels have
 	 * no message and use the default theme.
@@ -101,6 +101,17 @@ public class Level {
 	public ArrayList<PlanetMeta> getPlanets() {
 		return planets;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (PlanetMeta planet : planets) {
+			sb.append(planet.toString());
+			sb.append(" ");
+		}
+		return "Level [name=" + name + ", message=" + message + ", type=" + type + ", theme=" + theme + ", shipOrigin="
+				+ shipOrigin + ", planets= [" + sb.toString() + "]]";
+	}
 
 	/**
 	 * A basic representation of a planet, used for constructing Planet actors.
@@ -115,7 +126,7 @@ public class Level {
 		private int radius;
 		/** If the planet should be a home planet */
 		private boolean homePlanet;
-
+		
 		/**
 		 * Gets the initial position of the planet.
 		 * 
@@ -141,6 +152,11 @@ public class Level {
 		 */
 		public boolean isHomePlanet() {
 			return homePlanet;
+		}
+
+		@Override
+		public String toString() {
+			return "PlanetMeta [position=" + position + ", radius=" + radius + ", homePlanet=" + homePlanet + "]";
 		}
 	}
 

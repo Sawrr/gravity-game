@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.sawyerharris.gravitygame.manager.AssetManager;
@@ -15,7 +14,6 @@ import com.sawyerharris.gravitygame.screen.GameStage;
 import com.sawyerharris.gravitygame.screen.LevelEditScreen;
 import com.sawyerharris.gravitygame.screen.LevelPlayScreen;
 import com.sawyerharris.gravitygame.screen.MenuScreen;
-import com.sawyerharris.gravitygame.ui.BorderedItem;
 import com.sawyerharris.gravitygame.ui.ScrollPanel;
 import com.sawyerharris.gravitygame.ui.TextItem;
 import com.sawyerharris.gravitygame.ui.TextureItem;
@@ -49,7 +47,7 @@ public class GravityGame extends Game {
 
 	// Begin test
 	private Stage stage;
-	
+
 	/**
 	 * Gets the singleton game instance.
 	 * 
@@ -73,6 +71,24 @@ public class GravityGame extends Game {
 	}
 
 	/**
+	 * Returns the theme manager so themes may be accessed.
+	 * 
+	 * @return themes
+	 */
+	public ThemeManager getThemes() {
+		return themes;
+	}
+	
+	/**
+	 * Returns the level manager so levels may be accessed, saved, and uploaded.
+	 * 
+	 * @return levels
+	 */
+	public LevelManager getLevels() {
+		return levels;
+	}
+
+	/**
 	 * Returns the player status.
 	 * 
 	 * @return status
@@ -91,31 +107,33 @@ public class GravityGame extends Game {
 
 		batch = new SpriteBatch();
 
-		//menuScreen = new MenuScreen(batch);
-		//levelEditScreen = new LevelEditScreen(batch);
-		//levelPlayScreen = new LevelPlayScreen(batch);
+		// menuScreen = new MenuScreen(batch);
+		// levelEditScreen = new LevelEditScreen(batch);
+		// levelPlayScreen = new LevelPlayScreen(batch);
 
+		status = new PlayerStatus();
+		
 		assets = new AssetManager();
 		levels = new LevelManager();
 		themes = new ThemeManager();
 
-		status = new PlayerStatus();
-		
 		// Begin testing
 		stage = new GameStage();
-		TextItem item = new TextItem(250, 50, 250, 100, new Color(1, 0, 0.5f, 0.5f), Touchable.enabled, "My Custom Level!\nAuthor: Sawyer\nUploaded: 7/26/2016", 18) {
+		TextItem item = new TextItem(250, 50, 250, 100, new Color(1, 0, 0.5f, 0.5f), Touchable.enabled,
+				"My Custom Level!\nAuthor: Sawyer\nUploaded: 7/26/2016", 18) {
 			@Override
 			public void click() {
 				System.out.println("kekboz");
 			}
 		};
 		stage.addActor(item);
-		
-		TextureItem item2 = new TextureItem(250, 200, 125, 125, new Color(0, 1, 0.5f, 0.5f), Touchable.enabled, assets.getPlanet("earth"));
+
+		TextureItem item2 = new TextureItem(250, 200, 125, 125, new Color(0, 1, 0.5f, 0.5f), Touchable.enabled,
+				assets.getPlanet("earth"));
 		stage.addActor(item2);
-		
+
 		Color spColor = new Color(0, 1, 0.5f, 0.5f);
-		ScrollPanel sp = new ScrollPanel(25, 250, 200, 400, spColor, 100){
+		ScrollPanel sp = new ScrollPanel(25, 250, 200, 400, spColor, 100) {
 			@Override
 			public void click(int index) {
 				System.out.println(index);
@@ -146,7 +164,7 @@ public class GravityGame extends Game {
 		sp.addTextItem("two", 18);
 		sp.addTextItem("one", 18);
 		stage.addActor(sp);
-		
+
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -160,8 +178,8 @@ public class GravityGame extends Game {
 	public void render() {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
+
 		stage.draw();
-		//super.render();
+		// super.render();
 	}
 }

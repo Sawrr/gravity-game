@@ -127,6 +127,17 @@ public class PlayerStatus {
 	public void setSoundOff(boolean soundOff) {
 		this.soundOff = soundOff;
 	}
+	
+	/**
+	 * Completely resets the player's progress in the game.
+	 */
+	public void resetProgress() {
+		highestLevel = 0;
+		highestShipStyle = 0;
+		shipStyle = 0;
+		tutorialCompleted = false;
+		flush();
+	}
 
 	/**
 	 * Flushes changes to the preferences file.
@@ -139,5 +150,4 @@ public class PlayerStatus {
 		prefs.putBoolean("soundOff", soundOff);
 		prefs.flush();
 	}
-
 }

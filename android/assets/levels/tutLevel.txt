@@ -1,0 +1,20 @@
+{
+name: test
+message: msg
+type: OFFICIAL
+theme: themeOne
+shipOrigin: {
+	x: 25
+	y: 50
+}
+planets: [
+	{
+		position: {
+			x: 25
+			y: 25
+		}
+		radius: 34
+		homePlanet: true
+	}
+]
+}

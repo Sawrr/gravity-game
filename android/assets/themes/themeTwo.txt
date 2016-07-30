@@ -1,0 +1,12 @@
+{
+name: test
+background: bg1.png
+planet: earth
+srcViewWidth: 10
+color: {
+	r: 1
+	g: 0.5
+	b: 1
+	a: 1
+}
+}
