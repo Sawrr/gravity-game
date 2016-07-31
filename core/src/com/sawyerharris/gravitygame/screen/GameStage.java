@@ -10,25 +10,38 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.sawyerharris.gravitygame.ui.BorderedItem;
 import com.sawyerharris.gravitygame.ui.ScrollPanel;
 
+/**
+ * An extended stage that provides functionality for drawing UI items with a
+ * shape renderer.
+ * 
+ * @author Sawyer Harris
+ *
+ */
 public class GameStage extends Stage {
-
+	/** Shape renderer */
 	private ShapeRenderer shapeRenderer;
+	/** UI items to be drawn with shape renderer */
 	private ArrayList<BorderedItem> items;
-	
-	public GameStage() {
-		shapeRenderer = new ShapeRenderer();
-		shapeRenderer.setAutoShapeType(true);
-		items = new ArrayList<BorderedItem>();
-	}
-	
-	public GameStage(Viewport viewport, Batch batch) {
+
+	/**
+	 * Constructs the super class stage and the items list.
+	 * 
+	 * @param viewport
+	 * @param batch
+	 * @param renderer
+	 */
+	public GameStage(Viewport viewport, Batch batch, ShapeRenderer renderer) {
 		super(viewport, batch);
-		shapeRenderer = new ShapeRenderer();
-		shapeRenderer.setAutoShapeType(true);
-		shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
+		shapeRenderer = renderer;
 		items = new ArrayList<BorderedItem>();
 	}
 
+	/**
+	 * If actor being added is a UI element, then add it to the list of UI items
+	 * to be drawn with shape renderer. Then call super.addActor(actor).
+	 * 
+	 * @param actor
+	 */
 	@Override
 	public void addActor(Actor actor) {
 		if (actor instanceof BorderedItem) {
@@ -41,13 +54,16 @@ public class GameStage extends Stage {
 		}
 		super.addActor(actor);
 	}
-	
+
+	/**
+	 * Draws UI shapes first, then draws other elements on top.
+	 */
 	@Override
 	public void draw() {
 		drawItems();
 		super.draw();
 	}
-	
+
 	private void drawItems() {
 		shapeRenderer.setProjectionMatrix(getCamera().combined);
 		shapeRenderer.begin();

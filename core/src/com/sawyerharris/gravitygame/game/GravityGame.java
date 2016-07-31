@@ -2,21 +2,15 @@ package com.sawyerharris.gravitygame.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.sawyerharris.gravitygame.manager.AssetManager;
 import com.sawyerharris.gravitygame.manager.LevelManager;
 import com.sawyerharris.gravitygame.manager.ThemeManager;
-import com.sawyerharris.gravitygame.screen.GameStage;
 import com.sawyerharris.gravitygame.screen.LevelEditScreen;
 import com.sawyerharris.gravitygame.screen.LevelPlayScreen;
 import com.sawyerharris.gravitygame.screen.MenuScreen;
-import com.sawyerharris.gravitygame.ui.ScrollPanel;
-import com.sawyerharris.gravitygame.ui.TextItem;
-import com.sawyerharris.gravitygame.ui.TextureItem;
 
 /**
  * Singleton Game class. An application listener that delegates the render
@@ -31,7 +25,9 @@ public class GravityGame extends Game {
 
 	/** Sprite batch that all screens will use */
 	private SpriteBatch batch;
-
+	/** Shape renderer that all screens will use */
+	private ShapeRenderer renderer;
+		
 	/** Game screens */
 	private MenuScreen menuScreen;
 	private LevelEditScreen levelEditScreen;
@@ -45,6 +41,34 @@ public class GravityGame extends Game {
 	/** Player status */
 	private PlayerStatus status;
 
+	@Override
+	public void create() {
+		// Make sure create() is only called once
+		if (game != null) {
+			throw new IllegalStateException("GravityGame.create() can only be called once.");
+		}
+		game = this;
+
+		status = new PlayerStatus();
+		
+		assets = new AssetManager();
+		levels = new LevelManager();
+		themes = new ThemeManager();
+		
+		batch = new SpriteBatch();
+		renderer = new ShapeRenderer();
+		renderer.setAutoShapeType(true);
+
+		levelEditScreen = new LevelEditScreen(batch, renderer);
+		levelPlayScreen = new LevelPlayScreen(batch, renderer);
+		menuScreen = new MenuScreen(batch, renderer);
+
+		// Catch android back button in input listeners
+		Gdx.input.setCatchBackKey(true);
+		
+		setScreenToMenu();
+	}
+
 	/**
 	 * Gets the singleton game instance.
 	 * 
@@ -57,7 +81,12 @@ public class GravityGame extends Game {
 		}
 		return game;
 	}
-
+	
+	public void setScreenToMenu() {
+		setScreen(menuScreen);
+		Gdx.input.setInputProcessor(menuScreen.getMux());
+	}
+	
 	/**
 	 * Returns the asset manager so game assets may be accessed.
 	 * 
@@ -93,31 +122,7 @@ public class GravityGame extends Game {
 	public PlayerStatus getPlayerStatus() {
 		return status;
 	}
-
-	@Override
-	public void create() {
-		// Make sure create() is only called once
-		if (game != null) {
-			throw new IllegalStateException("GravityGame.create() can only be called once.");
-		}
-		game = this;
-
-		status = new PlayerStatus();
-		
-		assets = new AssetManager();
-		levels = new LevelManager();
-		themes = new ThemeManager();
-		
-		batch = new SpriteBatch();
-
-		menuScreen = new MenuScreen(batch);
-		levelEditScreen = new LevelEditScreen(batch);
-		levelPlayScreen = new LevelPlayScreen(batch);
-
-		// Test
-		setScreen(menuScreen);
-	}
-
+	
 	@Override
 	public void dispose() {
 		batch.dispose();

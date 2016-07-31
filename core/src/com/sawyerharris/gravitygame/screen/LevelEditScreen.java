@@ -1,13 +1,14 @@
 package com.sawyerharris.gravitygame.screen;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class LevelEditScreen extends LevelScreen {
 	/** Level name that will be applied if the user saves */
 	private String customLevelName;
 	
-	public LevelEditScreen(Batch batch) {
-		super(batch);
+	public LevelEditScreen(Batch batch, ShapeRenderer renderer) {
+		super(batch, renderer);
 		// TODO Auto-generated constructor stub
 	}
 

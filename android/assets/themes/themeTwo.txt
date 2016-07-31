@@ -1,8 +1,8 @@
 {
-name: test
-background: bg1.png
+name: test2
+background: bg2.png
 planet: earth
-srcViewWidth: 10
+srcViewWidth: 200
 color: {
 	r: 1
 	g: 0.5

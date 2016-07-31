@@ -1,11 +1,22 @@
 package com.sawyerharris.gravitygame.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.sawyerharris.gravitygame.game.GravityGame;
+import com.sawyerharris.gravitygame.ui.TextItem;
 
 /**
  * An abstract screen used by the game. Uses a stage, camera, viewport,
@@ -22,32 +33,72 @@ public abstract class GameScreen extends ScreenAdapter {
 	public static final float WORLD_WIDTH = 1280;
 	public static final float WORLD_HEIGHT = 1920;
 
+	/** Batch to draw on */
+	private final Batch batch;
+	/** Shape renderer for drawing UI */
+	private final ShapeRenderer renderer;
 	/** Stage holds actors to be drawn */
-	private GameStage stage;
+	private final GameStage stage;
 	/** Camera manages the location and zoom of the world to be drawn */
-	private GameCamera camera;
+	private final GameCamera camera;
 	/** Viewport sets the camera's width, height based on the physical screen */
-	private ExtendViewport viewport;
+	private final ExtendViewport viewport;
 	/** Background provides parallax effect on space background */
-	private ParallaxBackground background;
+	private final ParallaxBackground background;
 	/** Mux holds hierarchy of input processors */
-	private InputMultiplexer mux;
+	private final InputMultiplexer mux;
 	/** Detector passes along gesture input on the screen */
-	private ScreenGestureDetector detector;
+	private final ScreenGestureDetector detector;
 
 	/**
 	 * Constructs the camera, viewport, background, stage, detector, and mux.
 	 */
-	public GameScreen(Batch batch) {
+	public GameScreen(Batch bat, ShapeRenderer rend) {
+		batch = bat;
+		renderer = rend;
 		camera = new GameCamera();
 		viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
 		background = new ParallaxBackground(camera, batch);
-		stage = new GameStage(viewport, batch);
-
+		stage = new GameStage(viewport, batch, renderer);
+		
 		detector = new ScreenGestureDetector(new ScreenGestureAdapter());
 
 		mux = new InputMultiplexer();
+		mux.addProcessor(stage);
 		mux.addProcessor(detector);
+	}
+
+	@Override
+	public void render(float delta) {
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		camera.autoMove();
+		camera.update();
+		
+		//background.draw();
+		stage.draw();
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		viewport.update(width, height);
+	}
+
+	
+	public GameStage getStage() {
+		return stage;
+	}
+
+	public GameCamera getCamera() {
+		return camera;
+	}
+
+	public ParallaxBackground getBackground() {
+		return background;
+	}
+
+	public InputMultiplexer getMux() {
+		return mux;
 	}
 
 	/**
@@ -84,18 +135,7 @@ public abstract class GameScreen extends ScreenAdapter {
 	 * Called when the touch on the screen is released.
 	 */
 	public abstract void touchUp(int screenX, int screenY, int pointer, int button);
-
-	@Override
-	public void render(float delta) {
-		background.draw();
-		stage.draw();
-	}
-
-	@Override
-	public void resize(int width, int height) {
-
-	}
-
+	
 	/**
 	 * Detects gestures on the screen and hands them to the GameScreen instance.
 	 * 
@@ -122,6 +162,7 @@ public abstract class GameScreen extends ScreenAdapter {
 
 		@Override
 		public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+			System.out.println("touched");
 			GameScreen.this.touchDown(screenX, screenY, pointer, button);
 			return true;
 		}

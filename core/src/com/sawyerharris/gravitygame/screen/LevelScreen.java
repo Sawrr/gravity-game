@@ -3,6 +3,7 @@ package com.sawyerharris.gravitygame.screen;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.sawyerharris.gravitygame.game.Level;
 import com.sawyerharris.gravitygame.game.Planet;
 import com.sawyerharris.gravitygame.game.Ship;
@@ -20,8 +21,8 @@ public abstract class LevelScreen extends GameScreen {
 	private Overlay overlay;
 	private Level level;
 	
-	public LevelScreen(Batch batch) {
-		super(batch);
+	public LevelScreen(Batch batch, ShapeRenderer renderer) {
+		super(batch, renderer);
 		// TODO Auto-generated constructor stub
 	}
 	

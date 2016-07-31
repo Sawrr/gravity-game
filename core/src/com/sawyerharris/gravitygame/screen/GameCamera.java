@@ -1,7 +1,9 @@
 package com.sawyerharris.gravitygame.screen;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * An OrthographicCamera that provides methods for smoothly auto moving to a
@@ -11,7 +13,8 @@ import com.badlogic.gdx.math.Vector2;
  *
  */
 public class GameCamera extends OrthographicCamera {
-	private static final float MAX_ZOOM = 0;
+	/** Maximum zoom level */
+	private static final float MIN_ZOOM = 0.2f;
 
 	/** Target camera values */
 	private Vector2 moveTarget;
@@ -25,16 +28,20 @@ public class GameCamera extends OrthographicCamera {
 	 * Default constructor.
 	 */
 	public GameCamera() {
-
+		moveTarget = new Vector2(720, 960);
+		zoomTarget = 1f;
+		zoom = 0.5f;
+		mode = MoveMode.LOGARITHMIC;
+		speed = 1/10f;
 	}
 
 	/**
-	 * Pans the camera by the vector direction.
+	 * Translate the camera by the vector direction.
 	 * 
 	 * @param direction
 	 */
-	public void pan(Vector2 direction) {
-		translate(direction);
+	public void translate(Vector2 direction) {
+		super.translate(direction);
 		clamp();
 	}
 
@@ -59,6 +66,16 @@ public class GameCamera extends OrthographicCamera {
 	}
 
 	/**
+	 * Sets the camera's zoom level.
+	 * 
+	 * @param zoom
+	 */
+	public void setZoom(float zoom) {
+		this.zoom = zoom;
+		clamp();
+	}
+
+	/**
 	 * Returns a new Vector2 at the camera's position.
 	 * 
 	 * @return Vector2 of position
@@ -68,11 +85,28 @@ public class GameCamera extends OrthographicCamera {
 	}
 
 	/**
+	 * Sets the camera's position.
+	 * 
+	 * @param pos
+	 *            position
+	 */
+	public void setPosition(Vector2 pos) {
+		if (pos == null) {
+			throw new NullPointerException();
+		}
+		position.set(pos, position.z);
+		clamp();
+	}
+
+	/**
 	 * Sets the position the camera should move to.
 	 * 
 	 * @param target
 	 */
 	public void setMoveTarget(Vector2 target) {
+		if (target == null) {
+			throw new NullPointerException();
+		}
 		moveTarget = target;
 	}
 
@@ -108,7 +142,36 @@ public class GameCamera extends OrthographicCamera {
 	 * camera is at the desired location.
 	 */
 	public void autoMove() {
-
+		if (position.dst(new Vector3(moveTarget, position.z)) > 1f) {
+			System.out.println("translating");
+			Vector2 dist = null;
+			switch (mode) {
+			case LINEAR:
+				dist = new Vector2(moveTarget).sub(position.x, position.y).nor().scl(speed);
+				break;
+			case LOGARITHMIC:
+				dist = new Vector2(moveTarget).sub(position.x, position.y).scl(speed);
+				break;
+			}
+			translate(dist);
+		}
+		if (Math.abs(zoom - zoomTarget) > 0.000001f) {
+			System.out.println("zooming");
+			float amount = 0;
+			switch (mode) {
+			case LINEAR:
+				if (zoomTarget > zoom) {
+					amount = 0.01f;
+				} else {
+					amount = -0.01f;
+				}
+				break;
+			case LOGARITHMIC:
+				amount = (zoomTarget - zoom) * speed;
+				break;
+			}
+			zoom(amount);
+		}
 	}
 
 	/**
@@ -116,7 +179,13 @@ public class GameCamera extends OrthographicCamera {
 	 * allowed by the world.
 	 */
 	private void clamp() {
-
+		float effectiveViewportWidth = viewportWidth * zoom;
+		float effectiveViewportHeight = viewportHeight * zoom;
+		position.x = MathUtils.clamp(position.x, effectiveViewportWidth / 2f,
+				viewportWidth - effectiveViewportWidth / 2f);
+		position.y = MathUtils.clamp(position.y, effectiveViewportHeight / 2f,
+				viewportHeight - effectiveViewportHeight / 2f);
+		zoom = MathUtils.clamp(zoom, MIN_ZOOM, 1f);
 	}
 
 	/**
@@ -126,6 +195,6 @@ public class GameCamera extends OrthographicCamera {
 	 *
 	 */
 	public enum MoveMode {
-		LINEAR, EXPONENTIAL
+		LINEAR, LOGARITHMIC
 	}
 }
