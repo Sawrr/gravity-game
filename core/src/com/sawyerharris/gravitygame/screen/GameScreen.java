@@ -66,16 +66,18 @@ public abstract class GameScreen extends ScreenAdapter {
 		mux = new InputMultiplexer();
 		mux.addProcessor(stage);
 		mux.addProcessor(detector);
+		
+		camera.setPosition(0,0);
 	}
 
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		camera.autoMove();
+		//camera.autoMove();
 		camera.update();
 		
-		//background.draw();
+		background.draw();
 		stage.draw();
 	}
 
@@ -162,7 +164,6 @@ public abstract class GameScreen extends ScreenAdapter {
 
 		@Override
 		public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-			System.out.println("touched");
 			GameScreen.this.touchDown(screenX, screenY, pointer, button);
 			return true;
 		}

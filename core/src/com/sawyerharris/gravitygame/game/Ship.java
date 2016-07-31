@@ -87,7 +87,8 @@ public class Ship extends Actor {
 	 * @param pos
 	 */
 	public void setPosition(Vector2 pos) {
-		if (pos.x < 0 || pos.x > GameScreen.WORLD_WIDTH || pos.y < 0 || pos.y > GameScreen.WORLD_HEIGHT) {
+		if (pos.x < -GameScreen.WORLD_WIDTH / 2 || pos.x > GameScreen.WORLD_WIDTH / 2
+				|| pos.y < -GameScreen.WORLD_HEIGHT / 2 || pos.y > GameScreen.WORLD_HEIGHT / 2) {
 			throw new IllegalArgumentException("Ship position out of bounds.");
 		}
 		setPosition(pos.x, pos.y);

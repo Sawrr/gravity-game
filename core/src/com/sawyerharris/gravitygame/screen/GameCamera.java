@@ -23,14 +23,17 @@ public class GameCamera extends OrthographicCamera {
 	private MoveMode mode;
 	/** Speed parameter for auto move */
 	private float speed;
+	
+	private boolean autoMoving;
+	private boolean autoZooming;
 
 	/**
 	 * Default constructor.
 	 */
 	public GameCamera() {
-		moveTarget = new Vector2(720, 960);
+		setMoveTarget(new Vector2(0,0));
 		zoomTarget = 1f;
-		zoom = 0.5f;
+		zoom = 0.8f;
 		mode = MoveMode.LOGARITHMIC;
 		speed = 1/10f;
 	}
@@ -94,7 +97,17 @@ public class GameCamera extends OrthographicCamera {
 		if (pos == null) {
 			throw new NullPointerException();
 		}
-		position.set(pos, position.z);
+		setPosition(pos.x, pos.y);
+	}
+	
+	/**
+	 * Sets the camera's position.
+	 * 
+	 * @param x
+	 * @param y
+	 */
+	public void setPosition(float x, float y) {
+		position.set(x, y, position.z);
 		clamp();
 	}
 
@@ -108,6 +121,7 @@ public class GameCamera extends OrthographicCamera {
 			throw new NullPointerException();
 		}
 		moveTarget = target;
+		autoMoving = true;
 	}
 
 	/**
@@ -117,6 +131,7 @@ public class GameCamera extends OrthographicCamera {
 	 */
 	public void setZoomTarget(float target) {
 		zoomTarget = target;
+		autoZooming = true;
 	}
 
 	/**
@@ -142,7 +157,7 @@ public class GameCamera extends OrthographicCamera {
 	 * camera is at the desired location.
 	 */
 	public void autoMove() {
-		if (position.dst(new Vector3(moveTarget, position.z)) > 1f) {
+		if (autoMoving && position.dst(new Vector3(moveTarget, position.z)) > 1f) {
 			System.out.println("translating");
 			Vector2 dist = null;
 			switch (mode) {
@@ -154,8 +169,10 @@ public class GameCamera extends OrthographicCamera {
 				break;
 			}
 			translate(dist);
+		} else {
+			autoMoving = false;
 		}
-		if (Math.abs(zoom - zoomTarget) > 0.000001f) {
+		if (autoZooming && Math.abs(zoom - zoomTarget) > 0.000001f) {
 			System.out.println("zooming");
 			float amount = 0;
 			switch (mode) {
@@ -171,6 +188,8 @@ public class GameCamera extends OrthographicCamera {
 				break;
 			}
 			zoom(amount);
+		} else {
+			autoZooming = false;
 		}
 	}
 
@@ -181,10 +200,10 @@ public class GameCamera extends OrthographicCamera {
 	private void clamp() {
 		float effectiveViewportWidth = viewportWidth * zoom;
 		float effectiveViewportHeight = viewportHeight * zoom;
-		position.x = MathUtils.clamp(position.x, effectiveViewportWidth / 2f,
-				viewportWidth - effectiveViewportWidth / 2f);
-		position.y = MathUtils.clamp(position.y, effectiveViewportHeight / 2f,
-				viewportHeight - effectiveViewportHeight / 2f);
+		position.x = MathUtils.clamp(position.x, (effectiveViewportWidth - viewportWidth)/ 2f,
+				(viewportWidth - effectiveViewportWidth) / 2f);
+		position.y = MathUtils.clamp(position.y, (effectiveViewportHeight - viewportHeight)/ 2f,
+				(viewportHeight - effectiveViewportHeight) / 2f);
 		zoom = MathUtils.clamp(zoom, MIN_ZOOM, 1f);
 	}
 

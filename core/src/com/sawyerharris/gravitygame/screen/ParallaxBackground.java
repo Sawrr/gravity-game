@@ -15,7 +15,7 @@ import com.sawyerharris.gravitygame.game.Theme;
  *
  */
 public class ParallaxBackground {
-	private static final float PARA_SCALAR = 0.2f;
+	private static final float PARA_SCALAR = 0.1f;
 	/** Batch for drawing background */
 	private Batch batch;
 	/** Camera's position required for parallax */
@@ -86,7 +86,7 @@ public class ParallaxBackground {
 		region.setRegion(srcX, srcY, srcWidth, srcHeight);
 		
 		batch.begin();
-		batch.draw(region, 0, 0, camera.viewportWidth, camera.viewportHeight);
+		batch.draw(region, camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2, camera.viewportWidth, camera.viewportHeight);
 		batch.end();
 	}
 }

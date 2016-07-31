@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -46,19 +47,23 @@ public class MenuScreen extends GameScreen {
 		
 		
 		// Test
-		TextItem item = new TextItem(0, 0, 400, 400, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "Hello", 30) {
+		TextItem item = new TextItem(-GameScreen.WORLD_WIDTH / 2, -GameScreen.WORLD_HEIGHT / 2, 400, 400, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "Hello", 30) {
 			@Override
 			public void click() {
 				System.out.println("click");
 			}
 		};
-		TextItem item2 = new TextItem(0, getCamera().viewportHeight - 400, 400, 400, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "Hello", 30);
-		TextItem item3 = new TextItem(getCamera().viewportWidth - 400, getCamera().viewportHeight - 400, 400, 400, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "Hello", 30);
-		TextItem item4 = new TextItem(getCamera().viewportWidth - 400, 0, 400, 400, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "Hello", 30);
+		TextItem item2 = new TextItem(-GameScreen.WORLD_WIDTH / 2,  GameScreen.WORLD_HEIGHT / 2 - 400, 400, 400, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "Hello", 30);
+		TextItem item3 = new TextItem(GameScreen.WORLD_WIDTH / 2 - 400,  GameScreen.WORLD_HEIGHT / 2 - 400, 400, 400, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "Hello", 30);
+		TextItem item4 = new TextItem(GameScreen.WORLD_WIDTH / 2 - 400,  -GameScreen.WORLD_HEIGHT / 2, 400, 400, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "Hello", 30);
+		
+		TextItem center = new TextItem(0, 0, 1, 1, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "", 30);
+		
 		getStage().addActor(item);
 		getStage().addActor(item2);
 		getStage().addActor(item3);
 		getStage().addActor(item4);
+		getStage().addActor(center);
 
 	}
 
@@ -97,6 +102,7 @@ public class MenuScreen extends GameScreen {
 
 	@Override
 	public void touchDown(int screenX, int screenY, int pointer, int button) {
+		System.out.println(getCamera().unproject(new Vector3(screenX, screenY, 0)));
 	}
 
 	@Override
