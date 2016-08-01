@@ -1,5 +1,6 @@
 package com.sawyerharris.gravitygame.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -81,12 +82,16 @@ public class ParallaxBackground {
 		float norY = 1 - camera.position.y / camera.viewportHeight - 0.5f;
 		
 		int srcX = (int) ((width  - srcWidth) / 2 + norX * PARA_SCALAR * width);
-		int srcY = (int) ((height - srcHeight) / 2 + norY * PARA_SCALAR * height / aspectRatio);
+		int srcY = (int) ((height - srcHeight) / 2);// + norY * PARA_SCALAR * height / aspectRatio);
+		
+		System.out.println(srcX + " " + srcY + " " + srcWidth + " " + srcHeight);
+		System.out.println(camera.viewportWidth + " " + camera.viewportHeight);
+		System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
 		
 		region.setRegion(srcX, srcY, srcWidth, srcHeight);
 		
 		batch.begin();
-		batch.draw(region, camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2, camera.viewportWidth, camera.viewportHeight);
+		batch.draw(region, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch.end();
 	}
 }

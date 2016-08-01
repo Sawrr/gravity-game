@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -60,6 +61,7 @@ public abstract class GameScreen extends ScreenAdapter {
 		viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
 		background = new ParallaxBackground(camera, batch);
 		stage = new GameStage(viewport, batch, renderer);
+		System.out.println(batch.getProjectionMatrix());
 		
 		detector = new ScreenGestureDetector(new ScreenGestureAdapter());
 
@@ -77,6 +79,7 @@ public abstract class GameScreen extends ScreenAdapter {
 		//camera.autoMove();
 		camera.update();
 		
+		batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		background.draw();
 		stage.draw();
 	}
@@ -146,8 +149,11 @@ public abstract class GameScreen extends ScreenAdapter {
 	 */
 	private class ScreenGestureDetector extends GestureDetector {
 		
+		private ScreenGestureAdapter listener;
+		
 		public ScreenGestureDetector(GestureListener listener) {
 			super(listener);
+			this.listener = (ScreenGestureAdapter) listener;
 		}
 
 		@Override
@@ -171,6 +177,7 @@ public abstract class GameScreen extends ScreenAdapter {
 		@Override
 		public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 			GameScreen.this.touchUp(screenX, screenY, pointer, button);
+			listener.firstPan = true;
 			return true;
 		}
 	}
@@ -182,9 +189,14 @@ public abstract class GameScreen extends ScreenAdapter {
 	 *
 	 */
 	private class ScreenGestureAdapter extends GestureAdapter {
+		public boolean firstPan;
+		
 		@Override
 		public boolean pan(float x, float y, float deltaX, float deltaY) {
-			GameScreen.this.pan(x, y, deltaX, deltaY);
+			if (!firstPan) {
+				GameScreen.this.pan(x, y, deltaX, deltaY);
+			}
+			firstPan = false;
 			return true;
 		}
 

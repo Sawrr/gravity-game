@@ -85,7 +85,7 @@ public class MenuScreen extends GameScreen {
 
 	@Override
 	public void pan(float x, float y, float deltaX, float deltaY) {
-		getCamera().translate(new Vector2(-deltaX, deltaY));
+		getCamera().translate(new Vector2(-deltaX, deltaY).scl(0.75f));
 	}
 
 	@Override
@@ -102,7 +102,6 @@ public class MenuScreen extends GameScreen {
 
 	@Override
 	public void touchDown(int screenX, int screenY, int pointer, int button) {
-		System.out.println(getCamera().unproject(new Vector3(screenX, screenY, 0)));
 	}
 
 	@Override
