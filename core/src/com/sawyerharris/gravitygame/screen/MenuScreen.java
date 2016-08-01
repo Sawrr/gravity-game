@@ -5,11 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.sawyerharris.gravitygame.game.GravityGame;
 import com.sawyerharris.gravitygame.game.Theme;
 import com.sawyerharris.gravitygame.ui.TextItem;
@@ -65,6 +61,9 @@ public class MenuScreen extends GameScreen {
 		getStage().addActor(item4);
 		getStage().addActor(center);
 
+		getCamera().setMoveTarget(new Vector2(1500f, 0));
+		getCamera().setZoomTarget(0.5f);
+		
 	}
 
 	private void moveToNode(Node node) {
@@ -86,6 +85,8 @@ public class MenuScreen extends GameScreen {
 	@Override
 	public void pan(float x, float y, float deltaX, float deltaY) {
 		getCamera().translate(new Vector2(-deltaX, deltaY).scl(0.75f));
+		getCamera().stopAutoMove();
+		getCamera().stopAutoZoom();
 	}
 
 	@Override
@@ -106,8 +107,6 @@ public class MenuScreen extends GameScreen {
 
 	@Override
 	public void touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/**

@@ -13,8 +13,9 @@ import com.badlogic.gdx.math.Vector3;
  *
  */
 public class GameCamera extends OrthographicCamera {
-	/** Maximum zoom level */
+	/** Minimum, maximum zoom levels */
 	private static final float MIN_ZOOM = 0.2f;
+	private static final float MAX_ZOOM = 1f;
 
 	/** Target camera values */
 	private Vector2 moveTarget;
@@ -23,7 +24,7 @@ public class GameCamera extends OrthographicCamera {
 	private MoveMode mode;
 	/** Speed parameter for auto move */
 	private float speed;
-	
+
 	private boolean autoMoving;
 	private boolean autoZooming;
 
@@ -31,11 +32,9 @@ public class GameCamera extends OrthographicCamera {
 	 * Default constructor.
 	 */
 	public GameCamera() {
-		setMoveTarget(new Vector2(0,0));
-		zoomTarget = 1f;
 		zoom = 0.8f;
 		mode = MoveMode.LOGARITHMIC;
-		speed = 1/10f;
+		speed = 1 / 7f;
 	}
 
 	/**
@@ -99,7 +98,7 @@ public class GameCamera extends OrthographicCamera {
 		}
 		setPosition(pos.x, pos.y);
 	}
-	
+
 	/**
 	 * Sets the camera's position.
 	 * 
@@ -130,6 +129,9 @@ public class GameCamera extends OrthographicCamera {
 	 * @param target
 	 */
 	public void setZoomTarget(float target) {
+		if (target < MIN_ZOOM || target > MAX_ZOOM) {
+			throw new IllegalArgumentException("Zoom target out of bounds.");
+		}
 		zoomTarget = target;
 		autoZooming = true;
 	}
@@ -151,6 +153,14 @@ public class GameCamera extends OrthographicCamera {
 	public void setMoveMode(MoveMode mode) {
 		this.mode = mode;
 	}
+	
+	public void stopAutoMove() {
+		autoMoving = false;
+	}
+	
+	public void stopAutoZoom() {
+		autoZooming = false;
+	}
 
 	/**
 	 * Auto moves the camera by one step. Should be called every tick until the
@@ -158,7 +168,7 @@ public class GameCamera extends OrthographicCamera {
 	 */
 	public void autoMove() {
 		if (autoMoving && position.dst(new Vector3(moveTarget, position.z)) > 1f) {
-			System.out.println("translating");
+			Vector2 pre = new Vector2(position.x, position.y);
 			Vector2 dist = null;
 			switch (mode) {
 			case LINEAR:
@@ -169,11 +179,15 @@ public class GameCamera extends OrthographicCamera {
 				break;
 			}
 			translate(dist);
+			// If auto move results in a very small translation and we are no
+			// longer zooming, stop auto moving
+			if (new Vector2(position.x, position.y).dst(pre) < 0.00001f && !autoZooming) {
+				autoMoving = false;
+			}
 		} else {
 			autoMoving = false;
 		}
-		if (autoZooming && Math.abs(zoom - zoomTarget) > 0.000001f) {
-			System.out.println("zooming");
+		if (autoZooming && Math.abs(zoom - zoomTarget) > 0.00001f) {
 			float amount = 0;
 			switch (mode) {
 			case LINEAR:
@@ -200,11 +214,11 @@ public class GameCamera extends OrthographicCamera {
 	private void clamp() {
 		float effectiveViewportWidth = viewportWidth * zoom;
 		float effectiveViewportHeight = viewportHeight * zoom;
-		position.x = MathUtils.clamp(position.x, (effectiveViewportWidth - viewportWidth)/ 2f,
+		position.x = MathUtils.clamp(position.x, (effectiveViewportWidth - viewportWidth) / 2f,
 				(viewportWidth - effectiveViewportWidth) / 2f);
-		position.y = MathUtils.clamp(position.y, (effectiveViewportHeight - viewportHeight)/ 2f,
+		position.y = MathUtils.clamp(position.y, (effectiveViewportHeight - viewportHeight) / 2f,
 				(viewportHeight - effectiveViewportHeight) / 2f);
-		zoom = MathUtils.clamp(zoom, MIN_ZOOM, 1f);
+		zoom = MathUtils.clamp(zoom, MIN_ZOOM, MAX_ZOOM);
 	}
 
 	/**

@@ -3,21 +3,12 @@ package com.sawyerharris.gravitygame.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.sawyerharris.gravitygame.game.GravityGame;
-import com.sawyerharris.gravitygame.ui.TextItem;
 
 /**
  * An abstract screen used by the game. Uses a stage, camera, viewport,
@@ -61,7 +52,6 @@ public abstract class GameScreen extends ScreenAdapter {
 		viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
 		background = new ParallaxBackground(camera, batch);
 		stage = new GameStage(viewport, batch, renderer);
-		System.out.println(batch.getProjectionMatrix());
 		
 		detector = new ScreenGestureDetector(new ScreenGestureAdapter());
 
@@ -76,11 +66,15 @@ public abstract class GameScreen extends ScreenAdapter {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		//camera.autoMove();
+		camera.autoMove();
 		camera.update();
 		
+		// Draw background
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		background.draw();
+		
+		// Draw stage actors
+		// projection matrix is set by stage.draw()
 		stage.draw();
 	}
 
@@ -189,7 +183,7 @@ public abstract class GameScreen extends ScreenAdapter {
 	 *
 	 */
 	private class ScreenGestureAdapter extends GestureAdapter {
-		public boolean firstPan;
+		public boolean firstPan = true;
 		
 		@Override
 		public boolean pan(float x, float y, float deltaX, float deltaY) {
