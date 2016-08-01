@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.sawyerharris.gravitygame.screen.GameScreen;
+import com.sawyerharris.gravitygame.screen.LevelScreen;
 
 /**
  * Represents a Planet actor.
@@ -15,9 +15,9 @@ import com.sawyerharris.gravitygame.screen.GameScreen;
  */
 public class Planet extends Actor {
 	/** Maximum radius allowed */
-	private static final int MAX_RADIUS = 0;
+	private static final int MAX_RADIUS = 100;
 	/** Mass area density */
-	private static final float MASS_DENSITY = 0;
+	private static final float MASS_DENSITY = 1;
 
 	/** Radius of planet */
 	private int radius;
@@ -98,8 +98,8 @@ public class Planet extends Actor {
 	 *            position
 	 */
 	public void setPosition(Vector2 pos) {
-		if (pos.x < -GameScreen.WORLD_WIDTH / 2 || pos.x > GameScreen.WORLD_WIDTH / 2
-				|| pos.y < -GameScreen.WORLD_HEIGHT / 2 || pos.y > GameScreen.WORLD_HEIGHT / 2) {
+		if (pos.x < -LevelScreen.WORLD_WIDTH / 2 || pos.x > LevelScreen.WORLD_WIDTH / 2
+				|| pos.y < -LevelScreen.WORLD_HEIGHT / 2 || pos.y > LevelScreen.WORLD_HEIGHT / 2) {
 			throw new IllegalArgumentException("Planet position out of bounds.");
 		}
 		setPosition(pos.x, pos.y);

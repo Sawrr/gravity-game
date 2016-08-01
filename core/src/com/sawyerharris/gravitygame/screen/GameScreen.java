@@ -21,10 +21,6 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
  *
  */
 public abstract class GameScreen extends ScreenAdapter {
-	/** Width, height of world */
-	public static final float WORLD_WIDTH = 1280;
-	public static final float WORLD_HEIGHT = 1920;
-
 	/** Batch to draw on */
 	private final Batch batch;
 	/** Shape renderer for drawing UI */
@@ -45,11 +41,11 @@ public abstract class GameScreen extends ScreenAdapter {
 	/**
 	 * Constructs the camera, viewport, background, stage, detector, and mux.
 	 */
-	public GameScreen(Batch bat, ShapeRenderer rend) {
+	public GameScreen(Batch bat, ShapeRenderer rend, float worldWidth, float worldHeight) {
 		batch = bat;
 		renderer = rend;
 		camera = new GameCamera();
-		viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+		viewport = new ExtendViewport(worldWidth, worldHeight, camera);
 		background = new ParallaxBackground(camera, batch);
 		stage = new GameStage(viewport, batch, renderer);
 		

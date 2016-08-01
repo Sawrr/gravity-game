@@ -18,6 +18,10 @@ import com.sawyerharris.gravitygame.ui.TextItem;
  *
  */
 public class MenuScreen extends GameScreen {
+	/** Menu world dimensions */
+	public static final int WIDTH = 4000;
+	public static final int HEIGHT = 2000;
+	
 	/** Theme */
 	private static final Theme THEME = GravityGame.getInstance().getThemes().getTheme("test");
 	
@@ -27,7 +31,7 @@ public class MenuScreen extends GameScreen {
 	/** Menu nodes */
 	private static final Node ROOT = new Node(new Vector2(0, 0), null);
 
-	private static final Node LEVELS = new Node(new Vector2(-10, 0), ROOT);
+	private static final Node LEVELS = new Node(new Vector2(-1000, 0), ROOT);
 	private static final Node OFFICIAL_LEVELS = new Node(new Vector2(-100, 100), LEVELS);
 	private static final Node CUSTOM_LEVELS = new Node(new Vector2(-200, 0), LEVELS);
 	private static final Node ONLINE_LEVELS = new Node(new Vector2(-100, -100), LEVELS);
@@ -37,33 +41,21 @@ public class MenuScreen extends GameScreen {
 
 	private static final Node EDITOR = new Node(new Vector2(100, 0), ROOT);
 
-	public MenuScreen(Batch batch, ShapeRenderer renderer) {
-		super(batch, renderer);
+	public MenuScreen(Batch batch, ShapeRenderer renderer, int worldWidth, int worldHeight) {
+		super(batch, renderer, worldWidth, worldHeight);
 		getBackground().setTheme(THEME);
 		
-		
-		// Test
-		TextItem item = new TextItem(-GameScreen.WORLD_WIDTH / 2, -GameScreen.WORLD_HEIGHT / 2, 400, 400, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "Hello", 30) {
+		TextItem center = new TextItem(-250, 0, 500, 100, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "MENU", 30) {
 			@Override
 			public void click() {
-				System.out.println("click");
+				moveToNode(LEVELS);
 			}
 		};
-		TextItem item2 = new TextItem(-GameScreen.WORLD_WIDTH / 2,  GameScreen.WORLD_HEIGHT / 2 - 400, 400, 400, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "Hello", 30);
-		TextItem item3 = new TextItem(GameScreen.WORLD_WIDTH / 2 - 400,  GameScreen.WORLD_HEIGHT / 2 - 400, 400, 400, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "Hello", 30);
-		TextItem item4 = new TextItem(GameScreen.WORLD_WIDTH / 2 - 400,  -GameScreen.WORLD_HEIGHT / 2, 400, 400, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "Hello", 30);
-		
-		TextItem center = new TextItem(0, 0, 1, 1, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "", 30);
-		
-		getStage().addActor(item);
-		getStage().addActor(item2);
-		getStage().addActor(item3);
-		getStage().addActor(item4);
-		getStage().addActor(center);
 
-		getCamera().setMoveTarget(new Vector2(1500f, 0));
-		getCamera().setZoomTarget(0.5f);
+		getStage().addActor(center);
 		
+		getCamera().setZoom(0.25f);
+		moveToNode(ROOT);
 	}
 
 	private void moveToNode(Node node) {
@@ -72,7 +64,7 @@ public class MenuScreen extends GameScreen {
 			return;
 		}
 		currentNode = node;
-		// call camera to smoothly move to next node
+		getCamera().setMoveTarget(node.position);
 	}
 
 	@Override
@@ -84,9 +76,6 @@ public class MenuScreen extends GameScreen {
 
 	@Override
 	public void pan(float x, float y, float deltaX, float deltaY) {
-		getCamera().translate(new Vector2(-deltaX, deltaY).scl(0.75f));
-		getCamera().stopAutoMove();
-		getCamera().stopAutoZoom();
 	}
 
 	@Override

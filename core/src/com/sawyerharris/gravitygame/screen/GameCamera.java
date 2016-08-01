@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class GameCamera extends OrthographicCamera {
 	/** Minimum, maximum zoom levels */
-	private static final float MIN_ZOOM = 0.2f;
+	private static final float MIN_ZOOM = 0.125f;
 	private static final float MAX_ZOOM = 1f;
 
 	/** Target camera values */
@@ -32,7 +32,7 @@ public class GameCamera extends OrthographicCamera {
 	 * Default constructor.
 	 */
 	public GameCamera() {
-		zoom = 0.8f;
+		zoom = 1f;
 		mode = MoveMode.LOGARITHMIC;
 		speed = 1 / 7f;
 	}

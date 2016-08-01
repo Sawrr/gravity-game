@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.sawyerharris.gravitygame.screen.GameScreen;
+import com.sawyerharris.gravitygame.screen.LevelScreen;
 
 /**
  * Represents a Ship actor.
@@ -87,8 +87,8 @@ public class Ship extends Actor {
 	 * @param pos
 	 */
 	public void setPosition(Vector2 pos) {
-		if (pos.x < -GameScreen.WORLD_WIDTH / 2 || pos.x > GameScreen.WORLD_WIDTH / 2
-				|| pos.y < -GameScreen.WORLD_HEIGHT / 2 || pos.y > GameScreen.WORLD_HEIGHT / 2) {
+		if (pos.x < -LevelScreen.WORLD_WIDTH / 2 || pos.x > LevelScreen.WORLD_WIDTH / 2
+				|| pos.y < -LevelScreen.WORLD_HEIGHT / 2 || pos.y > LevelScreen.WORLD_HEIGHT / 2) {
 			throw new IllegalArgumentException("Ship position out of bounds.");
 		}
 		setPosition(pos.x, pos.y);
@@ -112,7 +112,7 @@ public class Ship extends Actor {
 	 * @param pos
 	 */
 	public void setInitialPosition(Vector2 pos) {
-		if (pos.x < 0 || pos.x > GameScreen.WORLD_WIDTH || pos.y < 0 || pos.y > GameScreen.WORLD_HEIGHT) {
+		if (pos.x < 0 || pos.x > LevelScreen.WORLD_WIDTH || pos.y < 0 || pos.y > LevelScreen.WORLD_HEIGHT) {
 			throw new IllegalArgumentException("Ship position out of bounds.");
 		}
 		initialPosition = pos;

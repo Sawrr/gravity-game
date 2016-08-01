@@ -116,12 +116,14 @@ public class LevelManager {
 		try {
 			@SuppressWarnings("unchecked")
 			ArrayList<Level> list = json.fromJson(ArrayList.class, Level.class, customLevelStr);
-			for (Level level : list) {
-				if (!checkLevel(level)) {
-					list.remove(level);
+			if (list != null) {
+				for (Level level : list) {
+					if (!checkLevel(level)) {
+						list.remove(level);
+					}
 				}
+				customLevels = list;
 			}
-			customLevels = list;
 		} catch (SerializationException e) {
 			System.out.println("Unable to load custom levels.");
 			e.printStackTrace(System.out);

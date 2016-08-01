@@ -10,8 +10,8 @@ public class LevelPlayScreen extends LevelScreen {
 
 	private Vector2 cameraAimingPosition;
 
-	public LevelPlayScreen(Batch batch, ShapeRenderer renderer) {
-		super(batch, renderer);
+	public LevelPlayScreen(Batch batch, ShapeRenderer renderer, int worldWidth, int worldHeight) {
+		super(batch, renderer, worldWidth, worldHeight);
 		// TODO Auto-generated constructor stub
 	}
 

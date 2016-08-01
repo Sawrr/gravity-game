@@ -2,20 +2,22 @@ package com.sawyerharris.gravitygame.screen;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 
 public class LevelEditScreen extends LevelScreen {
 	/** Level name that will be applied if the user saves */
 	private String customLevelName;
 	
-	public LevelEditScreen(Batch batch, ShapeRenderer renderer) {
-		super(batch, renderer);
-		// TODO Auto-generated constructor stub
+	public LevelEditScreen(Batch batch, ShapeRenderer renderer, int worldWidth, int worldHeight) {
+		super(batch, renderer, worldWidth, worldHeight);
+		getCamera().setZoom(0.5f);
 	}
 
 	@Override
 	public void pan(float x, float y, float deltaX, float deltaY) {
-		// TODO Auto-generated method stub
-
+		getCamera().translate(new Vector2(-deltaX, deltaY).scl(0.75f));
+		getCamera().stopAutoMove();
+		getCamera().stopAutoZoom();
 	}
 
 	@Override

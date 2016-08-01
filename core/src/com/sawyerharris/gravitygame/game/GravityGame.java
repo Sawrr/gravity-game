@@ -10,6 +10,7 @@ import com.sawyerharris.gravitygame.manager.LevelManager;
 import com.sawyerharris.gravitygame.manager.ThemeManager;
 import com.sawyerharris.gravitygame.screen.LevelEditScreen;
 import com.sawyerharris.gravitygame.screen.LevelPlayScreen;
+import com.sawyerharris.gravitygame.screen.LevelScreen;
 import com.sawyerharris.gravitygame.screen.MenuScreen;
 
 /**
@@ -59,14 +60,15 @@ public class GravityGame extends Game {
 		renderer = new ShapeRenderer();
 		renderer.setAutoShapeType(true);
 
-		levelEditScreen = new LevelEditScreen(batch, renderer);
-		levelPlayScreen = new LevelPlayScreen(batch, renderer);
-		menuScreen = new MenuScreen(batch, renderer);
+		levelEditScreen = new LevelEditScreen(batch, renderer, LevelScreen.WORLD_WIDTH, LevelScreen.WORLD_HEIGHT);
+		levelPlayScreen = new LevelPlayScreen(batch, renderer, LevelScreen.WORLD_WIDTH, LevelScreen.WORLD_HEIGHT);
+		menuScreen = new MenuScreen(batch, renderer, MenuScreen.WIDTH, MenuScreen.HEIGHT);
 
 		// Catch android back button in input listeners
 		Gdx.input.setCatchBackKey(true);
 		
 		setScreenToMenu();
+		//setScreenToEdit();
 	}
 
 	/**
@@ -85,6 +87,16 @@ public class GravityGame extends Game {
 	public void setScreenToMenu() {
 		setScreen(menuScreen);
 		Gdx.input.setInputProcessor(menuScreen.getMux());
+	}
+	
+	public void setScreenToPlay() {
+		setScreen(levelPlayScreen);
+		Gdx.input.setInputProcessor(levelPlayScreen.getMux());
+	}
+	
+	public void setScreenToEdit() {
+		setScreen(levelEditScreen);
+		Gdx.input.setInputProcessor(levelEditScreen.getMux());
 	}
 	
 	/**
