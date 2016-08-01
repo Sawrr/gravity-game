@@ -19,8 +19,8 @@ import com.sawyerharris.gravitygame.ui.TextItem;
  */
 public class MenuScreen extends GameScreen {
 	/** Menu world dimensions */
-	public static final int WIDTH = 4000;
-	public static final int HEIGHT = 2000;
+	private static final int WORLD_WIDTH = 4000;
+	private static final int WORLD_HEIGHT = 2000;
 	
 	/** Theme */
 	private static final Theme THEME = GravityGame.getInstance().getThemes().getTheme("test");
@@ -41,8 +41,8 @@ public class MenuScreen extends GameScreen {
 
 	private static final Node EDITOR = new Node(new Vector2(100, 0), ROOT);
 
-	public MenuScreen(Batch batch, ShapeRenderer renderer, int worldWidth, int worldHeight) {
-		super(batch, renderer, worldWidth, worldHeight);
+	public MenuScreen(Batch batch, ShapeRenderer renderer) {
+		super(batch, renderer, WORLD_WIDTH, WORLD_HEIGHT);
 		getBackground().setTheme(THEME);
 		
 		TextItem center = new TextItem(-250, 0, 500, 100, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "MENU", 30) {
@@ -54,7 +54,7 @@ public class MenuScreen extends GameScreen {
 
 		getStage().addActor(center);
 		
-		getCamera().setZoom(0.25f);
+		getCamera().setZoom(1f);
 		moveToNode(ROOT);
 	}
 

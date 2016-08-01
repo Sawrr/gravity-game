@@ -13,6 +13,10 @@ import com.badlogic.gdx.math.Vector3;
  *
  */
 public class GameCamera extends OrthographicCamera {
+	/** World dimensions for clamping */
+	private final int worldWidth;
+	private final int worldHeight;
+	
 	/** Minimum, maximum zoom levels */
 	private static final float MIN_ZOOM = 0.125f;
 	private static final float MAX_ZOOM = 1f;
@@ -31,7 +35,9 @@ public class GameCamera extends OrthographicCamera {
 	/**
 	 * Default constructor.
 	 */
-	public GameCamera() {
+	public GameCamera(int width, int height) {
+		worldWidth = width;
+		worldHeight = height;
 		zoom = 1f;
 		mode = MoveMode.LOGARITHMIC;
 		speed = 1 / 7f;
@@ -214,10 +220,10 @@ public class GameCamera extends OrthographicCamera {
 	private void clamp() {
 		float effectiveViewportWidth = viewportWidth * zoom;
 		float effectiveViewportHeight = viewportHeight * zoom;
-		position.x = MathUtils.clamp(position.x, (effectiveViewportWidth - viewportWidth) / 2f,
-				(viewportWidth - effectiveViewportWidth) / 2f);
-		position.y = MathUtils.clamp(position.y, (effectiveViewportHeight - viewportHeight) / 2f,
-				(viewportHeight - effectiveViewportHeight) / 2f);
+		position.x = MathUtils.clamp(position.x, (effectiveViewportWidth - worldWidth) / 2f,
+				(worldWidth - effectiveViewportWidth) / 2f);
+		position.y = MathUtils.clamp(position.y, (effectiveViewportHeight - worldHeight) / 2f,
+				(worldHeight - effectiveViewportHeight) / 2f);
 		zoom = MathUtils.clamp(zoom, MIN_ZOOM, MAX_ZOOM);
 	}
 

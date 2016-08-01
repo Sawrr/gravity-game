@@ -1,8 +1,11 @@
 package com.sawyerharris.gravitygame.screen;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.sawyerharris.gravitygame.ui.TextItem;
 
 public class LevelPlayScreen extends LevelScreen {
 
@@ -10,9 +13,8 @@ public class LevelPlayScreen extends LevelScreen {
 
 	private Vector2 cameraAimingPosition;
 
-	public LevelPlayScreen(Batch batch, ShapeRenderer renderer, int worldWidth, int worldHeight) {
-		super(batch, renderer, worldWidth, worldHeight);
-		// TODO Auto-generated constructor stub
+	public LevelPlayScreen(Batch batch, ShapeRenderer renderer) {
+		super(batch, renderer);
 	}
 
 	@Override

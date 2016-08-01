@@ -26,9 +26,8 @@ public abstract class LevelScreen extends GameScreen {
 	private Overlay overlay;
 	private Level level;
 	
-	public LevelScreen(Batch batch, ShapeRenderer renderer, int worldWidth, int worldHeight) {
-		super(batch, renderer, worldWidth, worldHeight);
-		getBackground().setTheme(GravityGame.getInstance().getThemes().getTheme("test"));
+	public LevelScreen(Batch batch, ShapeRenderer renderer) {
+		super(batch, renderer, WORLD_WIDTH, WORLD_HEIGHT);
 	}
 	
 	public void loadLevel(Level level) {

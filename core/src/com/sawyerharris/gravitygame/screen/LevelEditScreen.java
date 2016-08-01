@@ -1,16 +1,23 @@
 package com.sawyerharris.gravitygame.screen;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.sawyerharris.gravitygame.game.GravityGame;
+import com.sawyerharris.gravitygame.ui.TextItem;
 
 public class LevelEditScreen extends LevelScreen {
 	/** Level name that will be applied if the user saves */
 	private String customLevelName;
 	
-	public LevelEditScreen(Batch batch, ShapeRenderer renderer, int worldWidth, int worldHeight) {
-		super(batch, renderer, worldWidth, worldHeight);
-		getCamera().setZoom(0.5f);
+	public LevelEditScreen(Batch batch, ShapeRenderer renderer) {
+		super(batch, renderer);
+		getCamera().setZoom(1f);
+		getBackground().setTheme(GravityGame.getInstance().getThemes().getTheme("test"));
+		TextItem item = new TextItem(-250, 250, 500, 100, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "EDIT", 30);
+		getStage().addActor(item);
 	}
 
 	@Override
