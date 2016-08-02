@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.sawyerharris.gravitygame.game.GravityGame;
 
 public class TextureItem extends BorderedItem {
 
@@ -24,6 +25,9 @@ public class TextureItem extends BorderedItem {
 	
 	@Override
 	public void draw(Batch batch, float alpha) {
-		sprite.draw(batch, alpha);
+		float centerX = getX() + getWidth() / 2;
+		float centerY = getY() + getHeight() / 2;
+		sprite.setCenter(centerX, centerY);
+		sprite.draw(batch);
 	}
 }

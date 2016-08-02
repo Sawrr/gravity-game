@@ -3,8 +3,10 @@ package com.sawyerharris.gravitygame.screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.sawyerharris.gravitygame.game.GravityGame;
 import com.sawyerharris.gravitygame.game.Theme;
@@ -145,12 +147,21 @@ public class MenuScreen extends GameScreen {
 
 		// SHIP STYLE
 		ScrollPanel shipStylePanel = new ScrollPanel(SHIP_STYLE.position.x - 100, SHIP_STYLE.position.y - 600, 600,
-				1200, THEME.getColor(), 400);
+				1200, THEME.getColor(), 500) {
+					@Override
+					public void click(int index) {
+						GravityGame.getInstance().getPlayerStatus().setShipStyle(index);
+					}
+				};
 
 		AssetManager assets = GravityGame.getInstance().getAssets();
 		int numStyles = assets.getNumShipStyles();
 		for (int i = 0; i < numStyles; i++) {
-			shipStylePanel.addTextureItem(assets.getShipAnimation(i, "default").getKeyFrame(0));
+			if (i <= GravityGame.getInstance().getPlayerStatus().getHighestShipStyle()) {
+				shipStylePanel.addTextureItem(assets.getShipAnimation(i, "default").getKeyFrame(0));
+			} else {
+				shipStylePanel.addTextItem("?", 80);
+			}
 		}
 		
 		TextItem shipStyleBackButton = new TextItem(SHIP_STYLE.position.x - 500, SHIP_STYLE.position.y - 75, 300, 150,

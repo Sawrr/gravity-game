@@ -89,7 +89,9 @@ public class PlayerStatus {
 	 * @param shipStyle
 	 */
 	public void setShipStyle(int shipStyle) {
-		this.shipStyle = shipStyle;
+		if (shipStyle <= highestShipStyle) {
+			this.shipStyle = shipStyle;
+		}
 	}
 
 	/**
