@@ -188,7 +188,7 @@ public abstract class GameScreen extends ScreenAdapter {
 		@Override
 		public boolean pan(float x, float y, float deltaX, float deltaY) {
 			if (!firstPan) {
-				GameScreen.this.pan(x, y, deltaX, deltaY);
+				GameScreen.this.pan(x, y, -deltaX, deltaY);
 			}
 			firstPan = false;
 			return true;

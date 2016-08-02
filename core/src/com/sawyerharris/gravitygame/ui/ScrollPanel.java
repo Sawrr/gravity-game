@@ -2,6 +2,7 @@ package com.sawyerharris.gravitygame.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -68,6 +69,18 @@ public class ScrollPanel extends BorderedItem {
 	public void addTextItem(String text, int fontSize) {
 		final int index = size;
 		TextItem item = new TextItem(BORDER_WIDTH, getHeight() - ((index + 1) * iHeight) - BORDER_WIDTH, getWidth() - 2 * BORDER_WIDTH, iHeight, color, Touchable.enabled, text, fontSize) {
+			@Override
+			public void click() {
+				ScrollPanel.this.click(index);
+			}
+		};
+		addActor(item);
+		size++;
+	}
+	
+	public void addTextureItem(TextureRegion region) {
+		final int index = size;
+		TextureItem item = new TextureItem(BORDER_WIDTH, getHeight() - ((index + 1) * iHeight) - BORDER_WIDTH, getWidth() - 2 * BORDER_WIDTH, iHeight, color, Touchable.enabled, region) {
 			@Override
 			public void click() {
 				ScrollPanel.this.click(index);

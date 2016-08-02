@@ -1,1 +1,1 @@
-["themeOne.txt", "themeTwo.txt"]
+["themeOne.txt", "themeTwo.txt", "menu.txt"]

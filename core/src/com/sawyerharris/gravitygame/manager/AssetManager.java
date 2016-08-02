@@ -157,6 +157,15 @@ public class AssetManager implements Disposable {
 	}
 
 	/**
+	 * Returns the number of ship styles.
+	 * 
+	 * @return number of ship styles
+	 */
+	public int getNumShipStyles() {
+		return shipAnimations.size();
+	}
+
+	/**
 	 * Returns the ship animation of the given style and animation name.
 	 * 
 	 * @param style
