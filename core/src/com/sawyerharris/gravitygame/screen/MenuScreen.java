@@ -9,8 +9,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.sawyerharris.gravitygame.game.GravityGame;
+import com.sawyerharris.gravitygame.game.Level;
+import com.sawyerharris.gravitygame.game.PlayerStatus;
 import com.sawyerharris.gravitygame.game.Theme;
 import com.sawyerharris.gravitygame.manager.AssetManager;
+import com.sawyerharris.gravitygame.manager.LevelManager;
 import com.sawyerharris.gravitygame.ui.ScrollPanel;
 import com.sawyerharris.gravitygame.ui.TextItem;
 import com.sawyerharris.gravitygame.ui.TextureItem;
@@ -24,7 +27,7 @@ import com.sawyerharris.gravitygame.ui.TextureItem;
  */
 public class MenuScreen extends GameScreen {
 	/** Menu world dimensions */
-	private static final int WORLD_WIDTH = 6000;
+	private static final int WORLD_WIDTH = 8000;
 	private static final int WORLD_HEIGHT = 6000;
 
 	private static final int FONT_SIZE = 48;
@@ -58,7 +61,12 @@ public class MenuScreen extends GameScreen {
 	}
 
 	private void createMenuItems() {
-		// ROOT MENU
+		final GravityGame game = GravityGame.getInstance();
+		final AssetManager assets = game.getAssets();
+		final LevelManager levels = game.getLevels();
+		final PlayerStatus status = game.getPlayerStatus();
+		
+		// ROOT
 
 		TextItem playButton = new TextItem(-250, 400, 500, 150, THEME.getColor(), Touchable.enabled, "Play",
 				FONT_SIZE) {
@@ -106,7 +114,7 @@ public class MenuScreen extends GameScreen {
 		getStage().addActor(levelEditorButton);
 		getStage().addActor(optionsButton);
 
-		// OPTIONS MENU
+		// OPTIONS
 
 		TextItem optionsBackButton = new TextItem(OPTIONS.position.x - 150, OPTIONS.position.y + 400, 300, 150,
 				THEME.getColor(), Touchable.enabled, "Back", FONT_SIZE) {
@@ -145,16 +153,16 @@ public class MenuScreen extends GameScreen {
 		getStage().addActor(shipStyleButton);
 		getStage().addActor(resetProgressButton);
 
-		// SHIP STYLE
+		// SHIP_STYLE
+		
 		ScrollPanel shipStylePanel = new ScrollPanel(SHIP_STYLE.position.x - 100, SHIP_STYLE.position.y - 600, 600,
 				1200, THEME.getColor(), 500) {
-					@Override
-					public void click(int index) {
-						GravityGame.getInstance().getPlayerStatus().setShipStyle(index);
-					}
-				};
+			@Override
+			public void click(int index) {
+				status.setShipStyle(index);
+			}
+		};
 
-		AssetManager assets = GravityGame.getInstance().getAssets();
 		int numStyles = assets.getNumShipStyles();
 		for (int i = 0; i < numStyles; i++) {
 			if (i <= GravityGame.getInstance().getPlayerStatus().getHighestShipStyle()) {
@@ -163,17 +171,81 @@ public class MenuScreen extends GameScreen {
 				shipStylePanel.addTextItem("?", 80);
 			}
 		}
-		
+
 		TextItem shipStyleBackButton = new TextItem(SHIP_STYLE.position.x - 500, SHIP_STYLE.position.y - 75, 300, 150,
 				THEME.getColor(), Touchable.enabled, "Back", FONT_SIZE) {
 			@Override
 			public void click() {
 				moveToNode(OPTIONS);
 			}
-		};	
-		
+		};
+
 		getStage().addActor(shipStylePanel);
 		getStage().addActor(shipStyleBackButton);
+		
+		// EDITOR
+		
+		ScrollPanel levelEditPanel = new ScrollPanel(EDITOR.position.x - 100, EDITOR.position.y - 600, 600,
+				1200, THEME.getColor(), 200) {
+			@Override
+			public void click(int index) {
+				System.out.println("edit " + index);
+			}
+		};
+
+		for (Level level : levels.getCustomLevels()) {
+			levelEditPanel.addTextItem(level.getName(), 40);
+		}
+		
+		TextItem editBackButton = new TextItem(EDITOR.position.x - 500, EDITOR.position.y - 75, 300, 150,
+				THEME.getColor(), Touchable.enabled, "Back", FONT_SIZE) {
+			@Override
+			public void click() {
+				moveToNode(ROOT);
+			}
+		};
+		
+		getStage().addActor(levelEditPanel);
+		getStage().addActor(editBackButton);
+		
+		// LEVELS
+		
+		TextItem officialLevelsButton = new TextItem(LEVELS.position.x - 375, LEVELS.position.y + 250, 500, 150,
+				THEME.getColor(), Touchable.enabled, "Official Levels", FONT_SIZE) {
+			@Override
+			public void click() {
+				moveToNode(OFFICIAL_LEVELS);
+			}
+		};
+		
+		TextItem customLevelsButton = new TextItem(LEVELS.position.x - 375, LEVELS.position.y - 75, 500, 150,
+				THEME.getColor(), Touchable.enabled, "Custom Levels", FONT_SIZE) {
+			@Override
+			public void click() {
+				moveToNode(CUSTOM_LEVELS);
+			}
+		};
+		
+		TextItem onlineLevelsButton = new TextItem(LEVELS.position.x - 375, LEVELS.position.y - 400, 500, 150,
+				THEME.getColor(), Touchable.enabled, "Online Levels", FONT_SIZE) {
+			@Override
+			public void click() {
+				moveToNode(ONLINE_LEVELS);
+			}
+		};
+		
+		TextItem levelsBackButton = new TextItem(LEVELS.position.x + 200, LEVELS.position.y - 75, 300, 150,
+				THEME.getColor(), Touchable.enabled, "Back", FONT_SIZE) {
+			@Override
+			public void click() {
+				moveToNode(ROOT);
+			}
+		};
+		
+		getStage().addActor(officialLevelsButton);
+		getStage().addActor(customLevelsButton);
+		getStage().addActor(onlineLevelsButton);
+		getStage().addActor(levelsBackButton);
 	}
 
 	private void moveToNode(Node node) {
