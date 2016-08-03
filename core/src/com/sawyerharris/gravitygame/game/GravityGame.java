@@ -93,7 +93,9 @@ public class GravityGame extends Game {
 		Gdx.input.setInputProcessor(levelPlayScreen.getMux());
 	}
 	
-	public void setScreenToEdit() {
+	public void setScreenToEdit(String name, int index) {
+		levelEditScreen.setCustomLevelIndex(index);
+		levelEditScreen.setCustomLevelName(name);
 		setScreen(levelEditScreen);
 		Gdx.input.setInputProcessor(levelEditScreen.getMux());
 	}

@@ -1,6 +1,8 @@
 package com.sawyerharris.gravitygame.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -8,6 +10,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.sawyerharris.gravitygame.game.GravityGame;
 import com.sawyerharris.gravitygame.game.Level;
 import com.sawyerharris.gravitygame.game.PlayerStatus;
@@ -15,6 +19,7 @@ import com.sawyerharris.gravitygame.game.Theme;
 import com.sawyerharris.gravitygame.manager.AssetManager;
 import com.sawyerharris.gravitygame.manager.LevelManager;
 import com.sawyerharris.gravitygame.ui.ScrollPanel;
+import com.sawyerharris.gravitygame.ui.TextInputAdapter;
 import com.sawyerharris.gravitygame.ui.TextItem;
 import com.sawyerharris.gravitygame.ui.TextureItem;
 
@@ -147,11 +152,26 @@ public class MenuScreen extends GameScreen {
 				System.out.println("Progress reset");
 			}
 		};
+		
+		TextItem setUsernameButton = new TextItem(OPTIONS.position.x - 250, OPTIONS.position.y - 400, 500, 150,
+				THEME.getColor(), Touchable.enabled, "Set Username", FONT_SIZE) {
+			@Override
+			public void click() {
+				TextInputAdapter listener = new TextInputAdapter(){
+					@Override
+					public void input(String text) {
+						status.setUsername(text);
+					}
+				};
+				Gdx.input.getTextInput(listener, "Enter username", status.getUsername(), "");
+			}
+		};
 
 		getStage().addActor(optionsBackButton);
 		getStage().addActor(soundToggleButton);
 		getStage().addActor(shipStyleButton);
 		getStage().addActor(resetProgressButton);
+		getStage().addActor(setUsernameButton);
 
 		// SHIP_STYLE
 		
@@ -188,8 +208,15 @@ public class MenuScreen extends GameScreen {
 		ScrollPanel levelEditPanel = new ScrollPanel(EDITOR.position.x - 100, EDITOR.position.y - 600, 600,
 				1200, THEME.getColor(), 200) {
 			@Override
-			public void click(int index) {
-				System.out.println("edit " + index);
+			public void click(final int index) {
+				Level level = levels.getCustomLevels().get(index);
+				TextInputAdapter listener = new TextInputAdapter(){
+					@Override
+					public void input(String text) {
+						game.setScreenToEdit(text, index);
+					}
+				};
+				Gdx.input.getTextInput(listener, "Enter level name", level.getName(), "");
 			}
 		};
 
@@ -247,7 +274,7 @@ public class MenuScreen extends GameScreen {
 		getStage().addActor(onlineLevelsButton);
 		getStage().addActor(levelsBackButton);
 	}
-
+	
 	private void moveToNode(Node node) {
 		if (node == null) {
 			// Root node, do nothing

@@ -25,6 +25,8 @@ public class PlayerStatus {
 	private boolean tutorialCompleted;
 	/** Whether sound is disabled */
 	private boolean soundOff;
+	/** User's name to be saved on their uploaded levels */
+	private String username;
 
 	/**
 	 * Loads player status or creates a new one with default values.
@@ -36,6 +38,7 @@ public class PlayerStatus {
 		shipStyle = prefs.getInteger("shipStyle");
 		tutorialCompleted = prefs.getBoolean("tutorialCompleted");
 		soundOff = prefs.getBoolean("soundOff");
+		username = prefs.getString("username");
 	}
 
 	/**
@@ -129,7 +132,25 @@ public class PlayerStatus {
 	public void setSoundOff(boolean soundOff) {
 		this.soundOff = soundOff;
 	}
-	
+
+	/**
+	 * Gets the user's name to be used in their uploaded levels.
+	 * 
+	 * @return username
+	 */
+	public String getUsername() {
+		return username;
+	}
+
+	/**
+	 * Sets the user's name to be used in their uploaded levels.
+	 * 
+	 * @param username
+	 */
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
 	/**
 	 * Completely resets the player's progress in the game.
 	 */
@@ -150,6 +171,7 @@ public class PlayerStatus {
 		prefs.putInteger("shipStyle", shipStyle);
 		prefs.putBoolean("tutorialCompleted", tutorialCompleted);
 		prefs.putBoolean("soundOff", soundOff);
+		prefs.putString("username", username);
 		prefs.flush();
 	}
 }

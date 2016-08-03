@@ -80,7 +80,7 @@ public abstract class GameScreen extends ScreenAdapter {
 
 	@Override
 	public void resize(int width, int height) {
-		viewport.update(width, height);
+		//viewport.update(width, height);
 	}
 
 	

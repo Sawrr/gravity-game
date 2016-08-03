@@ -11,13 +11,35 @@ import com.sawyerharris.gravitygame.ui.TextItem;
 public class LevelEditScreen extends LevelScreen {
 	/** Level name that will be applied if the user saves */
 	private String customLevelName;
-	
+	/** Index in custom level list of level if it is saved */
+	private int customLevelIndex;
+
 	public LevelEditScreen(Batch batch, ShapeRenderer renderer) {
 		super(batch, renderer);
 		getCamera().setZoom(1f);
 		getBackground().setTheme(GravityGame.getInstance().getThemes().getTheme("test"));
 		TextItem item = new TextItem(-250, 250, 500, 100, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "EDIT", 30);
 		getStage().addActor(item);
+	}
+
+	/**
+	 * Sets the name of the custom level that will be applied if the user saves
+	 * the level.
+	 * 
+	 * @param name
+	 */
+	public void setCustomLevelName(String name) {
+		customLevelName = name;
+	}
+
+	/**
+	 * Sets the index in the list of custom levels at which the current level
+	 * will be placed if the user saves the level.
+	 * 
+	 * @param index
+	 */
+	public void setCustomLevelIndex(int index) {
+		customLevelIndex = index;
 	}
 
 	@Override
@@ -56,22 +78,22 @@ public class LevelEditScreen extends LevelScreen {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	@Override
 	public void touchUp(int screenX, int screenY, int pointer, int button) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	public void testLevel() {
-		
+
 	}
-	
+
 	public void saveLevel() {
-		
+
 	}
-	
+
 	public void uploadLevel() {
-		
+
 	}
 }
