@@ -17,7 +17,6 @@ public class LevelEditScreen extends LevelScreen {
 	public LevelEditScreen(Batch batch, ShapeRenderer renderer) {
 		super(batch, renderer);
 		getCamera().setZoom(1f);
-		getBackground().setTheme(GravityGame.getInstance().getThemes().getTheme("test"));
 		TextItem item = new TextItem(-250, 250, 500, 100, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "EDIT", 30);
 		getStage().addActor(item);
 	}
@@ -44,7 +43,7 @@ public class LevelEditScreen extends LevelScreen {
 
 	@Override
 	public void pan(float x, float y, float deltaX, float deltaY) {
-		getCamera().translate(new Vector2(-deltaX, deltaY).scl(0.75f));
+		getCamera().translate(new Vector2(deltaX, deltaY).scl(0.75f));
 		getCamera().stopAutoMove();
 		getCamera().stopAutoZoom();
 	}

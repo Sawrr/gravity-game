@@ -323,29 +323,21 @@ public class LevelManager {
 	}
 
 	/**
-	 * Returns the level at a given index.
+	 * Returns list of official levels.
 	 * 
-	 * @param index
-	 *            index of level
-	 * @return level
-	 * @throws IndexOutOfBoundsException
-	 *             if index < 0 || index >= size()
+	 * @return levels
 	 */
-	public Level getLevel(int index) throws IndexOutOfBoundsException {
-		return levels.get(index);
+	public ArrayList<Level> getOfficialLevels() {
+		return levels;
 	}
 
 	/**
-	 * Returns the tutorial level at a given index.
+	 * Return list of tutorial levels.
 	 * 
-	 * @param index
-	 *            index of tutorial level
-	 * @return level
-	 * @throws IndexOutOfBoundsException
-	 *             if index < 0 || index >= size()
+	 * @return tutorialLevels
 	 */
-	public Level getTutorialLevel(int index) throws IndexOutOfBoundsException {
-		return tutorialLevels.get(index);
+	public ArrayList<Level> getTutorialLevels() {
+		return tutorialLevels;
 	}
 
 	/**

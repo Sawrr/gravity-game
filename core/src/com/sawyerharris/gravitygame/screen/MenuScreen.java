@@ -65,7 +65,7 @@ public class MenuScreen extends GameScreen {
 		final AssetManager assets = game.getAssets();
 		final LevelManager levels = game.getLevels();
 		final PlayerStatus status = game.getPlayerStatus();
-		
+
 		// ROOT
 
 		TextItem playButton = new TextItem(-250, 400, 500, 150, THEME.getColor(), Touchable.enabled, "Play",
@@ -147,15 +147,16 @@ public class MenuScreen extends GameScreen {
 				System.out.println("Progress reset");
 			}
 		};
-		
+
 		TextItem setUsernameButton = new TextItem(OPTIONS.position.x - 250, OPTIONS.position.y - 400, 500, 150,
 				THEME.getColor(), Touchable.enabled, "Set Username", FONT_SIZE) {
 			@Override
 			public void click() {
-				TextInputAdapter listener = new TextInputAdapter(){
+				TextInputAdapter listener = new TextInputAdapter() {
 					@Override
 					public void input(String text) {
 						status.setUsername(text);
+						status.flush();
 					}
 				};
 				Gdx.input.getTextInput(listener, "Enter username", status.getUsername(), "");
@@ -169,18 +170,21 @@ public class MenuScreen extends GameScreen {
 		getStage().addActor(setUsernameButton);
 
 		// SHIP_STYLE
-		
+
 		ScrollPanel shipStylePanel = new ScrollPanel(SHIP_STYLE.position.x - 100, SHIP_STYLE.position.y - 600, 600,
 				1200, THEME.getColor(), 500) {
 			@Override
 			public void click(int index) {
-				status.setShipStyle(index);
+				if (index <= status.getHighestShipStyle()) {
+					status.setShipStyle(index);
+					status.flush();
+				}
 			}
 		};
 
 		int numStyles = assets.getNumShipStyles();
 		for (int i = 0; i < numStyles; i++) {
-			if (i <= GravityGame.getInstance().getPlayerStatus().getHighestShipStyle()) {
+			if (i <= status.getHighestShipStyle()) {
 				shipStylePanel.addTextureItem(assets.getShipAnimation(i, "default").getKeyFrame(0));
 			} else {
 				shipStylePanel.addTextItem("?", 80);
@@ -197,26 +201,26 @@ public class MenuScreen extends GameScreen {
 
 		getStage().addActor(shipStylePanel);
 		getStage().addActor(shipStyleBackButton);
-		
+
 		// EDITOR
-		
-		ScrollPanel levelEditPanel = new ScrollPanel(EDITOR.position.x - 100, EDITOR.position.y - 600, 600,
-				1200, THEME.getColor(), 200) {
+
+		ScrollPanel levelEditPanel = new ScrollPanel(EDITOR.position.x - 100, EDITOR.position.y - 600, 600, 1200,
+				THEME.getColor(), 200) {
 			@Override
 			public void click(final int index) {
-				TextInputAdapter listener = new TextInputAdapter(){
+				TextInputAdapter listener = new TextInputAdapter() {
 					@Override
 					public void input(String text) {
 						game.setScreenToEdit(text, index);
 					}
 				};
-				
+
 				ArrayList<Level> levelList = levels.getCustomLevels();
 				if (index == levelList.size()) {
 					Gdx.input.getTextInput(listener, "Enter level name", "", "");
 				} else {
 					Level level = levelList.get(index);
-					Gdx.input.getTextInput(listener, "Enter level name", level.getName(), "");	
+					Gdx.input.getTextInput(listener, "Enter level name", level.getName(), "");
 				}
 			}
 		};
@@ -225,10 +229,10 @@ public class MenuScreen extends GameScreen {
 		for (Level level : levels.getCustomLevels()) {
 			levelEditPanel.addTextItem(level.getName(), 40);
 		}
-		
+
 		// Add new level
 		levelEditPanel.addTextItem("New level", 40);
-		
+
 		TextItem editBackButton = new TextItem(EDITOR.position.x - 500, EDITOR.position.y - 75, 300, 150,
 				THEME.getColor(), Touchable.enabled, "Back", FONT_SIZE) {
 			@Override
@@ -236,12 +240,12 @@ public class MenuScreen extends GameScreen {
 				moveToNode(ROOT);
 			}
 		};
-		
+
 		getStage().addActor(levelEditPanel);
 		getStage().addActor(editBackButton);
-		
+
 		// LEVELS
-		
+
 		TextItem officialLevelsButton = new TextItem(LEVELS.position.x - 375, LEVELS.position.y + 250, 500, 150,
 				THEME.getColor(), Touchable.enabled, "Official Levels", FONT_SIZE) {
 			@Override
@@ -249,7 +253,7 @@ public class MenuScreen extends GameScreen {
 				moveToNode(OFFICIAL_LEVELS);
 			}
 		};
-		
+
 		TextItem customLevelsButton = new TextItem(LEVELS.position.x - 375, LEVELS.position.y - 75, 500, 150,
 				THEME.getColor(), Touchable.enabled, "Custom Levels", FONT_SIZE) {
 			@Override
@@ -257,7 +261,7 @@ public class MenuScreen extends GameScreen {
 				moveToNode(CUSTOM_LEVELS);
 			}
 		};
-		
+
 		TextItem onlineLevelsButton = new TextItem(LEVELS.position.x - 375, LEVELS.position.y - 400, 500, 150,
 				THEME.getColor(), Touchable.enabled, "Online Levels", FONT_SIZE) {
 			@Override
@@ -265,7 +269,7 @@ public class MenuScreen extends GameScreen {
 				moveToNode(ONLINE_LEVELS);
 			}
 		};
-		
+
 		TextItem levelsBackButton = new TextItem(LEVELS.position.x + 200, LEVELS.position.y - 75, 300, 150,
 				THEME.getColor(), Touchable.enabled, "Back", FONT_SIZE) {
 			@Override
@@ -273,13 +277,101 @@ public class MenuScreen extends GameScreen {
 				moveToNode(ROOT);
 			}
 		};
-		
+
 		getStage().addActor(officialLevelsButton);
 		getStage().addActor(customLevelsButton);
 		getStage().addActor(onlineLevelsButton);
 		getStage().addActor(levelsBackButton);
+
+		// OFFICIAL_LEVELS
+
+		ScrollPanel officialLevelPanel = new ScrollPanel(OFFICIAL_LEVELS.position.x - 300,
+				OFFICIAL_LEVELS.position.y - 350, 600, 1000, THEME.getColor(), 200) {
+			@Override
+			public void click(final int index) {
+				if (index <= status.getHighestLevel()) {
+					game.setScreenToPlay(levels.getOfficialLevels().get(index));
+				}
+			}
+		};
+
+		// Load official levels into scroll panel
+		ArrayList<Level> levelList = levels.getOfficialLevels();
+		for (int i = 0; i < levelList.size(); i++) {
+			if (i <= status.getHighestLevel()) {
+				officialLevelPanel.addTextItem(levelList.get(i).getName(), 40);
+			} else {
+				officialLevelPanel.addTextItem("?", 40);
+			}
+		}
+
+		TextItem officialLevelsBackButton = new TextItem(OFFICIAL_LEVELS.position.x - 150,
+				OFFICIAL_LEVELS.position.y - 600, 300, 150, THEME.getColor(), Touchable.enabled, "Back", FONT_SIZE) {
+			@Override
+			public void click() {
+				moveToNode(LEVELS);
+			}
+		};
+
+		getStage().addActor(officialLevelPanel);
+		getStage().addActor(officialLevelsBackButton);
+
+		// ONLINE_LEVELS
+
+		ScrollPanel onlineLevelPanel = new ScrollPanel(ONLINE_LEVELS.position.x - 300, ONLINE_LEVELS.position.y - 600,
+				600, 1000, THEME.getColor(), 200) {
+			@Override
+			public void click(final int index) {
+				game.setScreenToPlay(levels.getOnlineLevels().get(index));
+			}
+		};
+
+		// Load online levels into scroll panel
+		ArrayList<Level> onlineLevelList = levels.getOnlineLevels();
+		for (int i = 0; i < onlineLevelList.size(); i++) {
+			onlineLevelPanel.addTextItem(onlineLevelList.get(i).getName(), 40);
+		}
+
+		TextItem onlineLevelsBackButton = new TextItem(ONLINE_LEVELS.position.x - 150, ONLINE_LEVELS.position.y + 500,
+				300, 150, THEME.getColor(), Touchable.enabled, "Back", FONT_SIZE) {
+			@Override
+			public void click() {
+				moveToNode(LEVELS);
+			}
+		};
+
+		getStage().addActor(onlineLevelPanel);
+		getStage().addActor(onlineLevelsBackButton);
+		
+		// CUSTOM_LEVELS
+
+		ScrollPanel customLevelPanel = new ScrollPanel(CUSTOM_LEVELS.position.x - 500, CUSTOM_LEVELS.position.y - 600,
+				600, 1200, THEME.getColor(), 200) {
+			@Override
+			public void click(final int index) {
+				game.setScreenToPlay(levels.getCustomLevels().get(index));
+			}
+		};
+
+		// Load custom levels into scroll panel
+		ArrayList<Level> customLevelList = levels.getCustomLevels();
+		for (int i = 0; i < customLevelList.size(); i++) {
+			customLevelPanel.addTextItem(customLevelList.get(i).getName(), 40);
+		}
+
+		TextItem customLevelsBackButton = new TextItem(CUSTOM_LEVELS.position.x + 200, CUSTOM_LEVELS.position.y - 75,
+				300, 150, THEME.getColor(), Touchable.enabled, "Back", FONT_SIZE) {
+			@Override
+			public void click() {
+				moveToNode(LEVELS);
+			}
+		};
+
+		getStage().addActor(customLevelPanel);
+		getStage().addActor(customLevelsBackButton);
+
 	}
-	
+
 	private void moveToNode(Node node) {
 		if (node == null) {
 			// Root node, do nothing

@@ -39,6 +39,7 @@ public class ParallaxBackground {
 		}
 		this.camera = camera;
 		this.batch = batch;
+		//setTheme(DEFAULT_THEME);
 	}
 
 	/**
