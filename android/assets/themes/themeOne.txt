@@ -1,7 +1,7 @@
 {
 name: test
 background: bg1.png
-planet: earth
+planet: mars
 srcViewWidth: 400
 color: {
 	r: 1

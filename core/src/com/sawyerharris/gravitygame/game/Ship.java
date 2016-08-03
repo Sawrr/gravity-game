@@ -42,6 +42,8 @@ public class Ship extends Actor {
 	 */
 	public Ship() {
 		sprite = new ShipSprite();
+		vel = new Vector2();
+		initialPosition = new Vector2();
 		reset();
 	}
 
@@ -112,7 +114,7 @@ public class Ship extends Actor {
 	 * @param pos
 	 */
 	public void setInitialPosition(Vector2 pos) {
-		if (pos.x < 0 || pos.x > LevelScreen.WORLD_WIDTH || pos.y < 0 || pos.y > LevelScreen.WORLD_HEIGHT) {
+		if (pos.x < -LevelScreen.WORLD_WIDTH / 2 || pos.x > LevelScreen.WORLD_WIDTH / 2 || pos.y < -LevelScreen.WORLD_HEIGHT / 2 || pos.y > LevelScreen.WORLD_HEIGHT / 2) {
 			throw new IllegalArgumentException("Ship position out of bounds.");
 		}
 		initialPosition = pos;
@@ -206,7 +208,7 @@ public class Ship extends Actor {
 		private float time;
 		/** Animation */
 		private Animation animation;
-
+		
 		/**
 		 * Sets the sprite's animation.
 		 * 
@@ -220,9 +222,13 @@ public class Ship extends Actor {
 		@Override
 		public void draw(Batch batch, float alpha) {
 			time += Gdx.graphics.getDeltaTime();
-			setRegion(animation.getKeyFrame(time));
+			setRegion(animation.getKeyFrame(time, true));
 			setRotation(vel.angle());
-			super.draw(batch, alpha);
+			setCenter(Ship.this.getPosition().x, Ship.this.getPosition().y);
+			setOriginCenter();
+			setScale(0.25f);
+			setSize(getRegionWidth(), getRegionHeight());
+			super.draw(batch);
 		}
 	}
 

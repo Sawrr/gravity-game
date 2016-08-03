@@ -15,7 +15,7 @@ import com.sawyerharris.gravitygame.screen.LevelScreen;
  */
 public class Planet extends Actor {
 	/** Maximum radius allowed */
-	private static final int MAX_RADIUS = 100;
+	private static final int MAX_RADIUS = 500;
 	/** Mass area density */
 	private static final float MASS_DENSITY = 1;
 
@@ -134,7 +134,7 @@ public class Planet extends Actor {
 	public void setHomePlanet(boolean home) {
 		homePlanet = home;
 		if (homePlanet) {
-			sprite.setRegion(GravityGame.getInstance().getAssets().getPlanet("home"));
+			sprite.setRegion(GravityGame.getInstance().getAssets().getPlanet("earth"));
 		} else {
 			sprite.setRegion(region);
 		}

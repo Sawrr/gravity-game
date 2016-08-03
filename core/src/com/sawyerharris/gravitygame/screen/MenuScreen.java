@@ -383,7 +383,7 @@ public class MenuScreen extends GameScreen {
 
 	@Override
 	public void keyDown(int keycode) {
-		if (keycode == Keys.BACK) {
+		if (keycode == Keys.BACK || keycode == Keys.BACKSPACE) {
 			moveToNode(currentNode.previous);
 		}
 	}

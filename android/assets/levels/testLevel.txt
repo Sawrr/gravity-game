@@ -3,18 +3,18 @@ name: test
 author: Sawr
 message: msg
 type: OFFICIAL
-theme: themeOne
+theme: test
 shipOrigin: {
-	x: 25
-	y: 50
+	x: 0
+	y: -500
 }
 planets: [
 	{
 		position: {
-			x: 25
-			y: 25
+			x: 0
+			y: 500
 		}
-		radius: 34
+		radius: 150
 		homePlanet: true
 	},
 	{
@@ -22,7 +22,7 @@ planets: [
 			x: 250
 			y: 250
 		}
-		radius: 56
+		radius: 100
 		homePlanet: false
 	}
 ]

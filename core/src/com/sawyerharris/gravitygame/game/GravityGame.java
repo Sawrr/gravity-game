@@ -67,7 +67,6 @@ public class GravityGame extends Game {
 		Gdx.input.setCatchBackKey(true);
 		
 		setScreenToMenu();
-		//setScreenToEdit();
 	}
 
 	/**
@@ -89,6 +88,7 @@ public class GravityGame extends Game {
 	}
 	
 	public void setScreenToPlay(Level level) {
+		levelPlayScreen.loadLevel(level);
 		setScreen(levelPlayScreen);
 		Gdx.input.setInputProcessor(levelPlayScreen.getMux());
 	}

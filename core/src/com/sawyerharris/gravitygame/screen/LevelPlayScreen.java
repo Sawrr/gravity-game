@@ -16,12 +16,12 @@ public class LevelPlayScreen extends LevelScreen {
 
 	public LevelPlayScreen(Batch batch, ShapeRenderer renderer) {
 		super(batch, renderer);
+		aim();
 	}
 
 	@Override
 	public void pan(float x, float y, float deltaX, float deltaY) {
-		// TODO Auto-generated method stub
-
+		getCamera().translate(new Vector2(deltaX, deltaY));
 	}
 
 	@Override
@@ -80,7 +80,8 @@ public class LevelPlayScreen extends LevelScreen {
 	 * Called when the ship is being aimed.
 	 */
 	public void aim() {
-
+		getShip().reset();
+		getShip().setTouchable(Touchable.enabled);
 	}
 
 	/**
