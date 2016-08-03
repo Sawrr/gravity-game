@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.sawyerharris.gravitygame.screen.LevelScreen;
 
 /**
@@ -17,6 +18,10 @@ import com.sawyerharris.gravitygame.screen.LevelScreen;
  *
  */
 public class Ship extends Actor {
+	/** Collision radius */
+	public static final int RADIUS = 50;
+	/** Touchable radius */
+	private static final int TOUCH_RADIUS = 120;
 	/** Maximum amount of boost a ship may have */
 	public static final int MAX_BOOST = 0;
 	/** Scalar for how much boost is applied */
@@ -45,8 +50,15 @@ public class Ship extends Actor {
 		vel = new Vector2();
 		initialPosition = new Vector2();
 		reset();
+		sprite.setSize(sprite.getRegionWidth(), sprite.getRegionHeight());
 	}
 
+	@Override
+	public Actor hit(float x, float y, boolean touchable) {
+		if (touchable && getTouchable() != Touchable.enabled) return null;
+	    return new Vector2(x,y).len() <= TOUCH_RADIUS ? this : null;
+	}
+	
 	/**
 	 * Start using boost.
 	 */
@@ -94,9 +106,6 @@ public class Ship extends Actor {
 			throw new IllegalArgumentException("Ship position out of bounds.");
 		}
 		setPosition(pos.x, pos.y);
-		sprite.setCenter(pos.x, pos.y);
-		setBounds(sprite.getX(), sprite.getY(), sprite.getWidth() * sprite.getScaleX(),
-				sprite.getHeight() * sprite.getScaleY());
 	}
 
 	/**
@@ -223,11 +232,11 @@ public class Ship extends Actor {
 		public void draw(Batch batch, float alpha) {
 			time += Gdx.graphics.getDeltaTime();
 			setRegion(animation.getKeyFrame(time, true));
-			setRotation(vel.angle());
+			setSize(getRegionWidth(), getRegionHeight());
 			setCenter(Ship.this.getPosition().x, Ship.this.getPosition().y);
+			setRotation(vel.angle());
 			setOriginCenter();
 			setScale(0.25f);
-			setSize(getRegionWidth(), getRegionHeight());
 			super.draw(batch);
 		}
 	}

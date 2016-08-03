@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.sawyerharris.gravitygame.game.GravityGame;
 import com.sawyerharris.gravitygame.game.Level;
 import com.sawyerharris.gravitygame.game.Level.PlanetMeta;
@@ -50,7 +53,7 @@ public abstract class LevelScreen extends GameScreen {
 		ship.setPosition(level.getShipOrigin());
 		ship.setInitialPosition(level.getShipOrigin());
 		ship.reset();
-
+		
 		planets.clear();
 		for (PlanetMeta meta : level.getPlanets()) {
 			Vector2 position = meta.getPosition();
@@ -61,6 +64,26 @@ public abstract class LevelScreen extends GameScreen {
 			planets.add(planet);
 			getStage().addActor(planet);
 		}
+		
+		ship.setTouchable(Touchable.enabled);
+		ship.addListener(new ActorGestureListener() {
+			@Override
+			public void tap(InputEvent event, float x, float y, int count, int button) {
+				System.out.println("tapped ship");
+			}
+		});
+		
+		for (final Planet planet : planets) {
+			System.out.println(planet.getRadius());
+			planet.setTouchable(Touchable.enabled);
+			planet.addListener(new ActorGestureListener() {
+				@Override
+				public void tap(InputEvent event, float x, float y, int count, int button) {
+					System.out.println("tapped planet " + planet.getRadius());
+				}
+			});
+		}
+				
 	}
 
 	/**

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.sawyerharris.gravitygame.screen.LevelScreen;
 
 /**
@@ -55,6 +56,12 @@ public class Planet extends Actor {
 		setHomePlanet(homePlanet);
 	}
 
+	@Override
+	public Actor hit(float x, float y, boolean touchable) {
+		if (touchable && getTouchable() != Touchable.enabled) return null;
+	    return new Vector2(x,y).len() <= radius ? this : null;
+	}
+	
 	/**
 	 * Returns the radius of the planet.
 	 * 
@@ -104,10 +111,6 @@ public class Planet extends Actor {
 		}
 		setPosition(pos.x, pos.y);
 		sprite.setCenter(pos.x, pos.y);
-		if (isTouchable()) {
-			setBounds(sprite.getX(), sprite.getY(), sprite.getWidth() * sprite.getScaleX(),
-					sprite.getHeight() * sprite.getScaleY());
-		}
 	}
 
 	/**

@@ -1,12 +1,12 @@
 package com.sawyerharris.gravitygame.screen;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.sawyerharris.gravitygame.game.GravityGame;
-import com.sawyerharris.gravitygame.ui.TextItem;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.sawyerharris.gravitygame.game.Planet;
 
 public class LevelPlayScreen extends LevelScreen {
 
@@ -15,8 +15,9 @@ public class LevelPlayScreen extends LevelScreen {
 	private Vector2 cameraAimingPosition;
 
 	public LevelPlayScreen(Batch batch, ShapeRenderer renderer) {
-		super(batch, renderer);
+		super(batch, renderer);		
 		aim();
+		
 	}
 
 	@Override
@@ -81,7 +82,6 @@ public class LevelPlayScreen extends LevelScreen {
 	 */
 	public void aim() {
 		getShip().reset();
-		getShip().setTouchable(Touchable.enabled);
 	}
 
 	/**

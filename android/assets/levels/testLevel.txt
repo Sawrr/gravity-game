@@ -6,7 +6,7 @@ type: OFFICIAL
 theme: test
 shipOrigin: {
 	x: 0
-	y: -500
+	y: 0
 }
 planets: [
 	{
