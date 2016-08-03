@@ -49,7 +49,7 @@ public class ScrollPanel extends BorderedItem {
 
 	private void scroll(float amount) {
 		// If the scroll panel is not full, do not scroll
-		if (iHeight * size < getWidth()) {
+		if (iHeight * size < getHeight()) {
 			return;
 		}
 		scrollY += amount;

@@ -1,17 +1,13 @@
 package com.sawyerharris.gravitygame.screen;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.Input.TextInputListener;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.sawyerharris.gravitygame.game.GravityGame;
 import com.sawyerharris.gravitygame.game.Level;
 import com.sawyerharris.gravitygame.game.PlayerStatus;
@@ -21,7 +17,6 @@ import com.sawyerharris.gravitygame.manager.LevelManager;
 import com.sawyerharris.gravitygame.ui.ScrollPanel;
 import com.sawyerharris.gravitygame.ui.TextInputAdapter;
 import com.sawyerharris.gravitygame.ui.TextItem;
-import com.sawyerharris.gravitygame.ui.TextureItem;
 
 /**
  * Menu screen holds many UI actors in its stage that provide menu
@@ -209,20 +204,30 @@ public class MenuScreen extends GameScreen {
 				1200, THEME.getColor(), 200) {
 			@Override
 			public void click(final int index) {
-				Level level = levels.getCustomLevels().get(index);
 				TextInputAdapter listener = new TextInputAdapter(){
 					@Override
 					public void input(String text) {
 						game.setScreenToEdit(text, index);
 					}
 				};
-				Gdx.input.getTextInput(listener, "Enter level name", level.getName(), "");
+				
+				ArrayList<Level> levelList = levels.getCustomLevels();
+				if (index == levelList.size()) {
+					Gdx.input.getTextInput(listener, "Enter level name", "", "");
+				} else {
+					Level level = levelList.get(index);
+					Gdx.input.getTextInput(listener, "Enter level name", level.getName(), "");	
+				}
 			}
 		};
 
+		// Load existing levels into scroll panel
 		for (Level level : levels.getCustomLevels()) {
 			levelEditPanel.addTextItem(level.getName(), 40);
 		}
+		
+		// Add new level
+		levelEditPanel.addTextItem("New level", 40);
 		
 		TextItem editBackButton = new TextItem(EDITOR.position.x - 500, EDITOR.position.y - 75, 300, 150,
 				THEME.getColor(), Touchable.enabled, "Back", FONT_SIZE) {

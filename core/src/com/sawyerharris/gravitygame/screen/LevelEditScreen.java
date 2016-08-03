@@ -85,6 +85,7 @@ public class LevelEditScreen extends LevelScreen {
 
 	}
 
+	// must check that level has a home planet
 	public void testLevel() {
 
 	}
@@ -93,6 +94,8 @@ public class LevelEditScreen extends LevelScreen {
 
 	}
 
+	// must check that author name has been set
+	// must check that level has a home planet
 	public void uploadLevel() {
 
 	}
