@@ -53,7 +53,7 @@ public abstract class GameScreen extends ScreenAdapter {
 		background = new ParallaxBackground(camera, batch);
 		stage = new GameStage(viewport, batch, renderer);
 		
-		detector = new ScreenGestureDetector(new ScreenGestureAdapter());
+		detector = new ScreenGestureDetector(100, 1.0f, 1.11f, 0.15f, new ScreenGestureAdapter());
 
 		mux = new InputMultiplexer();
 		mux.addProcessor(stage);
@@ -145,8 +145,8 @@ public abstract class GameScreen extends ScreenAdapter {
 		
 		private ScreenGestureAdapter listener;
 		
-		public ScreenGestureDetector(GestureListener listener) {
-			super(listener);
+		public ScreenGestureDetector(int i, float f, float g, float h, GestureListener listener) {
+			super(i, f, g, h, listener);
 			this.listener = (ScreenGestureAdapter) listener;
 		}
 
@@ -159,19 +159,6 @@ public abstract class GameScreen extends ScreenAdapter {
 		@Override
 		public boolean scrolled(int amount) {
 			GameScreen.this.scrolled(amount);
-			return true;
-		}
-
-		@Override
-		public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-			GameScreen.this.touchDown(screenX, screenY, pointer, button);
-			return true;
-		}
-		
-		@Override
-		public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-			GameScreen.this.touchUp(screenX, screenY, pointer, button);
-			listener.firstPan = true;
 			return true;
 		}
 	}
@@ -202,6 +189,7 @@ public abstract class GameScreen extends ScreenAdapter {
 
 		@Override
 		public boolean tap(float x, float y, int count, int button) {
+			firstPan = true;
 			GameScreen.this.tap(x, y, count, button);
 			return true;
 		}

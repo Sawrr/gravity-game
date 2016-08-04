@@ -18,7 +18,7 @@ public class GameCamera extends OrthographicCamera {
 	private final int worldHeight;
 	
 	/** Minimum, maximum zoom levels */
-	private static final float MIN_ZOOM = 0.125f;
+	private static final float MIN_ZOOM = 0.5f;
 	private static final float MAX_ZOOM = 1f;
 
 	/** Target camera values */
@@ -225,6 +225,7 @@ public class GameCamera extends OrthographicCamera {
 		position.y = MathUtils.clamp(position.y, (effectiveViewportHeight - worldHeight) / 2f,
 				(worldHeight - effectiveViewportHeight) / 2f);
 		zoom = MathUtils.clamp(zoom, MIN_ZOOM, MAX_ZOOM);
+		update();
 	}
 
 	/**

@@ -19,7 +19,7 @@ import com.sawyerharris.gravitygame.screen.LevelScreen;
  */
 public class Ship extends Actor {
 	/** Collision radius */
-	public static final int RADIUS = 50;
+	public static final int RADIUS = 25;
 	/** Touchable radius */
 	private static final int TOUCH_RADIUS = 120;
 	/** Maximum amount of boost a ship may have */
@@ -47,6 +47,7 @@ public class Ship extends Actor {
 	 */
 	public Ship() {
 		sprite = new ShipSprite();
+		pos = new Vector2();
 		vel = new Vector2();
 		initialPosition = new Vector2();
 		reset();
@@ -129,6 +130,14 @@ public class Ship extends Actor {
 		initialPosition = pos;
 	}
 
+	public Vector2 getVelocity() {
+		return vel;
+	}
+	
+	public void setVelocity(Vector2 velocity) {
+		vel = velocity;
+	}
+	
 	/**
 	 * Updates ship's position and velocity using Runge-Kutta 4th Order method.
 	 * 
@@ -234,8 +243,8 @@ public class Ship extends Actor {
 			setRegion(animation.getKeyFrame(time, true));
 			setSize(getRegionWidth(), getRegionHeight());
 			setCenter(Ship.this.getPosition().x, Ship.this.getPosition().y);
-			setRotation(vel.angle());
 			setOriginCenter();
+			setRotation(vel.angle() - 90);
 			setScale(0.25f);
 			super.draw(batch);
 		}

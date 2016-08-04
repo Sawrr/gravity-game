@@ -6,66 +6,106 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.sawyerharris.gravitygame.game.Level;
 import com.sawyerharris.gravitygame.game.Planet;
+import com.sawyerharris.gravitygame.game.Ship;
 
 public class LevelPlayScreen extends LevelScreen {
+
+	protected static final float VEL_SCALAR = 0.1f;
 
 	private GameplayState state;
 
 	private Vector2 cameraAimingPosition;
+	private float cameraAimingZoom;
 
 	public LevelPlayScreen(Batch batch, ShapeRenderer renderer) {
-		super(batch, renderer);		
-		aim();
+		super(batch, renderer);
 		
+		cameraAimingPosition = new Vector2(0,0);
+		cameraAimingZoom = 1f;
+		
+		getShip().setTouchable(Touchable.enabled);
+		getShip().addListener(new ActorGestureListener() {			
+			@Override
+			public void fling(InputEvent event, float velX, float velY, int button) {
+				if (state == GameplayState.AIMING) {
+					getShip().setVelocity(new Vector2(velX, velY).scl(VEL_SCALAR));
+					fire();
+				}
+			}
+		});
+		
+		aim();
 	}
 
+	private void checkCollisions() {
+		// Check for planet collisions
+		for (Planet planet : getPlanets()) {
+			if (getShip().getPosition().dst(planet.getPosition()) < planet.getRadius() + Ship.RADIUS) {
+				if (planet.isHomePlanet()) {
+					resetLevel();
+				} else {
+					resetLevel();	
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void loadLevel(Level level) {
+		super.loadLevel(level);
+		aim();
+	}
+	
 	@Override
 	public void pan(float x, float y, float deltaX, float deltaY) {
-		getCamera().translate(new Vector2(deltaX, deltaY));
+		if (state == GameplayState.AIMING) {
+			getCamera().translate(new Vector2(deltaX, deltaY));
+			getCamera().stopAutoMove();
+			getCamera().stopAutoZoom();
+			cameraAimingPosition = getCamera().getPosition();
+		}
 	}
 
 	@Override
 	public void zoom(float initialDistance, float distance) {
-		// TODO Auto-generated method stub
-
+		if (state == GameplayState.AIMING) {
+			getCamera().zoom((initialDistance - distance) * 0.0005f);
+			cameraAimingZoom = getCamera().getZoom();
+		}
 	}
 
 	@Override
 	public void tap(float x, float y, int count, int button) {
-		// TODO Auto-generated method stub
-
+		System.out.println("tap");
 	}
 
 	@Override
 	public void keyDown(int keycode) {
-		// TODO Auto-generated method stub
-
+		System.out.println("keyDown");
 	}
 
 	@Override
 	public void scrolled(int amount) {
-		// TODO Auto-generated method stub
-
+		System.out.println("scrolled");
 	}
 
 	@Override
 	public void touchDown(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-
+		System.out.println("touchDown");
 	}
-	
+
 	@Override
 	public void touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-		
+		System.out.println("touchUp");
 	}
 
 	/**
 	 * Resets the level to its initial state.
 	 */
 	public void resetLevel() {
-
+		aim();
 	}
 
 	/**
@@ -82,29 +122,49 @@ public class LevelPlayScreen extends LevelScreen {
 	 */
 	public void aim() {
 		getShip().reset();
+		getCamera().setMoveTarget(cameraAimingPosition);
+		getCamera().setZoomTarget(cameraAimingZoom);
+		state = GameplayState.AIMING;
 	}
 
 	/**
 	 * Called when the ship is fired.
 	 */
 	public void fire() {
-
+		state = GameplayState.FIRING;
 	}
 
 	/**
 	 * Called when a level is failed.
 	 */
 	public void failure() {
-
+		state = GameplayState.FAILURE;
 	}
 
 	/**
 	 * Called when a level is beaten.
 	 */
 	public void victory() {
-
+		state = GameplayState.VICTORY;
 	}
 
+	@Override
+	public void render(float delta) {
+		if (state == GameplayState.FIRING) {
+			try {
+				getShip().physicsUpdate(delta, getPlanets());
+			} catch (IllegalArgumentException e) {
+				// Ship position out of bounds
+				resetLevel();
+			}
+			
+			checkCollisions();
+			
+			getCamera().setMoveTarget(getShip().getPosition());
+		}
+		super.render(delta);
+	}
+	
 	/**
 	 * State of game while playing.
 	 * 
@@ -114,5 +174,4 @@ public class LevelPlayScreen extends LevelScreen {
 	public enum GameplayState {
 		AIMING, FIRING, FAILURE, VICTORY
 	}
-
 }

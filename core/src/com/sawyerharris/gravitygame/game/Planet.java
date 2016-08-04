@@ -18,7 +18,7 @@ public class Planet extends Actor {
 	/** Maximum radius allowed */
 	private static final int MAX_RADIUS = 500;
 	/** Mass area density */
-	private static final float MASS_DENSITY = 1;
+	private static final float MASS_DENSITY = 1000;
 
 	/** Radius of planet */
 	private int radius;
@@ -124,7 +124,7 @@ public class Planet extends Actor {
 			throw new IllegalArgumentException("Invalid planet radius.");
 		}
 		radius = rad;
-		sprite.setScale(rad / (float) sprite.getRegionWidth());
+		sprite.setScale(rad / (float) (sprite.getRegionWidth() / 2));
 		mass = MASS_DENSITY * rad * rad;
 	}
 

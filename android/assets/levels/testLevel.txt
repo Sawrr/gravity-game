@@ -14,7 +14,7 @@ planets: [
 			x: 0
 			y: 500
 		}
-		radius: 150
+		radius: 100
 		homePlanet: true
 	},
 	{
@@ -22,7 +22,7 @@ planets: [
 			x: 250
 			y: 250
 		}
-		radius: 100
+		radius: 50
 		homePlanet: false
 	}
 ]

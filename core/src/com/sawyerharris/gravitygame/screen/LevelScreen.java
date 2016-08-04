@@ -50,10 +50,12 @@ public abstract class LevelScreen extends GameScreen {
 	public void loadLevel(Level level) {
 		this.level = level;
 
+		// Load ship
 		ship.setPosition(level.getShipOrigin());
 		ship.setInitialPosition(level.getShipOrigin());
 		ship.reset();
-		
+
+		// Load planets
 		planets.clear();
 		for (PlanetMeta meta : level.getPlanets()) {
 			Vector2 position = meta.getPosition();
@@ -64,26 +66,6 @@ public abstract class LevelScreen extends GameScreen {
 			planets.add(planet);
 			getStage().addActor(planet);
 		}
-		
-		ship.setTouchable(Touchable.enabled);
-		ship.addListener(new ActorGestureListener() {
-			@Override
-			public void tap(InputEvent event, float x, float y, int count, int button) {
-				System.out.println("tapped ship");
-			}
-		});
-		
-		for (final Planet planet : planets) {
-			System.out.println(planet.getRadius());
-			planet.setTouchable(Touchable.enabled);
-			planet.addListener(new ActorGestureListener() {
-				@Override
-				public void tap(InputEvent event, float x, float y, int count, int button) {
-					System.out.println("tapped planet " + planet.getRadius());
-				}
-			});
-		}
-				
 	}
 
 	/**
