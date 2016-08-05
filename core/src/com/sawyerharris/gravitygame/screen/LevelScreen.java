@@ -2,6 +2,7 @@ package com.sawyerharris.gravitygame.screen;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -41,10 +42,20 @@ public abstract class LevelScreen extends GameScreen {
 		super(batch, renderer, WORLD_WIDTH, WORLD_HEIGHT);
 		getBackground().setTheme(DEFAULT_THEME);
 
+		overlay = new Overlay(batch, renderer);
+		getMux().addProcessor(overlay.getStage());
+		
+		
 		ship = new Ship();
 		getStage().addActor(ship);
 
 		planets = new ArrayList<Planet>();
+	}
+	
+	@Override
+	public void render(float delta) {
+		super.render(delta);
+		overlay.draw();
 	}
 
 	public void loadLevel(Level level) {

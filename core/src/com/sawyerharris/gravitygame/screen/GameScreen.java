@@ -124,16 +124,6 @@ public abstract class GameScreen extends ScreenAdapter {
 	 * Called when the mouse wheel is scrolled.
 	 */
 	public abstract void scrolled(int amount);
-
-	/**
-	 * Called when the screen is touched.
-	 */
-	public abstract void touchDown(int screenX, int screenY, int pointer, int button);
-	
-	/**
-	 * Called when the touch on the screen is released.
-	 */
-	public abstract void touchUp(int screenX, int screenY, int pointer, int button);
 	
 	/**
 	 * Detects gestures on the screen and hands them to the GameScreen instance.
@@ -153,13 +143,13 @@ public abstract class GameScreen extends ScreenAdapter {
 		@Override
 		public boolean keyDown(int keycode) {
 			GameScreen.this.keyDown(keycode);
-			return true;
+			return false;
 		}
 
 		@Override
 		public boolean scrolled(int amount) {
 			GameScreen.this.scrolled(amount);
-			return true;
+			return false;
 		}
 	}
 	
@@ -178,20 +168,20 @@ public abstract class GameScreen extends ScreenAdapter {
 				GameScreen.this.pan(x, y, -deltaX, deltaY);
 			}
 			firstPan = false;
-			return true;
+			return false;
 		}
 
 		@Override
 		public boolean zoom(float initialDistance, float distance) {
 			GameScreen.this.zoom(initialDistance, distance);
-			return true;
+			return false;
 		}
 
 		@Override
 		public boolean tap(float x, float y, int count, int button) {
 			firstPan = true;
 			GameScreen.this.tap(x, y, count, button);
-			return true;
+			return false;
 		}
 	}
 }

@@ -12,7 +12,8 @@ import com.sawyerharris.gravitygame.game.Ship;
 
 public class LevelPlayScreen extends LevelScreen {
 
-	protected static final float VEL_SCALAR = 0.1f;
+	private static final float VEL_SCALAR = 0.1f;
+	private static final float ZOOM_SCALAR = 0.0005f;
 
 	private GameplayState state;
 
@@ -44,7 +45,7 @@ public class LevelPlayScreen extends LevelScreen {
 		for (Planet planet : getPlanets()) {
 			if (getShip().getPosition().dst(planet.getPosition()) < planet.getRadius() + Ship.RADIUS) {
 				if (planet.isHomePlanet()) {
-					resetLevel();
+					victory();
 				} else {
 					resetLevel();	
 				}
@@ -71,34 +72,21 @@ public class LevelPlayScreen extends LevelScreen {
 	@Override
 	public void zoom(float initialDistance, float distance) {
 		if (state == GameplayState.AIMING) {
-			getCamera().zoom((initialDistance - distance) * 0.0005f);
+			getCamera().zoom((initialDistance - distance) * ZOOM_SCALAR);
 			cameraAimingZoom = getCamera().getZoom();
 		}
 	}
 
 	@Override
 	public void tap(float x, float y, int count, int button) {
-		System.out.println("tap");
 	}
 
 	@Override
 	public void keyDown(int keycode) {
-		System.out.println("keyDown");
 	}
 
 	@Override
 	public void scrolled(int amount) {
-		System.out.println("scrolled");
-	}
-
-	@Override
-	public void touchDown(int screenX, int screenY, int pointer, int button) {
-		System.out.println("touchDown");
-	}
-
-	@Override
-	public void touchUp(int screenX, int screenY, int pointer, int button) {
-		System.out.println("touchUp");
 	}
 
 	/**
@@ -135,13 +123,6 @@ public class LevelPlayScreen extends LevelScreen {
 	}
 
 	/**
-	 * Called when a level is failed.
-	 */
-	public void failure() {
-		state = GameplayState.FAILURE;
-	}
-
-	/**
 	 * Called when a level is beaten.
 	 */
 	public void victory() {
@@ -172,6 +153,6 @@ public class LevelPlayScreen extends LevelScreen {
 	 *
 	 */
 	public enum GameplayState {
-		AIMING, FIRING, FAILURE, VICTORY
+		AIMING, FIRING, VICTORY
 	}
 }

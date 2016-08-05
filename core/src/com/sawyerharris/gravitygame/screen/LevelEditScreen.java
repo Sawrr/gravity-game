@@ -72,18 +72,6 @@ public class LevelEditScreen extends LevelScreen {
 
 	}
 
-	@Override
-	public void touchDown(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-
-	}
-
 	// must check that level has a home planet
 	public void testLevel() {
 
