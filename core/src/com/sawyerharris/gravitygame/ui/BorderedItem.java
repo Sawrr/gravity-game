@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
  * @author Sawyer Harris
  *
  */
-public abstract class BorderedItem extends Group {
+public class BorderedItem extends Group {
 	/** Color of the border */
 	private static final Color BORDER_COLOR = new Color(1, 1, 1, 0.5f);
 	/** Width of border */

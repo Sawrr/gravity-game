@@ -3,7 +3,7 @@ name: test2
 author: Sawr
 message: msg2
 type: OFFICIAL
-theme: themeTwo
+theme: test
 shipOrigin: {
 	x: 26
 	y: 51
