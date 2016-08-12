@@ -19,12 +19,16 @@ public class LevelPlayScreen extends LevelScreen {
 
 	private Vector2 cameraAimingPosition;
 	private float cameraAimingZoom;
+	
+	private int numAttempts;
 
 	public LevelPlayScreen(Batch batch, ShapeRenderer renderer) {
 		super(batch, renderer);
 		
 		cameraAimingPosition = new Vector2(0,0);
 		cameraAimingZoom = 1f;
+		
+		numAttempts = 0;
 		
 		getShip().setTouchable(Touchable.enabled);
 		getShip().addListener(new ActorGestureListener() {			
@@ -56,6 +60,8 @@ public class LevelPlayScreen extends LevelScreen {
 	@Override
 	public void loadLevel(Level level) {
 		super.loadLevel(level);
+		getOverlay().hideVictoryPanel();
+		numAttempts = 0;
 		aim();
 	}
 	
@@ -120,6 +126,7 @@ public class LevelPlayScreen extends LevelScreen {
 	 */
 	public void fire() {
 		state = GameplayState.FIRING;
+		numAttempts++;
 	}
 
 	/**
@@ -127,6 +134,7 @@ public class LevelPlayScreen extends LevelScreen {
 	 */
 	public void victory() {
 		state = GameplayState.VICTORY;
+		getOverlay().showVictoryPanel(getLevel().getName(), numAttempts, -1);
 	}
 
 	@Override

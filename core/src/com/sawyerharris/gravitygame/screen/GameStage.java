@@ -68,7 +68,9 @@ public class GameStage extends Stage {
 		shapeRenderer.setProjectionMatrix(getCamera().combined);
 		shapeRenderer.begin();
 		for (BorderedItem item : items) {
-			item.drawItem(shapeRenderer);
+			if (item.isVisible()) {
+				item.drawItem(shapeRenderer);
+			}
 		}
 		shapeRenderer.end();
 	}

@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.sawyerharris.gravitygame.game.GravityGame;
 
 public class TextureItem extends BorderedItem {
 
@@ -14,6 +13,10 @@ public class TextureItem extends BorderedItem {
 	
 	public TextureItem(float x, float y, float width, float height, Color color, Touchable touchable, TextureRegion region) {
 		super(x, y, width, height, color, touchable);
+		setTexture(region);
+	}
+	
+	public void setTexture(TextureRegion region) {
 		float centerX = getX() + getWidth() / 2;
 		float centerY = getY() + getHeight() / 2;
 		sprite = new Sprite(region);

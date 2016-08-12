@@ -52,6 +52,10 @@ public abstract class LevelScreen extends GameScreen {
 		planets = new ArrayList<Planet>();
 	}
 	
+	public Overlay getOverlay() {
+		return overlay;
+	}
+	
 	@Override
 	public void render(float delta) {
 		super.render(delta);
