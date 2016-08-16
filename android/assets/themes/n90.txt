@@ -2,7 +2,7 @@
 name: n90
 background: n90.jpg
 planet: mars
-srcViewWidth: 2200
+srcViewWidth: 1100
 color: {
 	r: 0.24
 	g: 0.27
