@@ -1,0 +1,21 @@
+{
+name: 0-3 Almost Got It!
+author: Sawr
+message: msg
+type: TUTORIAL
+theme: cone
+shipOrigin: {
+	x: 25
+	y: 50
+}
+planets: [
+	{
+		position: {
+			x: 25
+			y: 25
+		}
+		radius: 34
+		homePlanet: true
+	}
+]
+}

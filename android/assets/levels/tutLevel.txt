@@ -1,9 +1,9 @@
 {
-name: test
+name: 0-1 Getting Started
 author: Sawr
 message: msg
-type: OFFICIAL
-theme: themeOne
+type: TUTORIAL
+theme: rose
 shipOrigin: {
 	x: 25
 	y: 50

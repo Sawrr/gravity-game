@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.sawyerharris.gravitygame.game.Level.LevelType;
 import com.sawyerharris.gravitygame.manager.AssetManager;
 import com.sawyerharris.gravitygame.manager.LevelManager;
 import com.sawyerharris.gravitygame.manager.ThemeManager;
@@ -88,9 +89,31 @@ public class GravityGame extends Game {
 	}
 	
 	public void setScreenToPlay(Level level) {
+		if (level == null) {
+			setScreenToMenu();
+			return;
+		}
 		levelPlayScreen.loadLevel(level);
 		setScreen(levelPlayScreen);
 		Gdx.input.setInputProcessor(levelPlayScreen.getMux());
+		
+		// Set current level index
+		int index;
+		switch (level.getType()) {
+			case CUSTOM:
+				// Custom levels do not set current level index
+				break;
+			case OFFICIAL:
+				index = levels.getOfficialLevels().indexOf(level);
+				levels.setCurrentLevelIndex(index);
+				levels.setOnTutorialLevels(false);
+				break;
+			case TUTORIAL:
+				index = levels.getTutorialLevels().indexOf(level);
+				levels.setCurrentLevelIndex(index);
+				levels.setOnTutorialLevels(true);
+				break;
+		}
 	}
 	
 	public void setScreenToEdit(String name, int index) {

@@ -1,1 +1,1 @@
-["themeOne.txt", "defaultTheme.txt", "menu.txt"]
+["cone.txt", "creation.txt", "n90.txt", "NGC1672.txt", "NGC3603.txt", "rose.txt", "sombrero.txt", "V838Mon.txt"]

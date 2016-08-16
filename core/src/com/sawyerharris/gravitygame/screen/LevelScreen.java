@@ -25,7 +25,7 @@ import com.sawyerharris.gravitygame.ui.Overlay;
  *
  */
 public abstract class LevelScreen extends GameScreen {
-	private static final Theme DEFAULT_THEME = GravityGame.getInstance().getThemes().getTheme("default");
+	private static final Theme DEFAULT_THEME = GravityGame.getInstance().getThemes().getTheme("cone");
 
 	private final GravityGame game = GravityGame.getInstance();
 
@@ -47,7 +47,6 @@ public abstract class LevelScreen extends GameScreen {
 		
 		
 		ship = new Ship();
-		getStage().addActor(ship);
 
 		planets = new ArrayList<Planet>();
 	}
@@ -65,10 +64,13 @@ public abstract class LevelScreen extends GameScreen {
 	public void loadLevel(Level level) {
 		this.level = level;
 
+		getStage().clear();
+		
 		// Load ship
 		ship.setPosition(level.getShipOrigin());
 		ship.setInitialPosition(level.getShipOrigin());
 		ship.reset();
+		getStage().addActor(ship);
 
 		// Load planets
 		planets.clear();

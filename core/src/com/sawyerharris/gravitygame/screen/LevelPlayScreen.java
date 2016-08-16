@@ -6,11 +6,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.sawyerharris.gravitygame.game.GravityGame;
 import com.sawyerharris.gravitygame.game.Level;
 import com.sawyerharris.gravitygame.game.Planet;
 import com.sawyerharris.gravitygame.game.Ship;
 
 public class LevelPlayScreen extends LevelScreen {
+	private final GravityGame game = GravityGame.getInstance();
 
 	private static final float VEL_SCALAR = 0.1f;
 	private static final float ZOOM_SCALAR = 0.0005f;
@@ -19,19 +21,19 @@ public class LevelPlayScreen extends LevelScreen {
 
 	private Vector2 cameraAimingPosition;
 	private float cameraAimingZoom;
-	
+
 	private int numAttempts;
 
 	public LevelPlayScreen(Batch batch, ShapeRenderer renderer) {
 		super(batch, renderer);
-		
-		cameraAimingPosition = new Vector2(0,0);
+
+		cameraAimingPosition = new Vector2(0, 0);
 		cameraAimingZoom = 1f;
-		
+
 		numAttempts = 0;
-		
+
 		getShip().setTouchable(Touchable.enabled);
-		getShip().addListener(new ActorGestureListener() {			
+		getShip().addListener(new ActorGestureListener() {
 			@Override
 			public void fling(InputEvent event, float velX, float velY, int button) {
 				if (state == GameplayState.AIMING) {
@@ -40,7 +42,7 @@ public class LevelPlayScreen extends LevelScreen {
 				}
 			}
 		});
-		
+
 		aim();
 	}
 
@@ -51,20 +53,26 @@ public class LevelPlayScreen extends LevelScreen {
 				if (planet.isHomePlanet()) {
 					victory();
 				} else {
-					resetLevel();	
+					resetLevel();
 				}
 			}
 		}
 	}
-	
+
+	private void resetCamera() {
+		cameraAimingPosition = new Vector2(0, 0);
+		cameraAimingZoom = 1f;
+	}
+
 	@Override
 	public void loadLevel(Level level) {
 		super.loadLevel(level);
 		getOverlay().hideVictoryPanel();
 		numAttempts = 0;
+		resetCamera();
 		aim();
 	}
-	
+
 	@Override
 	public void pan(float x, float y, float deltaX, float deltaY) {
 		if (state == GameplayState.AIMING) {
@@ -134,7 +142,8 @@ public class LevelPlayScreen extends LevelScreen {
 	 */
 	public void victory() {
 		state = GameplayState.VICTORY;
-		getOverlay().showVictoryPanel(getLevel().getName(), numAttempts, -1);
+		int shipStyleUnlock = game.getLevels().levelCompleted();
+		getOverlay().showVictoryPanel(getLevel().getName(), numAttempts, shipStyleUnlock);
 	}
 
 	@Override
@@ -146,14 +155,14 @@ public class LevelPlayScreen extends LevelScreen {
 				// Ship position out of bounds
 				resetLevel();
 			}
-			
+
 			checkCollisions();
-			
+
 			getCamera().setMoveTarget(getShip().getPosition());
 		}
 		super.render(delta);
 	}
-	
+
 	/**
 	 * State of game while playing.
 	 * 

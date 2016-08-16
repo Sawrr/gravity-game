@@ -3,6 +3,6 @@
 		"testLevel.txt", "anotherLevel.txt"
 	],
 	"tutorial": [
-		"tutLevel.txt", "tutLevel2.txt"
+		"tutLevel.txt", "tutLevel2.txt", "tutLevel3.txt"
 	]
 }

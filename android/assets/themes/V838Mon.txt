@@ -1,0 +1,12 @@
+{
+name: V838Mon
+background: V838Mon.jpg
+planet: mars
+srcViewWidth: 400
+color: {
+	r: 1
+	g: 1
+	b: 1
+	a: 1
+}
+}

@@ -24,6 +24,8 @@ import com.sawyerharris.gravitygame.game.PlayerStatus;
  *
  */
 public class LevelManager {
+	private final GravityGame game = GravityGame.getInstance();
+	
 	/** URL of level server */
 	private static final String LEVEL_SERVER = "http://localhost:8080/?";
 
@@ -105,8 +107,8 @@ public class LevelManager {
 	}
 
 	private void loadLevelStatus() {
-		currentLevel = GravityGame.getInstance().getPlayerStatus().getHighestLevel();
-		onTutorialLevels = !GravityGame.getInstance().getPlayerStatus().isTutorialCompleted();
+		currentLevel = game.getPlayerStatus().getHighestLevel();
+		onTutorialLevels = !game.getPlayerStatus().isTutorialCompleted();
 	}
 
 	private void loadCustomLevels() {
@@ -181,7 +183,7 @@ public class LevelManager {
 	 *         style unlocked
 	 */
 	public int levelCompleted() {
-		PlayerStatus status = GravityGame.getInstance().getPlayerStatus();
+		PlayerStatus status = game.getPlayerStatus();
 		if (onTutorialLevels) {
 			if (currentLevel == tutorialLevels.size() - 1) {
 				// Tutorial completed
@@ -189,8 +191,10 @@ public class LevelManager {
 				onTutorialLevels = false;
 				status.setTutorialCompleted(true);
 				status.flush();
+				System.out.println("tut completed");
 			} else {
 				// Advance current level index to next tutorial level
+				System.out.println("tut advance");
 				currentLevel++;
 			}
 			return -1;

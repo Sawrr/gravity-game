@@ -33,7 +33,7 @@ public class MenuScreen extends GameScreen {
 	private static final int FONT_SIZE = 48;
 
 	/** Theme */
-	private static final Theme THEME = GravityGame.getInstance().getThemes().getTheme("menu");
+	private static final Theme THEME = GravityGame.getInstance().getThemes().getTheme("n90");
 
 	/** Current node representing location in menu */
 	private Node currentNode;
@@ -80,7 +80,9 @@ public class MenuScreen extends GameScreen {
 				FONT_SIZE) {
 			@Override
 			public void click() {
-				System.out.println("Tutorial");
+				// Set level to first tutorial level
+				Level level = game.getLevels().getTutorialLevels().get(0);
+				game.setScreenToPlay(level);
 			}
 		};
 
@@ -144,7 +146,7 @@ public class MenuScreen extends GameScreen {
 				THEME.getColor(), Touchable.enabled, "Reset Progress", FONT_SIZE) {
 			@Override
 			public void click() {
-				System.out.println("Progress reset");
+				game.getPlayerStatus().resetProgress();
 			}
 		};
 
@@ -215,6 +217,8 @@ public class MenuScreen extends GameScreen {
 					}
 				};
 
+				// TODO: make sure button cannot be pressed twice
+				
 				ArrayList<Level> levelList = levels.getCustomLevels();
 				if (index == levelList.size()) {
 					Gdx.input.getTextInput(listener, "Enter level name", "", "");

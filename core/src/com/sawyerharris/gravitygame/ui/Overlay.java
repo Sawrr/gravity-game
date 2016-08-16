@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.sawyerharris.gravitygame.game.GravityGame;
+import com.sawyerharris.gravitygame.game.Level;
 import com.sawyerharris.gravitygame.manager.LevelManager;
 import com.sawyerharris.gravitygame.screen.GameStage;
 
@@ -83,8 +84,8 @@ public class Overlay {
 				victoryPanelColor, Touchable.enabled, "Next Level", 24) {
 			@Override
 			public void click() {
-				LevelManager levels = game.getLevels();
-				game.setScreenToPlay(levels.getOfficialLevels().get(levels.getCurrentLevelIndex()));
+				Level next = game.getLevels().nextLevel();
+				game.setScreenToPlay(next);
 			}
 		};
 

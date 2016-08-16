@@ -1,9 +1,9 @@
 {
-name: test
+name: 0-2: A Little Bit Harder Now
 author: Sawr
 message: msg
-type: OFFICIAL
-theme: themeOne
+type: TUTORIAL
+theme: cone
 shipOrigin: {
 	x: 25
 	y: 50

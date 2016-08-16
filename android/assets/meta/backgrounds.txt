@@ -1,1 +1,1 @@
-["bg1.png", "bg2.jpg"]
+["cone.jpg", "creation.jpg", "n90.jpg", "NGC1672.jpg", "NGC3603.jpg", "rose.jpg", "sombrero.jpg", "V838Mon.jpg"]
