@@ -142,12 +142,9 @@ public abstract class GameScreen extends ScreenAdapter {
 	 *
 	 */
 	private class ScreenGestureDetector extends GestureDetector {
-		
-		private ScreenGestureAdapter listener;
-		
+				
 		public ScreenGestureDetector(int i, float f, float g, float h, GestureListener listener) {
 			super(i, f, g, h, listener);
-			this.listener = (ScreenGestureAdapter) listener;
 		}
 
 		@Override

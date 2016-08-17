@@ -2,14 +2,10 @@ package com.sawyerharris.gravitygame.screen;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.sawyerharris.gravitygame.game.GravityGame;
 import com.sawyerharris.gravitygame.game.Level;
 import com.sawyerharris.gravitygame.game.Level.PlanetMeta;

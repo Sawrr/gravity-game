@@ -55,6 +55,12 @@ public class GameStage extends Stage {
 		super.addActor(actor);
 	}
 
+	@Override
+	public void clear() {
+		super.clear();
+		items.clear();
+	}
+	
 	/**
 	 * Draws UI shapes first, then draws other elements on top.
 	 */

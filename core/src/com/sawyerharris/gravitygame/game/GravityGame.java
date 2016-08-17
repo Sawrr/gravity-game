@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.sawyerharris.gravitygame.game.Level.LevelType;
 import com.sawyerharris.gravitygame.manager.AssetManager;
 import com.sawyerharris.gravitygame.manager.LevelManager;
 import com.sawyerharris.gravitygame.manager.ThemeManager;
@@ -84,6 +83,7 @@ public class GravityGame extends Game {
 	}
 	
 	public void setScreenToMenu() {
+		menuScreen.createMenuItems();
 		setScreen(menuScreen);
 		Gdx.input.setInputProcessor(menuScreen.getMux());
 	}

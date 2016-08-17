@@ -26,6 +26,11 @@ import com.sawyerharris.gravitygame.ui.TextItem;
  *
  */
 public class MenuScreen extends GameScreen {
+	private final GravityGame game = GravityGame.getInstance();
+	private final AssetManager assets = game.getAssets();
+	private final LevelManager levels = game.getLevels();
+	private final PlayerStatus status = game.getPlayerStatus();
+	
 	/** Menu world dimensions */
 	private static final int WORLD_WIDTH = 8000;
 	private static final int WORLD_HEIGHT = 6000;
@@ -60,12 +65,10 @@ public class MenuScreen extends GameScreen {
 		createMenuItems();
 	}
 
-	private void createMenuItems() {
-		final GravityGame game = GravityGame.getInstance();
-		final AssetManager assets = game.getAssets();
-		final LevelManager levels = game.getLevels();
-		final PlayerStatus status = game.getPlayerStatus();
-
+	public void createMenuItems() {
+		// First clear the menu
+		getStage().clear();
+		
 		// ROOT
 
 		TextItem playButton = new TextItem(-250, 400, 500, 150, THEME.getColor(), Touchable.enabled, "Play",
@@ -147,6 +150,7 @@ public class MenuScreen extends GameScreen {
 			@Override
 			public void click() {
 				game.getPlayerStatus().resetProgress();
+				createMenuItems();
 			}
 		};
 
