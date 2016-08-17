@@ -23,9 +23,9 @@ public class Ship extends Actor {
 	/** Touchable radius */
 	private static final int TOUCH_RADIUS = 120;
 	/** Maximum amount of boost a ship may have */
-	public static final int MAX_BOOST = 0;
+	public static final int MAX_BOOST = 600;
 	/** Scalar for how much boost is applied */
-	private static final float BOOST_SCALAR = 0;
+	private static final float BOOST_SCALAR = 200f;
 
 	/** Initial position of ship */
 	private Vector2 initialPosition;
@@ -84,6 +84,7 @@ public class Ship extends Actor {
 		setPosition(initialPosition);
 		vel.set(0, 0);
 		stopBoosting();
+		setTouchable(Touchable.enabled);
 		boost = MAX_BOOST;
 	}
 
@@ -136,6 +137,10 @@ public class Ship extends Actor {
 	
 	public void setVelocity(Vector2 velocity) {
 		vel = velocity;
+	}
+	
+	public int getBoost() {
+		return boost;
 	}
 	
 	/**

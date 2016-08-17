@@ -10,6 +10,7 @@ import com.sawyerharris.gravitygame.game.GravityGame;
 import com.sawyerharris.gravitygame.game.Level;
 import com.sawyerharris.gravitygame.game.Planet;
 import com.sawyerharris.gravitygame.game.Ship;
+import com.sawyerharris.gravitygame.game.Theme;
 
 public class LevelPlayScreen extends LevelScreen {
 	private final GravityGame game = GravityGame.getInstance();
@@ -103,6 +104,18 @@ public class LevelPlayScreen extends LevelScreen {
 	public void scrolled(int amount) {
 	}
 
+	@Override
+	public void touchDown(int screenX, int screenY, int pointer, int button) {
+		if (state == GameplayState.FIRING && getShip().getBoost() > 0) {
+			getShip().startBoosting();	
+		}
+	}
+
+	@Override
+	public void touchUp(int screenX, int screenY, int pointer, int button) {
+		getShip().stopBoosting();
+	}
+	
 	/**
 	 * Resets the level to its initial state.
 	 */
@@ -135,6 +148,7 @@ public class LevelPlayScreen extends LevelScreen {
 	public void fire() {
 		state = GameplayState.FIRING;
 		numAttempts++;
+		getShip().setTouchable(Touchable.disabled);
 	}
 
 	/**
@@ -143,7 +157,9 @@ public class LevelPlayScreen extends LevelScreen {
 	public void victory() {
 		state = GameplayState.VICTORY;
 		int shipStyleUnlock = game.getLevels().levelCompleted();
-		getOverlay().showVictoryPanel(getLevel().getName(), numAttempts, shipStyleUnlock);
+		Level level = getLevel();
+		Theme theme = game.getThemes().getTheme(level.getTheme());
+		getOverlay().showVictoryPanel(getLevel().getName(), numAttempts, shipStyleUnlock, theme.getColor());
 	}
 
 	@Override

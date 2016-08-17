@@ -2,11 +2,11 @@
 name: cone
 background: cone.jpg
 planet: mars
-srcViewWidth: 400
+srcViewWidth: 1000
 color: {
-	r: 1
-	g: 1
-	b: 1
-	a: 1
+	r: 0.59
+	g: 0.16
+	b: 0.16
+	a: 0.6
 }
 }

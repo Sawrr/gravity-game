@@ -12,7 +12,7 @@ planets: [
 	{
 		position: {
 			x: 25
-			y: 25
+			y: 300
 		}
 		radius: 34
 		homePlanet: true

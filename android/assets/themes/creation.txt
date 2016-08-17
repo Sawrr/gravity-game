@@ -2,11 +2,11 @@
 name: creation
 background: creation.jpg
 planet: mars
-srcViewWidth: 400
+srcViewWidth: 1800
 color: {
-	r: 1
-	g: 1
-	b: 1
-	a: 1
+	r: 0.2
+	g: 0.6
+	b: 0.62
+	a: 0.6
 }
 }

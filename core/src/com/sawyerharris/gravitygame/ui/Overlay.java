@@ -100,15 +100,17 @@ public class Overlay {
 		stage.addActor(nextLevel);
 	}
 
-	public void showVictoryPanel(String name, int numAttempts, int unlockStyle) {
+	public void showVictoryPanel(String name, int numAttempts, int unlockStyle, Color color) {
 		if (unlockStyle == -1) {
 			unlockedTextItem.setVisible(true);
+			unlockedTextItem.setColor(color);
 			unlockedTextureItem.setVisible(false);
 		} else {
 			unlockedTextureItem.setTexture(
 					GravityGame.getInstance().getAssets().getShipAnimation(unlockStyle, "default").getKeyFrame(0));
 
 			unlockedTextItem.setVisible(false);
+			unlockedTextureItem.setColor(color);
 			unlockedTextureItem.setVisible(true);
 		}
 
@@ -116,12 +118,19 @@ public class Overlay {
 
 		levelName.setText(name);
 
+		border.setColor(color);
 		border.setVisible(true);
+		levelComplete.setColor(color);
 		levelComplete.setVisible(true);
+		levelName.setColor(color);
 		levelName.setVisible(true);
+		levelAttempts.setColor(color);
 		levelAttempts.setVisible(true);
+		unlockedLabel.setColor(color);
 		unlockedLabel.setVisible(true);
+		backToMenu.setColor(color);
 		backToMenu.setVisible(true);
+		nextLevel.setColor(color);
 		nextLevel.setVisible(true);
 	}
 

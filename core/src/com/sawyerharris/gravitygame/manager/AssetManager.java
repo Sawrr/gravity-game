@@ -78,7 +78,7 @@ public class AssetManager implements Disposable {
 		JsonValue meta = reader.parse(file);
 
 		int spriteDim = meta.getInt("spriteDim");
-		int animDuration = meta.getInt("animDuration");
+		float animDuration = meta.getFloat("animDuration");
 		int numBoostFrames = meta.getInt("numBoostFrames");
 		String[] styles = meta.get("shipStyleList").asStringArray();
 

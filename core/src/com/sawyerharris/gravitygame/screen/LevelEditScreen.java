@@ -50,26 +50,26 @@ public class LevelEditScreen extends LevelScreen {
 
 	@Override
 	public void zoom(float initialDistance, float distance) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void tap(float x, float y, int count, int button) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void keyDown(int keycode) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void scrolled(int amount) {
-		// TODO Auto-generated method stub
+	}
+	
+	@Override
+	public void touchDown(int screenX, int screenY, int pointer, int button) {
+	}
 
+	@Override
+	public void touchUp(int screenX, int screenY, int pointer, int button) {
 	}
 
 	// must check that level has a home planet

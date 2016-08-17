@@ -191,10 +191,8 @@ public class LevelManager {
 				onTutorialLevels = false;
 				status.setTutorialCompleted(true);
 				status.flush();
-				System.out.println("tut completed");
 			} else {
 				// Advance current level index to next tutorial level
-				System.out.println("tut advance");
 				currentLevel++;
 			}
 			return -1;

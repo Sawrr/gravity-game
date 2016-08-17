@@ -2,7 +2,7 @@
 
   "spriteDim": 512,
 
-  "animDuration": 100,
+  "animDuration": 0.1,
 
   "numBoostFrames": 2,
 

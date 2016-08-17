@@ -83,6 +83,10 @@ public abstract class LevelScreen extends GameScreen {
 			planets.add(planet);
 			getStage().addActor(planet);
 		}
+		
+		// Set background
+		Theme theme = game.getThemes().getTheme(level.getTheme());
+		getBackground().setTheme(theme);
 	}
 
 	/**

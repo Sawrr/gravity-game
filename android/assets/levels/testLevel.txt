@@ -1,9 +1,9 @@
 {
-name: test
+name: 1-1 First Level
 author: Sawr
 message: msg
 type: OFFICIAL
-theme: cone
+theme: NGC1672
 shipOrigin: {
 	x: 0
 	y: 0

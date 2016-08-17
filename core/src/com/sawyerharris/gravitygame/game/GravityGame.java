@@ -97,7 +97,7 @@ public class GravityGame extends Game {
 		setScreen(levelPlayScreen);
 		Gdx.input.setInputProcessor(levelPlayScreen.getMux());
 		
-		// Set current level index
+		// Set current level index and onTutorialLevel boolean
 		int index;
 		switch (level.getType()) {
 			case CUSTOM:

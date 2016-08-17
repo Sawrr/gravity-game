@@ -407,6 +407,14 @@ public class MenuScreen extends GameScreen {
 	@Override
 	public void scrolled(int amount) {
 	}
+	
+	@Override
+	public void touchDown(int screenX, int screenY, int pointer, int button) {
+	}
+
+	@Override
+	public void touchUp(int screenX, int screenY, int pointer, int button) {
+	}
 
 	/**
 	 * Represents a position in the menu. Each node except for the root has a

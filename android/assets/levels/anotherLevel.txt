@@ -1,9 +1,9 @@
 {
-name: test2
+name: 1-2 Second Level
 author: Sawr
 message: msg2
 type: OFFICIAL
-theme: cone
+theme: creation
 shipOrigin: {
 	x: 26
 	y: 51
@@ -12,7 +12,7 @@ planets: [
 	{
 		position: {
 			x: 27
-			y: 26
+			y: 250
 		}
 		radius: 38
 		homePlanet: true

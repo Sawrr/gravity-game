@@ -126,6 +126,16 @@ public abstract class GameScreen extends ScreenAdapter {
 	public abstract void scrolled(int amount);
 	
 	/**
+	 * Called when the screen is touched by mouse or finger.
+	 */
+	public abstract void touchDown(int screenX, int screenY, int pointer, int button);
+
+	/**
+	 * Called when the touch on the screen is lifted.
+	 */
+	public abstract void touchUp(int screenX, int screenY, int pointer, int button);
+	
+	/**
 	 * Detects gestures on the screen and hands them to the GameScreen instance.
 	 * 
 	 * @author Sawyer Harris
@@ -149,6 +159,20 @@ public abstract class GameScreen extends ScreenAdapter {
 		@Override
 		public boolean scrolled(int amount) {
 			GameScreen.this.scrolled(amount);
+			return false;
+		}
+		
+		@Override
+		public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+			super.touchDown(screenX, screenY, pointer, button);
+			GameScreen.this.touchDown(screenX, screenY, pointer, button);
+			return false;
+		}
+		
+		@Override
+		public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+			super.touchUp(screenX, screenY, pointer, button);
+			GameScreen.this.touchUp(screenX, screenY, pointer, button);
 			return false;
 		}
 	}
