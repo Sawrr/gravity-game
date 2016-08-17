@@ -1,7 +1,6 @@
 {
 name: 1-2 Second Level
 author: Sawr
-message: msg2
 type: OFFICIAL
 theme: creation
 shipOrigin: {

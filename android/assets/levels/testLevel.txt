@@ -1,7 +1,6 @@
 {
 name: 1-1 First Level
 author: Sawr
-message: msg
 type: OFFICIAL
 theme: NGC1672
 shipOrigin: {

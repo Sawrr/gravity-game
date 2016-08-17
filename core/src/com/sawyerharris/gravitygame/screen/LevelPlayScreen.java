@@ -12,6 +12,7 @@ import com.sawyerharris.gravitygame.game.Level;
 import com.sawyerharris.gravitygame.game.Planet;
 import com.sawyerharris.gravitygame.game.Ship;
 import com.sawyerharris.gravitygame.game.Theme;
+import com.sawyerharris.gravitygame.ui.LevelHeader;
 
 public class LevelPlayScreen extends LevelScreen {
 	private final GravityGame game = GravityGame.getInstance();
@@ -25,6 +26,8 @@ public class LevelPlayScreen extends LevelScreen {
 	private float cameraAimingZoom;
 
 	private int numAttempts;
+	
+	private LevelHeader header;
 
 	public LevelPlayScreen(Batch batch, ShapeRenderer renderer) {
 		super(batch, renderer);
@@ -34,6 +37,8 @@ public class LevelPlayScreen extends LevelScreen {
 
 		numAttempts = 0;
 
+		header = new LevelHeader(batch, renderer);
+		
 		getShip().setTouchable(Touchable.enabled);
 		getShip().addListener(new ActorGestureListener() {
 			@Override
@@ -55,7 +60,7 @@ public class LevelPlayScreen extends LevelScreen {
 				if (planet.isHomePlanet()) {
 					victory();
 				} else {
-					resetLevel();
+					aim();
 				}
 			}
 		}
@@ -72,6 +77,12 @@ public class LevelPlayScreen extends LevelScreen {
 		getOverlay().hideVictoryPanel();
 		numAttempts = 0;
 		resetCamera();
+		
+		header.setText(level.getName(), level.getMessage());
+		Theme theme = game.getThemes().getTheme(level.getTheme());
+		header.setColor(theme.getColor());
+		header.show();
+		
 		aim();
 	}
 
@@ -100,6 +111,7 @@ public class LevelPlayScreen extends LevelScreen {
 	@Override
 	public void keyDown(int keycode) {
 		if (keycode == Keys.BACK || keycode == Keys.BACKSPACE) {
+			header.hide();
 			game.setScreenToMenu();
 		}
 	}
@@ -118,13 +130,6 @@ public class LevelPlayScreen extends LevelScreen {
 	@Override
 	public void touchUp(int screenX, int screenY, int pointer, int button) {
 		getShip().stopBoosting();
-	}
-	
-	/**
-	 * Resets the level to its initial state.
-	 */
-	public void resetLevel() {
-		aim();
 	}
 
 	/**
@@ -160,6 +165,7 @@ public class LevelPlayScreen extends LevelScreen {
 	 */
 	public void victory() {
 		state = GameplayState.VICTORY;
+		header.hide();
 		int shipStyleUnlock = game.getLevels().levelCompleted();
 		Level level = getLevel();
 		Theme theme = game.getThemes().getTheme(level.getTheme());
@@ -173,7 +179,7 @@ public class LevelPlayScreen extends LevelScreen {
 				getShip().physicsUpdate(delta, getPlanets());
 			} catch (IllegalArgumentException e) {
 				// Ship position out of bounds
-				resetLevel();
+				aim();
 			}
 
 			checkCollisions();
@@ -181,6 +187,7 @@ public class LevelPlayScreen extends LevelScreen {
 			getCamera().setMoveTarget(getShip().getPosition());
 		}
 		super.render(delta);
+		header.draw();
 	}
 
 	/**

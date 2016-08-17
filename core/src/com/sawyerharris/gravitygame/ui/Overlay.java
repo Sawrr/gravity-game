@@ -1,7 +1,6 @@
 package com.sawyerharris.gravitygame.ui;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -9,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.sawyerharris.gravitygame.game.GravityGame;
 import com.sawyerharris.gravitygame.game.Level;
-import com.sawyerharris.gravitygame.manager.LevelManager;
 import com.sawyerharris.gravitygame.screen.GameStage;
 
 public class Overlay {
@@ -145,7 +143,7 @@ public class Overlay {
 		backToMenu.setVisible(false);
 		nextLevel.setVisible(false);
 	}
-
+	
 	public void draw() {
 		stage.draw();
 	}
