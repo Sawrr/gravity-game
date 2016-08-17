@@ -249,7 +249,11 @@ public class Ship extends Actor {
 			setSize(getRegionWidth(), getRegionHeight());
 			setCenter(Ship.this.getPosition().x, Ship.this.getPosition().y);
 			setOriginCenter();
-			setRotation(vel.angle() - 90);
+			if (vel.len2() != 0) {
+				setRotation(vel.angle() - 90);	
+			} else {
+				setRotation(0);
+			}
 			setScale(0.25f);
 			super.draw(batch);
 		}
