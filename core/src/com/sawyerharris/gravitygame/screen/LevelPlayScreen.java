@@ -1,5 +1,6 @@
 package com.sawyerharris.gravitygame.screen;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -98,6 +99,9 @@ public class LevelPlayScreen extends LevelScreen {
 
 	@Override
 	public void keyDown(int keycode) {
+		if (keycode == Keys.BACK || keycode == Keys.BACKSPACE) {
+			game.setScreenToMenu();
+		}
 	}
 
 	@Override

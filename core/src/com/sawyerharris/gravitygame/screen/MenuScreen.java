@@ -30,7 +30,7 @@ public class MenuScreen extends GameScreen {
 	private final AssetManager assets = game.getAssets();
 	private final LevelManager levels = game.getLevels();
 	private final PlayerStatus status = game.getPlayerStatus();
-	
+
 	/** Menu world dimensions */
 	private static final int WORLD_WIDTH = 8000;
 	private static final int WORLD_HEIGHT = 6000;
@@ -68,14 +68,21 @@ public class MenuScreen extends GameScreen {
 	public void createMenuItems() {
 		// First clear the menu
 		getStage().clear();
-		
+
 		// ROOT
 
 		TextItem playButton = new TextItem(-250, 400, 500, 150, THEME.getColor(), Touchable.enabled, "Play",
 				FONT_SIZE) {
 			@Override
 			public void click() {
-				System.out.println("Play");
+				// Set level to the next level
+				Level level = game.getLevels().nextLevel();
+
+				// If you have beaten the game then start over
+				if (level == null) {
+					level = game.getLevels().getOfficialLevels().get(0);
+				}
+				game.setScreenToPlay(level);
 			}
 		};
 
@@ -150,6 +157,8 @@ public class MenuScreen extends GameScreen {
 			@Override
 			public void click() {
 				game.getPlayerStatus().resetProgress();
+				game.getLevels().setCurrentLevelIndex(0);
+				game.getLevels().setOnTutorialLevels(true);
 				createMenuItems();
 			}
 		};
@@ -222,7 +231,7 @@ public class MenuScreen extends GameScreen {
 				};
 
 				// TODO: make sure button cannot be pressed twice
-				
+
 				ArrayList<Level> levelList = levels.getCustomLevels();
 				if (index == levelList.size()) {
 					Gdx.input.getTextInput(listener, "Enter level name", "", "");
@@ -298,6 +307,9 @@ public class MenuScreen extends GameScreen {
 			@Override
 			public void click(final int index) {
 				if (index <= status.getHighestLevel()) {
+					// If user skips the tutorial, mark it as completed
+					game.getPlayerStatus().setTutorialCompleted(true);
+					game.getPlayerStatus().flush();
 					game.setScreenToPlay(levels.getOfficialLevels().get(index));
 				}
 			}
@@ -350,7 +362,7 @@ public class MenuScreen extends GameScreen {
 
 		getStage().addActor(onlineLevelPanel);
 		getStage().addActor(onlineLevelsBackButton);
-		
+
 		// CUSTOM_LEVELS
 
 		ScrollPanel customLevelPanel = new ScrollPanel(CUSTOM_LEVELS.position.x - 500, CUSTOM_LEVELS.position.y - 600,
@@ -411,7 +423,7 @@ public class MenuScreen extends GameScreen {
 	@Override
 	public void scrolled(int amount) {
 	}
-	
+
 	@Override
 	public void touchDown(int screenX, int screenY, int pointer, int button) {
 	}
