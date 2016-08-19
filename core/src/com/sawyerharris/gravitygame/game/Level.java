@@ -141,6 +141,16 @@ public class Level {
 		/** If the planet should be a home planet */
 		private boolean homePlanet;
 
+		public PlanetMeta() {
+			
+		}
+		
+		public PlanetMeta(Vector2 position, int radius, boolean homePlanet) {
+			this.position = position;
+			this.radius = radius;
+			this.homePlanet = homePlanet;
+		}
+		
 		/**
 		 * Gets the initial position of the planet.
 		 * 

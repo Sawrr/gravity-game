@@ -3,6 +3,7 @@ package com.sawyerharris.gravitygame.screen;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,6 +13,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Timer;
 import com.sawyerharris.gravitygame.game.GravityGame;
@@ -19,6 +22,7 @@ import com.sawyerharris.gravitygame.game.Level;
 import com.sawyerharris.gravitygame.game.Planet;
 import com.sawyerharris.gravitygame.game.Theme;
 import com.sawyerharris.gravitygame.game.Level.PlanetMeta;
+import com.sawyerharris.gravitygame.screen.LevelPlayScreen.Context;
 import com.sawyerharris.gravitygame.screen.LevelPlayScreen.GameplayState;
 import com.sawyerharris.gravitygame.ui.TextItem;
 
@@ -43,6 +47,8 @@ public class LevelEditScreen extends LevelScreen {
 				getShip().translate(x, y);
 			}
 		});
+		
+		getOverlay().createEditButtons();
 	}
 
 	/**
@@ -82,6 +88,12 @@ public class LevelEditScreen extends LevelScreen {
 		Vector3 worldCoords = getCamera().unproject(new Vector3(x, y, 0));
 		Vector2 position = new Vector2(worldCoords.x, worldCoords.y);
 		final Planet planet = new Planet(position, Planet.MIN_RADIUS, region, false);
+		addPlanetListener(planet);
+		getPlanets().add(planet);
+		getStage().addActor(planet);
+	}
+
+	private void addPlanetListener(final Planet planet) {
 		planet.addListener(new ActorGestureListener() {
 			private boolean inflate;
 			
@@ -121,11 +133,13 @@ public class LevelEditScreen extends LevelScreen {
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
-		getStage().addActor(planet);
 	}
-
+	
 	@Override
 	public void keyDown(int keycode) {
+		if (keycode == Keys.BACK || keycode == Keys.BACKSPACE) {
+			game.setScreenToMenu();
+		}
 	}
 
 	@Override
@@ -146,18 +160,49 @@ public class LevelEditScreen extends LevelScreen {
 	public void touchUp(int screenX, int screenY, int pointer, int button) {
 	}
 
+	private boolean checkLevel() {
+		for (Actor actor : getStage().getActors()) {
+			if (actor instanceof Planet) {
+				if (((Planet) actor).isHomePlanet()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private Level makeLevel() {
+		ArrayList<PlanetMeta> planetList = new ArrayList<PlanetMeta>();
+		for (Planet planet : getPlanets()) {
+			planetList.add(new PlanetMeta(planet.getPosition(), planet.getRadius(), planet.isHomePlanet()));
+		}
+		return new Level(customLevelName, game.getPlayerStatus().getUsername(), getShip().getInitialPosition(), planetList);
+	}
+	
 	// must check that level has a home planet
 	public void testLevel() {
-
+		if (checkLevel()) {
+			game.setScreenToPlay(makeLevel(), Context.TESTING);
+		}
 	}
 
 	public void saveLevel() {
-
+		game.getLevels().saveLevel(customLevelIndex, makeLevel());
 	}
 
 	// must check that author name has been set
 	// must check that level has a home planet
 	public void uploadLevel() {
-
+		if (checkLevel() && !game.getPlayerStatus().getUsername().equals("")) {
+			System.out.println(game.getLevels().uploadLevel(makeLevel()));
+		}
+	}
+	
+	@Override
+	public void loadLevel(Level level) {
+		super.loadLevel(level);
+		for (Planet planet : getPlanets()) {
+			addPlanetListener(planet);
+		}
 	}
 }

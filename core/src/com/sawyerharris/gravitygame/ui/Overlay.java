@@ -1,6 +1,7 @@
 package com.sawyerharris.gravitygame.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -9,6 +10,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.sawyerharris.gravitygame.game.GravityGame;
 import com.sawyerharris.gravitygame.game.Level;
 import com.sawyerharris.gravitygame.screen.GameStage;
+import com.sawyerharris.gravitygame.screen.LevelEditScreen;
+import com.sawyerharris.gravitygame.screen.LevelPlayScreen.Context;
 
 public class Overlay {
 
@@ -30,6 +33,15 @@ public class Overlay {
 	private TextItem nextLevel;
 
 	private Color victoryPanelColor;
+
+	/** Editor buttons */
+	private TextItem testButton;
+	private TextItem saveButton;
+	private TextItem uploadButton;
+
+	private int editFontSize = 32;
+
+	private Color editButtonColor = new Color(0.3f, 0.3f, 0.3f, 0.6f);
 
 	public Overlay(Batch batch, ShapeRenderer renderer) {
 		screenWidth = Gdx.graphics.getWidth();
@@ -74,7 +86,7 @@ public class Overlay {
 				victoryPanelColor, Touchable.enabled, "Back to Menu", 24) {
 			@Override
 			public void click() {
-				GravityGame.getInstance().setScreenToMenu();
+				game.setScreenToMenu();
 			}
 		};
 		nextLevel = new TextItem(x + BorderedItem.BORDER_WIDTH + itemWidth / 2,
@@ -83,7 +95,7 @@ public class Overlay {
 			@Override
 			public void click() {
 				Level next = game.getLevels().nextLevel();
-				game.setScreenToPlay(next);
+				game.setScreenToPlay(next, Context.PLAYING);
 			}
 		};
 
@@ -96,6 +108,46 @@ public class Overlay {
 		stage.addActor(unlockedTextureItem);
 		stage.addActor(backToMenu);
 		stage.addActor(nextLevel);
+	}
+	
+	public void createEditButtons() {
+		float buttonHeight = screenHeight / 6;
+		testButton = new TextItem(0, 0, screenWidth / 3, buttonHeight, editButtonColor, Touchable.enabled, "Test", editFontSize) {
+			@Override
+			public void click() {
+				Screen screen = game.getScreen();
+				if (screen instanceof LevelEditScreen) {
+					LevelEditScreen les = (LevelEditScreen) screen;
+					les.testLevel();
+				}
+			}
+		};
+		
+		saveButton = new TextItem(screenWidth / 3, 0, screenWidth / 3, buttonHeight, editButtonColor , Touchable.enabled, "Save", editFontSize) {
+			@Override
+			public void click() {
+				Screen screen = game.getScreen();
+				if (screen instanceof LevelEditScreen) {
+					LevelEditScreen les = (LevelEditScreen) screen;
+					les.saveLevel();
+				}
+			}
+		};
+		
+		uploadButton = new TextItem(2 * screenWidth / 3, 0, screenWidth / 3, buttonHeight, editButtonColor, Touchable.enabled, "Upload", editFontSize) {
+			@Override
+			public void click() {
+				Screen screen = game.getScreen();
+				if (screen instanceof LevelEditScreen) {
+					LevelEditScreen les = (LevelEditScreen) screen;
+					les.uploadLevel();
+				}
+			}
+		};
+		
+		stage.addActor(testButton);
+		stage.addActor(saveButton);
+		stage.addActor(uploadButton);
 	}
 
 	public void showVictoryPanel(String name, int numAttempts, int unlockStyle, Color color) {

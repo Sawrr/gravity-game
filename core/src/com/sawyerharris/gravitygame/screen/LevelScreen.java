@@ -41,7 +41,7 @@ public abstract class LevelScreen extends GameScreen {
 		getBackground().setTheme(DEFAULT_THEME);
 
 		overlay = new Overlay(batch, renderer);
-		getMux().addProcessor(overlay.getStage());
+		getMux().addProcessor(0, overlay.getStage());
 
 		ship = new Ship();
 

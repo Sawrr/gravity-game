@@ -29,6 +29,8 @@ public class LevelPlayScreen extends LevelScreen {
 	
 	private LevelHeader header;
 
+	private Context context;
+
 	public LevelPlayScreen(Batch batch, ShapeRenderer renderer) {
 		super(batch, renderer);
 
@@ -110,9 +112,20 @@ public class LevelPlayScreen extends LevelScreen {
 
 	@Override
 	public void keyDown(int keycode) {
-		if (keycode == Keys.BACK || keycode == Keys.BACKSPACE) {
-			header.hide();
-			game.setScreenToMenu();
+		switch (context) {
+		case CUSTOM:
+		case PLAYING:
+			if (keycode == Keys.BACK || keycode == Keys.BACKSPACE) {
+				header.hide();
+				game.setScreenToMenu();
+			}
+			break;
+		case TESTING:
+			if (keycode == Keys.BACK || keycode == Keys.BACKSPACE) {
+				header.hide();
+				game.setScreenBackToEdit();
+			}
+			break;
 		}
 	}
 
@@ -166,10 +179,21 @@ public class LevelPlayScreen extends LevelScreen {
 	public void victory() {
 		state = GameplayState.VICTORY;
 		header.hide();
-		int shipStyleUnlock = game.getLevels().levelCompleted();
-		Level level = getLevel();
-		Theme theme = game.getThemes().getTheme(level.getTheme());
-		getOverlay().showVictoryPanel(getLevel().getName(), numAttempts, shipStyleUnlock, theme.getColor());
+		switch (context) {
+		case CUSTOM:
+			game.setScreenToMenu();
+			break;
+		case PLAYING:
+			int shipStyleUnlock = game.getLevels().levelCompleted();
+			Level level = getLevel();
+			Theme theme = game.getThemes().getTheme(level.getTheme());
+			getOverlay().showVictoryPanel(getLevel().getName(), numAttempts, shipStyleUnlock, theme.getColor());
+			break;
+		case TESTING:
+			game.setScreenBackToEdit();
+			break;
+		}
+
 	}
 
 	@Override
@@ -198,5 +222,13 @@ public class LevelPlayScreen extends LevelScreen {
 	 */
 	public enum GameplayState {
 		AIMING, FIRING, VICTORY
+	}
+	
+	public enum Context {
+		PLAYING, TESTING, CUSTOM
+	}
+
+	public void setContext(Context con) {
+		context = con;
 	}
 }

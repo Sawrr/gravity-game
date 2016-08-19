@@ -14,6 +14,7 @@ import com.sawyerharris.gravitygame.game.PlayerStatus;
 import com.sawyerharris.gravitygame.game.Theme;
 import com.sawyerharris.gravitygame.manager.AssetManager;
 import com.sawyerharris.gravitygame.manager.LevelManager;
+import com.sawyerharris.gravitygame.screen.LevelPlayScreen.Context;
 import com.sawyerharris.gravitygame.ui.ScrollPanel;
 import com.sawyerharris.gravitygame.ui.TextInputAdapter;
 import com.sawyerharris.gravitygame.ui.TextItem;
@@ -82,7 +83,7 @@ public class MenuScreen extends GameScreen {
 				if (level == null) {
 					level = game.getLevels().getOfficialLevels().get(0);
 				}
-				game.setScreenToPlay(level);
+				game.setScreenToPlay(level, Context.PLAYING);
 			}
 		};
 
@@ -92,7 +93,7 @@ public class MenuScreen extends GameScreen {
 			public void click() {
 				// Set level to first tutorial level
 				Level level = game.getLevels().getTutorialLevels().get(0);
-				game.setScreenToPlay(level);
+				game.setScreenToPlay(level, Context.PLAYING);
 			}
 		};
 
@@ -310,7 +311,7 @@ public class MenuScreen extends GameScreen {
 					// If user skips the tutorial, mark it as completed
 					game.getPlayerStatus().setTutorialCompleted(true);
 					game.getPlayerStatus().flush();
-					game.setScreenToPlay(levels.getOfficialLevels().get(index));
+					game.setScreenToPlay(levels.getOfficialLevels().get(index), Context.PLAYING);
 				}
 			}
 		};
@@ -342,7 +343,7 @@ public class MenuScreen extends GameScreen {
 				600, 1000, THEME.getColor(), 200) {
 			@Override
 			public void click(final int index) {
-				game.setScreenToPlay(levels.getOnlineLevels().get(index));
+				game.setScreenToPlay(levels.getOnlineLevels().get(index), Context.PLAYING);
 			}
 		};
 
@@ -369,7 +370,7 @@ public class MenuScreen extends GameScreen {
 				600, 1200, THEME.getColor(), 200) {
 			@Override
 			public void click(final int index) {
-				game.setScreenToPlay(levels.getCustomLevels().get(index));
+				game.setScreenToPlay(levels.getCustomLevels().get(index), Context.CUSTOM);
 			}
 		};
 
