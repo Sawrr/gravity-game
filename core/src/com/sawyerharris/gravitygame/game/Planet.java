@@ -15,8 +15,9 @@ import com.sawyerharris.gravitygame.screen.LevelScreen;
  *
  */
 public class Planet extends Actor {
-	/** Maximum radius allowed */
-	private static final int MAX_RADIUS = 500;
+	/** Maximum, minimum radius allowed */
+	public static final int MAX_RADIUS = 200;
+	public static final int MIN_RADIUS = 50;
 	/** Mass area density */
 	private static final float MASS_DENSITY = 1000;
 
@@ -146,5 +147,36 @@ public class Planet extends Actor {
 	@Override
 	public void draw(Batch batch, float alpha) {
 		sprite.draw(batch);
+	}
+
+	public void translate(float x, float y) {
+		Vector2 pos = new Vector2(getPosition()).add(x, y);
+		float border = 2 * radius;
+		if (pos.x < -LevelScreen.WORLD_WIDTH / 2 + border) {
+			pos.x = -LevelScreen.WORLD_WIDTH / 2 + border;
+		}
+		if (pos.x > LevelScreen.WORLD_WIDTH / 2 - border) {
+			pos.x = LevelScreen.WORLD_WIDTH / 2 - border;
+		}
+		if (pos.y < -LevelScreen.WORLD_HEIGHT / 2 + border) {
+			pos.y = -LevelScreen.WORLD_HEIGHT / 2 + border;
+		}
+		if (pos.y > LevelScreen.WORLD_HEIGHT / 2 - border) {
+			pos.y = LevelScreen.WORLD_HEIGHT / 2 - border;
+		}
+		// TODO figure out this problem
+		System.out.println(LevelScreen.WORLD_HEIGHT / 2);
+		System.out.println(pos.y);
+		setPosition(pos);
+	}
+
+	public void zoom(float amount) {
+		radius += amount;
+		if (radius > MAX_RADIUS) {
+			radius = MAX_RADIUS;
+		} else if (radius < MIN_RADIUS) {
+			radius = MIN_RADIUS;
+		}
+		setRadius(radius);
 	}
 }

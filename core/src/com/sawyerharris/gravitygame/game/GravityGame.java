@@ -117,6 +117,13 @@ public class GravityGame extends Game {
 	}
 	
 	public void setScreenToEdit(String name, int index) {
+		Level level = null;
+		try {
+			level = levels.getCustomLevels().get(index);
+		} catch (IndexOutOfBoundsException e) {
+			//
+		}
+		levelEditScreen.loadLevel(level);
 		levelEditScreen.setCustomLevelIndex(index);
 		levelEditScreen.setCustomLevelName(name);
 		setScreen(levelEditScreen);

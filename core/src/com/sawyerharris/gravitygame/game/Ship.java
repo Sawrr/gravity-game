@@ -259,4 +259,24 @@ public class Ship extends Actor {
 		}
 	}
 
+	public void translate(float x, float y) {
+		Vector2 pos = new Vector2(getPosition()).add(x, y);
+		float border = 0;
+		if (pos.x < -LevelScreen.WORLD_WIDTH / 2 + border) {
+			pos.x = -LevelScreen.WORLD_WIDTH / 2 + border;
+		}
+		if (pos.x > LevelScreen.WORLD_WIDTH / 2 - border) {
+			pos.x = LevelScreen.WORLD_WIDTH / 2 - border;
+		}
+		if (pos.y < -LevelScreen.WORLD_HEIGHT / 2 + border) {
+			pos.y = -LevelScreen.WORLD_HEIGHT / 2 + border;
+		}
+		if (pos.y > LevelScreen.WORLD_HEIGHT / 2 - border) {
+			pos.y = LevelScreen.WORLD_HEIGHT / 2 - border;
+		}
+		// TODO figure out this problem
+		setPosition(pos);
+		setInitialPosition(pos);
+	}
+
 }

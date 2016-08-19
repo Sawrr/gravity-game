@@ -21,13 +21,15 @@ import com.sawyerharris.gravitygame.ui.Overlay;
  *
  */
 public abstract class LevelScreen extends GameScreen {
-	private static final Theme DEFAULT_THEME = GravityGame.getInstance().getThemes().getTheme("cone");
+	public static final Theme DEFAULT_THEME = GravityGame.getInstance().getThemes().getTheme("cone");
 
 	private final GravityGame game = GravityGame.getInstance();
 
 	/** Width, height of world */
 	public static final int WORLD_WIDTH = 1280;
 	public static final int WORLD_HEIGHT = 1920;
+
+	public static final Vector2 DEFAULT_SHIP_ORIGIN = new Vector2(0,0);
 
 	private ArrayList<Planet> planets;
 	private Ship ship;
@@ -40,17 +42,16 @@ public abstract class LevelScreen extends GameScreen {
 
 		overlay = new Overlay(batch, renderer);
 		getMux().addProcessor(overlay.getStage());
-		
-		
+
 		ship = new Ship();
 
 		planets = new ArrayList<Planet>();
 	}
-	
+
 	public Overlay getOverlay() {
 		return overlay;
 	}
-	
+
 	@Override
 	public void render(float delta) {
 		super.render(delta);
@@ -61,16 +62,32 @@ public abstract class LevelScreen extends GameScreen {
 		this.level = level;
 
 		getStage().clear();
+
+		Vector2 shipOrigin;
+		ArrayList<PlanetMeta> planetList;
+		Theme theme;
+		
+		if (level == null) {
+			// No level provided, so a new custom level
+			shipOrigin = new Vector2(DEFAULT_SHIP_ORIGIN);
+			planetList = new ArrayList<PlanetMeta>();
+			theme = DEFAULT_THEME;
+		} else {
+			// Load from provided level
+			shipOrigin = level.getShipOrigin();
+			planetList = level.getPlanets();
+			theme = game.getThemes().getTheme(level.getTheme());
+		}
 		
 		// Load ship
-		ship.setPosition(level.getShipOrigin());
-		ship.setInitialPosition(level.getShipOrigin());
+		ship.setPosition(shipOrigin);
+		ship.setInitialPosition(shipOrigin);
 		ship.reset();
 		getStage().addActor(ship);
 
 		// Load planets
 		planets.clear();
-		for (PlanetMeta meta : level.getPlanets()) {
+		for (PlanetMeta meta : planetList) {
 			Vector2 position = meta.getPosition();
 			int radius = meta.getRadius();
 			boolean home = meta.isHomePlanet();
@@ -79,9 +96,8 @@ public abstract class LevelScreen extends GameScreen {
 			planets.add(planet);
 			getStage().addActor(planet);
 		}
-		
+
 		// Set background
-		Theme theme = game.getThemes().getTheme(level.getTheme());
 		getBackground().setTheme(theme);
 	}
 

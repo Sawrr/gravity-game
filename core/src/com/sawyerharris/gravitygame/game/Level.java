@@ -3,6 +3,7 @@ package com.sawyerharris.gravitygame.game;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.math.Vector2;
+import com.sawyerharris.gravitygame.screen.LevelScreen;
 
 /**
  * Represents an immutable game level. Custom levels have no message and use the
@@ -47,7 +48,7 @@ public class Level {
 		this.author = author;
 		this.message = null;
 		this.type = LevelType.CUSTOM;
-		this.theme = "default";
+		this.theme = LevelScreen.DEFAULT_THEME.getName();
 		this.shipOrigin = shipOrigin;
 		this.planets = planets;
 	}

@@ -1,14 +1,32 @@
 package com.sawyerharris.gravitygame.screen;
 
+import java.util.ArrayList;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.utils.Timer;
 import com.sawyerharris.gravitygame.game.GravityGame;
+import com.sawyerharris.gravitygame.game.Level;
+import com.sawyerharris.gravitygame.game.Planet;
+import com.sawyerharris.gravitygame.game.Theme;
+import com.sawyerharris.gravitygame.game.Level.PlanetMeta;
+import com.sawyerharris.gravitygame.screen.LevelPlayScreen.GameplayState;
 import com.sawyerharris.gravitygame.ui.TextItem;
 
 public class LevelEditScreen extends LevelScreen {
+	private static final float SCROLL_SCALAR = 10f;
+
+	private final GravityGame game = GravityGame.getInstance();
+	
 	/** Level name that will be applied if the user saves */
 	private String customLevelName;
 	/** Index in custom level list of level if it is saved */
@@ -17,8 +35,14 @@ public class LevelEditScreen extends LevelScreen {
 	public LevelEditScreen(Batch batch, ShapeRenderer renderer) {
 		super(batch, renderer);
 		getCamera().setZoom(1f);
-		TextItem item = new TextItem(-250, 250, 500, 100, new Color(1f, 1f, 1f, 0.2f), Touchable.enabled, "EDIT", 30);
-		getStage().addActor(item);
+		
+		getShip().setTouchable(Touchable.enabled);
+		getShip().addListener(new ActorGestureListener() {
+			@Override
+			public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
+				getShip().translate(x, y);
+			}
+		});
 	}
 
 	/**
@@ -43,9 +67,7 @@ public class LevelEditScreen extends LevelScreen {
 
 	@Override
 	public void pan(float x, float y, float deltaX, float deltaY) {
-		getCamera().translate(new Vector2(deltaX, deltaY).scl(0.75f));
-		getCamera().stopAutoMove();
-		getCamera().stopAutoZoom();
+		getCamera().translate(new Vector2(deltaX, deltaY));
 	}
 
 	@Override
@@ -54,6 +76,52 @@ public class LevelEditScreen extends LevelScreen {
 
 	@Override
 	public void tap(float x, float y, int count, int button) {
+		// Create new planet
+		Theme theme = LevelScreen.DEFAULT_THEME;
+		TextureRegion region = game.getAssets().getPlanet(theme.getPlanet());
+		Vector3 worldCoords = getCamera().unproject(new Vector3(x, y, 0));
+		Vector2 position = new Vector2(worldCoords.x, worldCoords.y);
+		final Planet planet = new Planet(position, Planet.MIN_RADIUS, region, false);
+		planet.addListener(new ActorGestureListener() {
+			private boolean inflate;
+			
+			@Override
+			public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
+				planet.translate(x, y);
+			}
+			
+			@Override
+			public void tap(InputEvent event, float x, float y, int count, int button) {
+				if (planet.isHomePlanet()) {
+					planet.remove();
+				} else {
+					planet.setHomePlanet(true);
+				}
+			}
+			
+			@Override
+			public boolean longPress(Actor actor, float x, float y) {
+				inflate = true;
+				Timer.schedule(new Timer.Task() {
+					
+					@Override
+					public void run() {
+						if (!inflate) {
+							this.cancel();
+						}
+						planet.zoom(1);
+					}
+				}, 0, 0.01f);
+				return true;
+			}
+			
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				inflate = false;
+				super.touchUp(event, x, y, pointer, button);
+			}
+		});
+		getStage().addActor(planet);
 	}
 
 	@Override
@@ -62,6 +130,12 @@ public class LevelEditScreen extends LevelScreen {
 
 	@Override
 	public void scrolled(int amount) {
+		Vector2 coords = getStage().screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+		Actor actor = getStage().hit(coords.x, coords.y, true);
+		if (actor instanceof Planet) {
+			Planet planet = (Planet) actor;
+			planet.zoom(amount * SCROLL_SCALAR);
+		}
 	}
 	
 	@Override
