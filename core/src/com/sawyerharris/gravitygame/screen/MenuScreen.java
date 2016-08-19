@@ -343,7 +343,7 @@ public class MenuScreen extends GameScreen {
 				600, 1000, THEME.getColor(), 200) {
 			@Override
 			public void click(final int index) {
-				game.setScreenToPlay(levels.getOnlineLevels().get(index), Context.PLAYING);
+				game.setScreenToPlay(levels.getOnlineLevels().get(index), Context.CUSTOM);
 			}
 		};
 

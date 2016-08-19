@@ -3,7 +3,9 @@ package com.sawyerharris.gravitygame.manager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -314,12 +316,13 @@ public class LevelManager {
 		sb.append(level.getAuthor());
 		sb.append("&pass=s17gg");
 		try {
-			URL url = new URL(sb.toString());
+			URL url = new URL(sb.toString().replaceAll(" ", "%20"));
 			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 			in.close();
 			loadOnlineLevels();
 			return true;
 		} catch (IOException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
