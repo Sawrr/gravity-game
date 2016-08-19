@@ -151,7 +151,7 @@ public class Planet extends Actor {
 
 	public void translate(float x, float y) {
 		Vector2 pos = new Vector2(getPosition()).add(x, y);
-		float border = 2 * radius;
+		float border = radius;
 		if (pos.x < -LevelScreen.WORLD_WIDTH / 2 + border) {
 			pos.x = -LevelScreen.WORLD_WIDTH / 2 + border;
 		}

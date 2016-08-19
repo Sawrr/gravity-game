@@ -1,8 +1,8 @@
 {
 	"official": [
-		"testLevel.txt", "anotherLevel.txt"
+		"one.txt", "two.txt", "three.txt", "four.txt", "five.txt", "six.txt", "seven.txt"
 	],
 	"tutorial": [
-		"tutLevel.txt", "tutLevel2.txt", "tutLevel3.txt"
+		"tutLevel.txt", "tutLevel2.txt", "tutLevel3.txt", "tutLevel4.txt"
 	]
 }

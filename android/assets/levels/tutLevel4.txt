@@ -1,35 +1,36 @@
 {
-name: 0-2 Watch out!
+name: 0-4 Boost!
 author: Sawr
-message: Avoid hostile planets
+message: Press the screen to use your boosters
 type: TUTORIAL
 theme: rose
 shipOrigin: {
-		y:-240
+		x: -12
+		y: -260
 	}
 planets: [
 	{
 		position: {
-			x: -70
-			y: 75
+			x: -8
+			y: 35
+		}
+		radius: 110
+		homePlanet: false
+	}
+	{
+		position: {
+			x: -6
+			y: 278
 		}
 		radius: 50
 		homePlanet: false
 	}
 	{
 		position: {
-			x: 180
-			y: 320
+			x: -4.5
+			y: 488.375
 		}
 		radius: 50
-		homePlanet: false
-	}
-	{
-		position: {
-			x: 150
-			y: 570
-		}
-		radius: 80
 		homePlanet: true
 	}
 ]

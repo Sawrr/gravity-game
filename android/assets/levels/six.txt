@@ -1,0 +1,1 @@
+{name:2-2,author:Sawr,type:OFFICIAL,theme:creation,shipOrigin:{x:30.016638,y:-206.24998},planets:[{position:{x:33.76872,y:29.999971},radius:100},{position:{x:440,y:-538.125},radius:200},{position:{x:258.89377,y:-159.37498},radius:140},{position:{x:275.77814,y:603.74994},radius:80,homePlanet:true},{position:{x:101.30622,y:427.50003},radius:70}]}

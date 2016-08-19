@@ -53,9 +53,9 @@ public class Overlay {
 	}
 
 	public void createVictoryPanel() {
-		float x = screenWidth / 5;
+		float x = screenWidth / 6;
 		float y = screenHeight / 8;
-		float width = screenWidth * 3 / 5;
+		float width = screenWidth * 2 / 3;
 		float height = screenHeight * 3 / 4;
 
 		float itemWidth = width - 2 * BorderedItem.BORDER_WIDTH;

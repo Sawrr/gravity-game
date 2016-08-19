@@ -1,21 +1,20 @@
 {
 name: 0-1 Getting Started
 author: Sawr
-message: msg
+message: Fling the spaceship towards Earth
 type: TUTORIAL
 theme: rose
 shipOrigin: {
-	x: 25
-	y: 50
-}
+		y:-200
+	}
 planets: [
 	{
 		position: {
-			x: 25
-			y: 500
+			x:0
+			y:450
 		}
-		radius: 34
-		homePlanet: true
+		radius:80
+		homePlanet:true
 	}
 ]
 }

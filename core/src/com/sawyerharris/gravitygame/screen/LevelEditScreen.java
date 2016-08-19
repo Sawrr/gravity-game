@@ -106,6 +106,7 @@ public class LevelEditScreen extends LevelScreen {
 			public void tap(InputEvent event, float x, float y, int count, int button) {
 				if (planet.isHomePlanet()) {
 					planet.remove();
+					getPlanets().remove(planet);
 				} else {
 					planet.setHomePlanet(true);
 				}

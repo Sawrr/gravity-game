@@ -213,7 +213,7 @@ public class LevelManager {
 				if (currentLevel == index) {
 					status.setHighestShipStyle(index);
 					status.flush();
-					return index;
+					return styleUnlockLevelIndexList.indexOf(index) + 1;
 				}
 			}
 			return -1;

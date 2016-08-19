@@ -1,20 +1,28 @@
 {
-name: 0-3 Almost Got It!
+name: 0-3 Use the force
 author: Sawr
-message: msg
+message: Use the gravity of planets to bend your trajectory
 type: TUTORIAL
-theme: cone
+theme: rose
 shipOrigin: {
-	x: 25
-	y: 50
-}
+		x: 30
+		y: -240
+	}
 planets: [
 	{
 		position: {
-			x: 25
-			y: 700
+			x: 36
+			y: 165
 		}
-		radius: 34
+		radius: 160
+		homePlanet: false
+	}
+	{
+		position: {
+			x: 30
+			y: 580
+		}
+		radius: 60
 		homePlanet: true
 	}
 ]
