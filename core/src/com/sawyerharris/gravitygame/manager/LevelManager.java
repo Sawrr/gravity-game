@@ -29,7 +29,7 @@ public class LevelManager {
 	private final GravityGame game = GravityGame.getInstance();
 	
 	/** URL of level server */
-	private static final String LEVEL_SERVER = "http://localhost:8080/?";
+	private static final String LEVEL_SERVER = "http://gravity-game.appspot.com/?";
 
 	/** Name of Preferences file to load */
 	private static final String PREFS_NAME = "com.sawyerharris.gravitygame.customlevels";
@@ -73,6 +73,9 @@ public class LevelManager {
 	}
 
 	private boolean checkLevel(Level l) {
+		if (l == null) {
+			return false;
+		}
 		if (l.getName() == null || l.getAuthor() == null || l.getShipOrigin() == null || l.getTheme() == null
 				|| l.getType() == null || l.getPlanets() == null) {
 			return false;
@@ -317,6 +320,7 @@ public class LevelManager {
 		sb.append("&pass=s17gg");
 		try {
 			URL url = new URL(sb.toString().replaceAll(" ", "%20"));
+			System.out.print(url.toString());
 			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 			in.close();
 			loadOnlineLevels();

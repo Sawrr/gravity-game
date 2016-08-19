@@ -86,7 +86,9 @@ public class ParallaxBackground {
 		region.setRegion(srcX, srcY, srcWidth, srcHeight);
 		
 		batch.begin();
-		batch.draw(region, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		// TODO properly fix this
+		int buffer = 250;
+		batch.draw(region, 0, -buffer, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + buffer);
 		batch.end();
 	}
 }

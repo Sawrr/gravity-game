@@ -50,7 +50,7 @@ public class MenuScreen extends GameScreen {
 	private static final Node LEVELS = new Node(new Vector2(-1500, 0), ROOT);
 	private static final Node OFFICIAL_LEVELS = new Node(new Vector2(-1500, 1500), LEVELS);
 	private static final Node CUSTOM_LEVELS = new Node(new Vector2(-3000, 0), LEVELS);
-	private static final Node ONLINE_LEVELS = new Node(new Vector2(-1500, -1500), LEVELS);
+	private static final Node ONLINE_LEVELS = new Node(new Vector2(-1500, -1700), LEVELS);
 
 	private static final Node OPTIONS = new Node(new Vector2(0, -1500), ROOT);
 	private static final Node SHIP_STYLE = new Node(new Vector2(1500, -1500), OPTIONS);
@@ -350,7 +350,7 @@ public class MenuScreen extends GameScreen {
 		// Load online levels into scroll panel
 		ArrayList<Level> onlineLevelList = levels.getOnlineLevels();
 		for (int i = 0; i < onlineLevelList.size(); i++) {
-			onlineLevelPanel.addTextItem(onlineLevelList.get(i).getName(), 40);
+			onlineLevelPanel.addTextItem(onlineLevelList.get(i).getName() + "\nby " + onlineLevelList.get(i).getAuthor(), 40);
 		}
 
 		TextItem onlineLevelsBackButton = new TextItem(ONLINE_LEVELS.position.x - 150, ONLINE_LEVELS.position.y + 500,
