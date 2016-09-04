@@ -59,10 +59,12 @@ public class Planet extends Actor {
 
 	@Override
 	public Actor hit(float x, float y, boolean touchable) {
-		if (touchable && getTouchable() != Touchable.enabled) return null;
-	    return new Vector2(x,y).len() <= radius ? this : null;
+		// Set hit detection on planet actor to be circular i.e. based on radius
+		if (touchable && getTouchable() != Touchable.enabled)
+			return null;
+		return new Vector2(x, y).len() <= radius ? this : null;
 	}
-	
+
 	/**
 	 * Returns the radius of the planet.
 	 * 
@@ -149,6 +151,15 @@ public class Planet extends Actor {
 		sprite.draw(batch);
 	}
 
+	/**
+	 * Translates the planet by the given amount and ensures planet stays within
+	 * bounds (used by level editor).
+	 * 
+	 * @param x
+	 *            amount to move in x direction
+	 * @param y
+	 *            amount to move in y direction
+	 */
 	public void translate(float x, float y) {
 		Vector2 pos = new Vector2(getPosition()).add(x, y);
 		float border = radius;
@@ -164,12 +175,17 @@ public class Planet extends Actor {
 		if (pos.y > LevelScreen.WORLD_HEIGHT / 2 - border) {
 			pos.y = LevelScreen.WORLD_HEIGHT / 2 - border;
 		}
-		// TODO figure out this problem
-		System.out.println(LevelScreen.WORLD_HEIGHT / 2);
-		System.out.println(pos.y);
+
 		setPosition(pos);
 	}
 
+	/**
+	 * Scales the radius of the planet by the given amount, ensuring the max and
+	 * min radii are not exceeded (used by level editor).
+	 * 
+	 * @param amount
+	 *            amount to scale radius
+	 */
 	public void zoom(float amount) {
 		radius += amount;
 		if (radius > MAX_RADIUS) {

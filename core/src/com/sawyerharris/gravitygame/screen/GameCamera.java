@@ -16,7 +16,7 @@ public class GameCamera extends OrthographicCamera {
 	/** World dimensions for clamping */
 	private final int worldWidth;
 	private final int worldHeight;
-	
+
 	/** Minimum, maximum zoom levels */
 	private static final float MIN_ZOOM = 0.5f;
 	private static final float MAX_ZOOM = 1f;
@@ -29,6 +29,7 @@ public class GameCamera extends OrthographicCamera {
 	/** Speed parameter for auto move */
 	private float speed;
 
+	/** If camera is currently auto moving / zooming */
 	private boolean autoMoving;
 	private boolean autoZooming;
 
@@ -120,6 +121,7 @@ public class GameCamera extends OrthographicCamera {
 	 * Sets the position the camera should move to.
 	 * 
 	 * @param target
+	 *            move target
 	 */
 	public void setMoveTarget(Vector2 target) {
 		if (target == null) {
@@ -133,6 +135,7 @@ public class GameCamera extends OrthographicCamera {
 	 * Sets the level the camera should zoom to.
 	 * 
 	 * @param target
+	 *            zoom target
 	 */
 	public void setZoomTarget(float target) {
 		if (target < MIN_ZOOM || target > MAX_ZOOM) {
@@ -146,6 +149,7 @@ public class GameCamera extends OrthographicCamera {
 	 * Sets auto movement speed of camera
 	 * 
 	 * @param speed
+	 *            move speed
 	 */
 	public void setMoveSpeed(float speed) {
 		this.speed = speed;
@@ -155,15 +159,22 @@ public class GameCamera extends OrthographicCamera {
 	 * Sets the auto move mode of the camera
 	 * 
 	 * @param mode
+	 *            move mode i.e. linear, logarithmic
 	 */
 	public void setMoveMode(MoveMode mode) {
 		this.mode = mode;
 	}
-	
+
+	/**
+	 * Stop auto moving the camera.
+	 */
 	public void stopAutoMove() {
 		autoMoving = false;
 	}
-	
+
+	/**
+	 * Stop auto zooming the camera.
+	 */
 	public void stopAutoZoom() {
 		autoZooming = false;
 	}

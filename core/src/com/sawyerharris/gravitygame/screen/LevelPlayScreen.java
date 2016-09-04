@@ -14,23 +14,45 @@ import com.sawyerharris.gravitygame.game.Ship;
 import com.sawyerharris.gravitygame.game.Theme;
 import com.sawyerharris.gravitygame.ui.LevelHeader;
 
+/**
+ * Level play screen, where the player can play a level.
+ * 
+ * @author Sawyer Harris
+ *
+ */
 public class LevelPlayScreen extends LevelScreen {
+	/** Singleton instance of game */
 	private final GravityGame game = GravityGame.getInstance();
 
+	/** Scalars for converting gestures into movements */
 	private static final float VEL_SCALAR = 0.1f;
 	private static final float ZOOM_SCALAR = 0.0005f;
 
+	/** State of gameplay */
 	private GameplayState state;
 
+	/** Position and zoom of camera when in aiming mode */
 	private Vector2 cameraAimingPosition;
 	private float cameraAimingZoom;
 
+	/** Number of attempts player has taken to beat the level */
 	private int numAttempts;
-	
+
+	/** Level header, used by overlay */
 	private LevelHeader header;
 
+	/**
+	 * Context in which game is being played i.e. normally, in test mode, or as
+	 * a custom level
+	 */
 	private Context context;
 
+	/**
+	 * Constructs the level play screen with the given batch and shape renderer.
+	 * 
+	 * @param batch
+	 * @param renderer
+	 */
 	public LevelPlayScreen(Batch batch, ShapeRenderer renderer) {
 		super(batch, renderer);
 
@@ -40,7 +62,7 @@ public class LevelPlayScreen extends LevelScreen {
 		numAttempts = 0;
 
 		header = new LevelHeader(batch, renderer);
-		
+
 		getShip().setTouchable(Touchable.enabled);
 		getShip().addListener(new ActorGestureListener() {
 			@Override
@@ -55,6 +77,9 @@ public class LevelPlayScreen extends LevelScreen {
 		aim();
 	}
 
+	/**
+	 * Checks if ship has collided with a planet.
+	 */
 	private void checkCollisions() {
 		// Check for planet collisions
 		for (Planet planet : getPlanets()) {
@@ -68,6 +93,9 @@ public class LevelPlayScreen extends LevelScreen {
 		}
 	}
 
+	/**
+	 * Reset camera position and zoom to defaults.
+	 */
 	private void resetCamera() {
 		cameraAimingPosition = new Vector2(0, 0);
 		cameraAimingZoom = 1f;
@@ -79,12 +107,12 @@ public class LevelPlayScreen extends LevelScreen {
 		getOverlay().hideVictoryPanel();
 		numAttempts = 0;
 		resetCamera();
-		
+
 		header.setText(level.getName(), level.getMessage());
 		Theme theme = game.getThemes().getTheme(level.getTheme());
 		header.setColor(theme.getColor());
 		header.show();
-		
+
 		aim();
 	}
 
@@ -136,7 +164,7 @@ public class LevelPlayScreen extends LevelScreen {
 	@Override
 	public void touchDown(int screenX, int screenY, int pointer, int button) {
 		if (state == GameplayState.FIRING && getShip().getBoost() > 0) {
-			getShip().startBoosting();	
+			getShip().startBoosting();
 		}
 	}
 
@@ -223,11 +251,23 @@ public class LevelPlayScreen extends LevelScreen {
 	public enum GameplayState {
 		AIMING, FIRING, VICTORY
 	}
-	
+
+	/**
+	 * Context in which level is being played.
+	 * 
+	 * @author Sawyer Harris
+	 *
+	 */
 	public enum Context {
 		PLAYING, TESTING, CUSTOM
 	}
 
+	/**
+	 * Sets the context of the level being played.
+	 * 
+	 * @param con
+	 *            context to set
+	 */
 	public void setContext(Context con) {
 		context = con;
 	}

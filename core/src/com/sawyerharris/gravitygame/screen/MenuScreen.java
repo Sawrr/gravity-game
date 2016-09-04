@@ -27,7 +27,10 @@ import com.sawyerharris.gravitygame.ui.TextItem;
  *
  */
 public class MenuScreen extends GameScreen {
+	/** Singleton instance of game */
 	private final GravityGame game = GravityGame.getInstance();
+
+	/** Managers */
 	private final AssetManager assets = game.getAssets();
 	private final LevelManager levels = game.getLevels();
 	private final PlayerStatus status = game.getPlayerStatus();
@@ -36,6 +39,7 @@ public class MenuScreen extends GameScreen {
 	private static final int WORLD_WIDTH = 8000;
 	private static final int WORLD_HEIGHT = 6000;
 
+	/** Menu font size */
 	private static final int FONT_SIZE = 48;
 
 	/** Theme */
@@ -57,6 +61,12 @@ public class MenuScreen extends GameScreen {
 
 	private static final Node EDITOR = new Node(new Vector2(1500, 0), ROOT);
 
+	/**
+	 * Constructs the menu screen with the given batch and shape renderer.
+	 * 
+	 * @param batch
+	 * @param renderer
+	 */
 	public MenuScreen(Batch batch, ShapeRenderer renderer) {
 		super(batch, renderer, WORLD_WIDTH, WORLD_HEIGHT);
 		getBackground().setTheme(THEME);
@@ -66,6 +76,9 @@ public class MenuScreen extends GameScreen {
 		createMenuItems();
 	}
 
+	/**
+	 * Creates the menu items with the latest information.
+	 */
 	public void createMenuItems() {
 		// First clear the menu
 		getStage().clear();
@@ -350,7 +363,8 @@ public class MenuScreen extends GameScreen {
 		// Load online levels into scroll panel
 		ArrayList<Level> onlineLevelList = levels.getOnlineLevels();
 		for (int i = 0; i < onlineLevelList.size(); i++) {
-			onlineLevelPanel.addTextItem(onlineLevelList.get(i).getName() + "\nby " + onlineLevelList.get(i).getAuthor(), 40);
+			onlineLevelPanel
+					.addTextItem(onlineLevelList.get(i).getName() + "\nby " + onlineLevelList.get(i).getAuthor(), 40);
 		}
 
 		TextItem onlineLevelsBackButton = new TextItem(ONLINE_LEVELS.position.x - 150, ONLINE_LEVELS.position.y + 500,
@@ -393,6 +407,12 @@ public class MenuScreen extends GameScreen {
 
 	}
 
+	/**
+	 * Moves the camera to the given node.
+	 * 
+	 * @param node
+	 *            node to move to
+	 */
 	private void moveToNode(Node node) {
 		if (node == null) {
 			// Root node, do nothing

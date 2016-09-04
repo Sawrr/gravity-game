@@ -70,6 +70,9 @@ public class GameStage extends Stage {
 		super.draw();
 	}
 
+	/**
+	 * Draws UI BorderedItems using shape renderer.
+	 */
 	private void drawItems() {
 		shapeRenderer.setProjectionMatrix(getCamera().combined);
 		shapeRenderer.begin();

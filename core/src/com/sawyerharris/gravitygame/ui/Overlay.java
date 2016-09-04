@@ -13,11 +13,21 @@ import com.sawyerharris.gravitygame.screen.GameStage;
 import com.sawyerharris.gravitygame.screen.LevelEditScreen;
 import com.sawyerharris.gravitygame.screen.LevelPlayScreen.Context;
 
+/**
+ * Overlay provides functionality for UI and elements that are drawn on top of
+ * the screen.
+ * 
+ * @author Sawyer Harris
+ *
+ */
 public class Overlay {
-
+	/** Singleton instance of game */
 	private GravityGame game = GravityGame.getInstance();
 
+	/** Stage for overlay */
 	private GameStage stage;
+
+	/** Screen dimensions */
 	private float screenWidth;
 	private float screenHeight;
 
@@ -32,6 +42,7 @@ public class Overlay {
 	private TextItem backToMenu;
 	private TextItem nextLevel;
 
+	/** Color of victory panel */
 	private Color victoryPanelColor;
 
 	/** Editor buttons */
@@ -39,19 +50,28 @@ public class Overlay {
 	private TextItem saveButton;
 	private TextItem uploadButton;
 
+	/** Font size and color for editor buttons */
 	private int editFontSize = 32;
-
 	private Color editButtonColor = new Color(0.3f, 0.3f, 0.3f, 0.6f);
 
+	/**
+	 * Construct an overlay with the given batch and shape renderer.
+	 * 
+	 * @param batch
+	 * @param renderer
+	 */
 	public Overlay(Batch batch, ShapeRenderer renderer) {
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
 		stage = new GameStage(new ScreenViewport(), batch, renderer);
-		
+
 		createVictoryPanel();
 		hideVictoryPanel();
 	}
 
+	/**
+	 * Create the panel displayed when the player beats a level.
+	 */
 	public void createVictoryPanel() {
 		float x = screenWidth / 6;
 		float y = screenHeight / 8;
@@ -60,38 +80,38 @@ public class Overlay {
 
 		float itemWidth = width - 2 * BorderedItem.BORDER_WIDTH;
 		float itemHeight = (height - 2 * BorderedItem.BORDER_WIDTH) / 5;
-		
+
 		victoryPanelColor = new Color(0.6f, 0.85f, 0.95f, 0.9f);
-		
+
 		border = new BorderedItem(x, y, width, height, Color.CLEAR, Touchable.disabled);
 		levelComplete = new TextItem(x + BorderedItem.BORDER_WIDTH, y + height - BorderedItem.BORDER_WIDTH - itemHeight,
 				itemWidth, itemHeight, victoryPanelColor, Touchable.disabled, "Level Complete!", 24);
 		levelName = new TextItem(x + BorderedItem.BORDER_WIDTH, y + height - BorderedItem.BORDER_WIDTH - 2 * itemHeight,
 				itemWidth, itemHeight, victoryPanelColor, Touchable.disabled, "", 24);
 		levelAttempts = new TextItem(x + BorderedItem.BORDER_WIDTH,
-				y + height - BorderedItem.BORDER_WIDTH - 3 * itemHeight, itemWidth, itemHeight,
-				victoryPanelColor, Touchable.disabled, "Number of attempts: ", 24);
+				y + height - BorderedItem.BORDER_WIDTH - 3 * itemHeight, itemWidth, itemHeight, victoryPanelColor,
+				Touchable.disabled, "Number of attempts: ", 24);
 		unlockedLabel = new TextItem(x + BorderedItem.BORDER_WIDTH,
-				y + height - BorderedItem.BORDER_WIDTH - 4 * itemHeight, itemWidth / 2, itemHeight,
-				victoryPanelColor, Touchable.disabled, "Unlocked: ", 24);
+				y + height - BorderedItem.BORDER_WIDTH - 4 * itemHeight, itemWidth / 2, itemHeight, victoryPanelColor,
+				Touchable.disabled, "Unlocked: ", 24);
 		unlockedTextItem = new TextItem(x + BorderedItem.BORDER_WIDTH + itemWidth / 2,
-				y + height - BorderedItem.BORDER_WIDTH - 4 * itemHeight, itemWidth / 2, itemHeight,
-				victoryPanelColor, Touchable.disabled, "None", 24);
+				y + height - BorderedItem.BORDER_WIDTH - 4 * itemHeight, itemWidth / 2, itemHeight, victoryPanelColor,
+				Touchable.disabled, "None", 24);
 		unlockedTextureItem = new TextureItem(x + BorderedItem.BORDER_WIDTH + itemWidth / 2,
-				y + height - BorderedItem.BORDER_WIDTH - 4 * itemHeight, itemWidth / 2, itemHeight,
-				victoryPanelColor, Touchable.disabled,
+				y + height - BorderedItem.BORDER_WIDTH - 4 * itemHeight, itemWidth / 2, itemHeight, victoryPanelColor,
+				Touchable.disabled,
 				GravityGame.getInstance().getAssets().getShipAnimation(0, "default").getKeyFrame(0));
 		backToMenu = new TextItem(x + BorderedItem.BORDER_WIDTH,
-				y + height - BorderedItem.BORDER_WIDTH - 5 * itemHeight, itemWidth / 2, itemHeight,
-				victoryPanelColor, Touchable.enabled, "Back to Menu", 24) {
+				y + height - BorderedItem.BORDER_WIDTH - 5 * itemHeight, itemWidth / 2, itemHeight, victoryPanelColor,
+				Touchable.enabled, "Back to Menu", 24) {
 			@Override
 			public void click() {
 				game.setScreenToMenu();
 			}
 		};
 		nextLevel = new TextItem(x + BorderedItem.BORDER_WIDTH + itemWidth / 2,
-				y + height - BorderedItem.BORDER_WIDTH - 5 * itemHeight, itemWidth / 2, itemHeight,
-				victoryPanelColor, Touchable.enabled, "Next Level", 24) {
+				y + height - BorderedItem.BORDER_WIDTH - 5 * itemHeight, itemWidth / 2, itemHeight, victoryPanelColor,
+				Touchable.enabled, "Next Level", 24) {
 			@Override
 			public void click() {
 				Level next = game.getLevels().nextLevel();
@@ -109,10 +129,14 @@ public class Overlay {
 		stage.addActor(backToMenu);
 		stage.addActor(nextLevel);
 	}
-	
+
+	/**
+	 * Create the buttons used in the level editor.
+	 */
 	public void createEditButtons() {
 		float buttonHeight = screenHeight / 6;
-		testButton = new TextItem(0, 0, screenWidth / 3, buttonHeight, editButtonColor, Touchable.enabled, "Test", editFontSize) {
+		testButton = new TextItem(0, 0, screenWidth / 3, buttonHeight, editButtonColor, Touchable.enabled, "Test",
+				editFontSize) {
 			@Override
 			public void click() {
 				Screen screen = game.getScreen();
@@ -122,8 +146,9 @@ public class Overlay {
 				}
 			}
 		};
-		
-		saveButton = new TextItem(screenWidth / 3, 0, screenWidth / 3, buttonHeight, editButtonColor , Touchable.enabled, "Save", editFontSize) {
+
+		saveButton = new TextItem(screenWidth / 3, 0, screenWidth / 3, buttonHeight, editButtonColor, Touchable.enabled,
+				"Save", editFontSize) {
 			@Override
 			public void click() {
 				Screen screen = game.getScreen();
@@ -133,8 +158,9 @@ public class Overlay {
 				}
 			}
 		};
-		
-		uploadButton = new TextItem(2 * screenWidth / 3, 0, screenWidth / 3, buttonHeight, editButtonColor, Touchable.enabled, "Upload", editFontSize) {
+
+		uploadButton = new TextItem(2 * screenWidth / 3, 0, screenWidth / 3, buttonHeight, editButtonColor,
+				Touchable.enabled, "Upload", editFontSize) {
 			@Override
 			public void click() {
 				Screen screen = game.getScreen();
@@ -144,12 +170,24 @@ public class Overlay {
 				}
 			}
 		};
-		
+
 		stage.addActor(testButton);
 		stage.addActor(saveButton);
 		stage.addActor(uploadButton);
 	}
 
+	/**
+	 * Show the victory panel with the given parameters as information.
+	 * 
+	 * @param name
+	 *            name of level beaten
+	 * @param numAttempts
+	 *            number of attempts player took to beat it
+	 * @param unlockStyle
+	 *            index of ship style unlocked, or -1 if none
+	 * @param color
+	 *            color of panel, usually based on level theme
+	 */
 	public void showVictoryPanel(String name, int numAttempts, int unlockStyle, Color color) {
 		if (unlockStyle == -1) {
 			unlockedTextItem.setVisible(true);
@@ -184,6 +222,9 @@ public class Overlay {
 		nextLevel.setVisible(true);
 	}
 
+	/**
+	 * Hide the victory panel from view.
+	 */
 	public void hideVictoryPanel() {
 		border.setVisible(false);
 		levelComplete.setVisible(false);
@@ -195,11 +236,19 @@ public class Overlay {
 		backToMenu.setVisible(false);
 		nextLevel.setVisible(false);
 	}
-	
+
+	/**
+	 * Draw all actors on overlay stage.
+	 */
 	public void draw() {
 		stage.draw();
 	}
 
+	/**
+	 * Return overlay stage.
+	 * 
+	 * @return stage
+	 */
 	public GameStage getStage() {
 		return stage;
 	}

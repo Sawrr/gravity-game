@@ -71,6 +71,9 @@ public class AssetManager implements Disposable {
 		prepareFontGenerator();
 	}
 
+	/**
+	 * Loads the textures and animations of each ship style.
+	 */
 	private void loadShips() {
 		shipAnimations = new ArrayList<ObjectMap<String, Animation>>();
 		shipsTexture = new Texture(SHIPS_TEXTURE_FILE);
@@ -97,6 +100,9 @@ public class AssetManager implements Disposable {
 		}
 	}
 
+	/**
+	 * Loads the planet textures of each planet style.
+	 */
 	private void loadPlanets() {
 		planets = new ObjectMap<String, TextureRegion>();
 		planetsTexture = new Texture(PLANETS_TEXTURE_FILE);
@@ -112,6 +118,9 @@ public class AssetManager implements Disposable {
 		}
 	}
 
+	/**
+	 * Loads the texture for each background.
+	 */
 	private void loadBackgrounds() {
 		backgrounds = new ObjectMap<String, Texture>();
 		FileHandle file = Gdx.files.internal(BACKGROUNDS_META_FILE);
@@ -124,6 +133,9 @@ public class AssetManager implements Disposable {
 		}
 	}
 
+	/**
+	 * Loads the sound instance for each sound.
+	 */
 	private void loadSounds() {
 		sounds = new ObjectMap<String, Sound>();
 		FileHandle file = Gdx.files.internal(SOUNDS_META_FILE);
@@ -136,6 +148,9 @@ public class AssetManager implements Disposable {
 		}
 	}
 
+	/**
+	 * Loads the music instance for each music.
+	 */
 	private void loadMusic() {
 		music = new ObjectMap<String, Music>();
 		FileHandle file = Gdx.files.internal(MUSIC_META_FILE);
@@ -148,6 +163,9 @@ public class AssetManager implements Disposable {
 		}
 	}
 
+	/**
+	 * Prepares the font generator.
+	 */
 	private void prepareFontGenerator() {
 		fonts = new ObjectMap<Integer, BitmapFont>();
 

@@ -15,6 +15,7 @@ import com.sawyerharris.gravitygame.game.Theme;
  *
  */
 public class ParallaxBackground {
+	/** Scalar for parallax motion */
 	private static final float PARA_SCALAR = 0.05f;
 	/** Batch for drawing background */
 	private Batch batch;
@@ -86,9 +87,7 @@ public class ParallaxBackground {
 		region.setRegion(srcX, srcY, srcWidth, srcHeight);
 		
 		batch.begin();
-		// TODO properly fix this
-		int buffer = 250;
-		batch.draw(region, 0, -buffer, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + buffer);
+		batch.draw(region, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch.end();
 	}
 }

@@ -21,21 +21,31 @@ import com.sawyerharris.gravitygame.ui.Overlay;
  *
  */
 public abstract class LevelScreen extends GameScreen {
-	public static final Theme DEFAULT_THEME = GravityGame.getInstance().getThemes().getTheme("cone");
-
+	/** Singleton instance of game */
 	private final GravityGame game = GravityGame.getInstance();
+
+	/** Default theme to use */
+	public static final Theme DEFAULT_THEME = GravityGame.getInstance().getThemes().getTheme("cone");
 
 	/** Width, height of world */
 	public static final int WORLD_WIDTH = 1280;
 	public static final int WORLD_HEIGHT = 1920;
 
-	public static final Vector2 DEFAULT_SHIP_ORIGIN = new Vector2(0,0);
+	/** Default location of ship origin */
+	public static final Vector2 DEFAULT_SHIP_ORIGIN = new Vector2(0, 0);
 
+	/** Planets, ship, overlay and level */
 	private ArrayList<Planet> planets;
 	private Ship ship;
 	private Overlay overlay;
 	private Level level;
 
+	/**
+	 * Constructs a level screen with the given batch and shape renderer.
+	 * 
+	 * @param batch
+	 * @param renderer
+	 */
 	public LevelScreen(Batch batch, ShapeRenderer renderer) {
 		super(batch, renderer, WORLD_WIDTH, WORLD_HEIGHT);
 		getBackground().setTheme(DEFAULT_THEME);
@@ -48,6 +58,11 @@ public abstract class LevelScreen extends GameScreen {
 		planets = new ArrayList<Planet>();
 	}
 
+	/**
+	 * Returns the level screen's overlay.
+	 * 
+	 * @return overlay
+	 */
 	public Overlay getOverlay() {
 		return overlay;
 	}
@@ -58,6 +73,13 @@ public abstract class LevelScreen extends GameScreen {
 		overlay.draw();
 	}
 
+	/**
+	 * Loads the contents of a level including the ship, planets, and
+	 * background.
+	 * 
+	 * @param level
+	 *            level to load
+	 */
 	public void loadLevel(Level level) {
 		this.level = level;
 
@@ -66,7 +88,7 @@ public abstract class LevelScreen extends GameScreen {
 		Vector2 shipOrigin;
 		ArrayList<PlanetMeta> planetList;
 		Theme theme;
-		
+
 		if (level == null) {
 			// No level provided, so a new custom level
 			shipOrigin = new Vector2(DEFAULT_SHIP_ORIGIN);
@@ -78,7 +100,7 @@ public abstract class LevelScreen extends GameScreen {
 			planetList = level.getPlanets();
 			theme = game.getThemes().getTheme(level.getTheme());
 		}
-		
+
 		// Load ship
 		ship.setPosition(shipOrigin);
 		ship.setInitialPosition(shipOrigin);

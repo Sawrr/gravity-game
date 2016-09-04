@@ -24,7 +24,7 @@ public abstract class GameScreen extends ScreenAdapter {
 	/** Viewport dimensions */
 	private static final int VIEWPORT_WIDTH = 1000;
 	private static final int VIEWPORT_HEIGHT = 1500;
-	
+
 	/** Batch to draw on */
 	private final Batch batch;
 	/** Shape renderer for drawing UI */
@@ -52,14 +52,14 @@ public abstract class GameScreen extends ScreenAdapter {
 		viewport = new ExtendViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, camera);
 		background = new ParallaxBackground(camera, batch);
 		stage = new GameStage(viewport, batch, renderer);
-		
+
 		detector = new ScreenGestureDetector(100, 1.0f, 1.11f, 0.15f, new ScreenGestureAdapter());
 
 		mux = new InputMultiplexer();
 		mux.addProcessor(stage);
 		mux.addProcessor(detector);
-		
-		camera.setPosition(0,0);
+
+		camera.setPosition(0, 0);
 	}
 
 	@Override
@@ -68,34 +68,48 @@ public abstract class GameScreen extends ScreenAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.autoMove();
 		camera.update();
-		
+
 		// Draw background
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		background.draw();
-		
+
 		// Draw stage actors
 		// projection matrix is set by stage.draw()
 		stage.draw();
 	}
 
-	@Override
-	public void resize(int width, int height) {
-		//viewport.update(width, height);
-	}
-
-	
+	/**
+	 * Returns the screen's stage.
+	 * 
+	 * @return stage
+	 */
 	public GameStage getStage() {
 		return stage;
 	}
 
+	/**
+	 * Returns the screen's camera.
+	 * 
+	 * @return camera
+	 */
 	public GameCamera getCamera() {
 		return camera;
 	}
 
+	/**
+	 * Returns the screen's parallax background.
+	 * 
+	 * @return background
+	 */
 	public ParallaxBackground getBackground() {
 		return background;
 	}
 
+	/**
+	 * Returns the screen's input mux.
+	 * 
+	 * @return mux
+	 */
 	public InputMultiplexer getMux() {
 		return mux;
 	}
@@ -124,7 +138,7 @@ public abstract class GameScreen extends ScreenAdapter {
 	 * Called when the mouse wheel is scrolled.
 	 */
 	public abstract void scrolled(int amount);
-	
+
 	/**
 	 * Called when the screen is touched by mouse or finger.
 	 */
@@ -134,7 +148,7 @@ public abstract class GameScreen extends ScreenAdapter {
 	 * Called when the touch on the screen is lifted.
 	 */
 	public abstract void touchUp(int screenX, int screenY, int pointer, int button);
-	
+
 	/**
 	 * Detects gestures on the screen and hands them to the GameScreen instance.
 	 * 
@@ -142,9 +156,19 @@ public abstract class GameScreen extends ScreenAdapter {
 	 *
 	 */
 	private class ScreenGestureDetector extends GestureDetector {
-				
-		public ScreenGestureDetector(int i, float f, float g, float h, GestureListener listener) {
-			super(i, f, g, h, listener);
+		/**
+		 * Constructs a ScreenGestureDetector with the GestureDetector
+		 * parameters.
+		 * 
+		 * @param halfTapSquareSize
+		 * @param tapCountInterval
+		 * @param longPressDuration
+		 * @param maxFlingDelay
+		 * @param listener
+		 */
+		public ScreenGestureDetector(float halfTapSquareSize, float tapCountInterval, float longPressDuration,
+				float maxFlingDelay, GestureListener listener) {
+			super(halfTapSquareSize, tapCountInterval, longPressDuration, maxFlingDelay, listener);
 		}
 
 		@Override
@@ -158,14 +182,14 @@ public abstract class GameScreen extends ScreenAdapter {
 			GameScreen.this.scrolled(amount);
 			return false;
 		}
-		
+
 		@Override
 		public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 			super.touchDown(screenX, screenY, pointer, button);
 			GameScreen.this.touchDown(screenX, screenY, pointer, button);
 			return false;
 		}
-		
+
 		@Override
 		public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 			super.touchUp(screenX, screenY, pointer, button);
@@ -173,7 +197,7 @@ public abstract class GameScreen extends ScreenAdapter {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Listens for gestures and sends them to GameScreen instance.
 	 * 
@@ -181,8 +205,12 @@ public abstract class GameScreen extends ScreenAdapter {
 	 *
 	 */
 	private class ScreenGestureAdapter extends GestureAdapter {
+		/**
+		 * True if the next pan is the first time pan of the drag gesture.
+		 * Prevents incorrect drag calculation on first pan.
+		 */
 		public boolean firstPan = true;
-		
+
 		@Override
 		public boolean pan(float x, float y, float deltaX, float deltaY) {
 			if (!firstPan) {

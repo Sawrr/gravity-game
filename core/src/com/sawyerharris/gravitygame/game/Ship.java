@@ -56,10 +56,12 @@ public class Ship extends Actor {
 
 	@Override
 	public Actor hit(float x, float y, boolean touchable) {
-		if (touchable && getTouchable() != Touchable.enabled) return null;
-	    return new Vector2(x,y).len() <= TOUCH_RADIUS ? this : null;
+		// Set hit detection on planet actor to be circular i.e. based on radius
+		if (touchable && getTouchable() != Touchable.enabled)
+			return null;
+		return new Vector2(x, y).len() <= TOUCH_RADIUS ? this : null;
 	}
-	
+
 	/**
 	 * Start using boost.
 	 */
@@ -125,28 +127,46 @@ public class Ship extends Actor {
 	 * @param pos
 	 */
 	public void setInitialPosition(Vector2 pos) {
-		if (pos.x < -LevelScreen.WORLD_WIDTH / 2 || pos.x > LevelScreen.WORLD_WIDTH / 2 || pos.y < -LevelScreen.WORLD_HEIGHT / 2 || pos.y > LevelScreen.WORLD_HEIGHT / 2) {
+		if (pos.x < -LevelScreen.WORLD_WIDTH / 2 || pos.x > LevelScreen.WORLD_WIDTH / 2
+				|| pos.y < -LevelScreen.WORLD_HEIGHT / 2 || pos.y > LevelScreen.WORLD_HEIGHT / 2) {
 			throw new IllegalArgumentException("Ship position out of bounds.");
 		}
 		initialPosition = pos;
 	}
 
+	/**
+	 * Returns the ship's velocity.
+	 * 
+	 * @return vel
+	 */
 	public Vector2 getVelocity() {
 		return vel;
 	}
-	
+
+	/**
+	 * Sets the ship's velocity
+	 * 
+	 * @param velocity
+	 *            velocity vector of ship
+	 */
 	public void setVelocity(Vector2 velocity) {
 		vel = velocity;
 	}
-	
+
+	/**
+	 * Returns amount of boost remaining.
+	 * 
+	 * @return boost
+	 */
 	public int getBoost() {
 		return boost;
 	}
-	
+
 	/**
 	 * Updates ship's position and velocity using Runge-Kutta 4th Order method.
 	 * 
 	 * @param dt
+	 *            delta t in numerical algorithm
 	 */
 	public void physicsUpdate(float dt, ArrayList<Planet> planets) {
 		pos.set(getPosition());
@@ -192,7 +212,7 @@ public class Ship extends Actor {
 	}
 
 	/**
-	 * Computes the acceleration of the ship due to gravity and boost.
+	 * Computes the acceleration of the ship due to gravity AND boost.
 	 * 
 	 * @param shipPosition
 	 *            position of ship
@@ -231,7 +251,7 @@ public class Ship extends Actor {
 		private float time;
 		/** Animation */
 		private Animation animation;
-		
+
 		/**
 		 * Sets the sprite's animation.
 		 * 
@@ -250,7 +270,7 @@ public class Ship extends Actor {
 			setCenter(Ship.this.getPosition().x, Ship.this.getPosition().y);
 			setOriginCenter();
 			if (vel.len2() != 0) {
-				setRotation(vel.angle() - 90);	
+				setRotation(vel.angle() - 90);
 			} else {
 				setRotation(0);
 			}
@@ -259,6 +279,11 @@ public class Ship extends Actor {
 		}
 	}
 
+	/**
+	 * Translates the ship's position by the given amount (used by level editor).
+	 * @param x
+	 * @param y
+	 */
 	public void translate(float x, float y) {
 		Vector2 pos = new Vector2(getPosition()).add(x, y);
 		float border = 0;
@@ -274,7 +299,7 @@ public class Ship extends Actor {
 		if (pos.y > LevelScreen.WORLD_HEIGHT / 2 - border) {
 			pos.y = LevelScreen.WORLD_HEIGHT / 2 - border;
 		}
-		// TODO figure out this problem
+
 		setPosition(pos);
 		setInitialPosition(pos);
 	}

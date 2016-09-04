@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -25,14 +24,14 @@ public class BorderedItem extends Group {
 	public static final int BORDER_WIDTH = 10;
 	/** Amount to augment opacity when item is pressed */
 	private static final float ON_PRESS_OPACITY_MOD = 0.2f;
-	
+	/** If the item is Touchable */
 	private boolean touch;
 
 	/**
 	 * Constructs a bordered item from the given parameters.
 	 * 
-	 * @param x
-	 * @param y
+	 * @param x x of bottom left corner
+	 * @param y y of bottom left corner
 	 * @param width
 	 * @param height
 	 * @param color

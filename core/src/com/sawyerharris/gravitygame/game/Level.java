@@ -70,7 +70,7 @@ public class Level {
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
 	 * Gets author of level.
 	 * 
@@ -141,16 +141,29 @@ public class Level {
 		/** If the planet should be a home planet */
 		private boolean homePlanet;
 
+		/**
+		 * Empty constructor, used only by JSON deserialization.
+		 */
 		public PlanetMeta() {
-			
+
 		}
-		
+
+		/**
+		 * Constructs a PlanetMeta instance that stores the data about a planet.
+		 * 
+		 * @param position
+		 *            position of planet
+		 * @param radius
+		 *            radius of planet
+		 * @param homePlanet
+		 *            true if planet is a home planet
+		 */
 		public PlanetMeta(Vector2 position, int radius, boolean homePlanet) {
 			this.position = position;
 			this.radius = radius;
 			this.homePlanet = homePlanet;
 		}
-		
+
 		/**
 		 * Gets the initial position of the planet.
 		 * 

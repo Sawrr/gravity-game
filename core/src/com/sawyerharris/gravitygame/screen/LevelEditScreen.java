@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -13,8 +12,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Timer;
 import com.sawyerharris.gravitygame.game.GravityGame;
@@ -23,23 +20,36 @@ import com.sawyerharris.gravitygame.game.Planet;
 import com.sawyerharris.gravitygame.game.Theme;
 import com.sawyerharris.gravitygame.game.Level.PlanetMeta;
 import com.sawyerharris.gravitygame.screen.LevelPlayScreen.Context;
-import com.sawyerharris.gravitygame.screen.LevelPlayScreen.GameplayState;
-import com.sawyerharris.gravitygame.ui.TextItem;
 
+/**
+ * Level editor screen for custom levels. Allows ship and planets to be
+ * translated and planets to be scaled.
+ * 
+ * @author Sawyer Harris
+ *
+ */
 public class LevelEditScreen extends LevelScreen {
+	/** Singleton instance of game */
+	private final GravityGame game = GravityGame.getInstance();
+
+	/** Scalar for how much a mouse scroll translates into a planet zoom */
 	private static final float SCROLL_SCALAR = 10f;
 
-	private final GravityGame game = GravityGame.getInstance();
-	
 	/** Level name that will be applied if the user saves */
 	private String customLevelName;
 	/** Index in custom level list of level if it is saved */
 	private int customLevelIndex;
 
+	/**
+	 * Constructs the level edit screen with the given batch and shape renderer.
+	 * 
+	 * @param batch
+	 * @param renderer
+	 */
 	public LevelEditScreen(Batch batch, ShapeRenderer renderer) {
 		super(batch, renderer);
 		getCamera().setZoom(1f);
-		
+
 		getShip().setTouchable(Touchable.enabled);
 		getShip().addListener(new ActorGestureListener() {
 			@Override
@@ -47,7 +57,7 @@ public class LevelEditScreen extends LevelScreen {
 				getShip().translate(x, y);
 			}
 		});
-		
+
 		getOverlay().createEditButtons();
 	}
 
@@ -93,15 +103,22 @@ public class LevelEditScreen extends LevelScreen {
 		getStage().addActor(planet);
 	}
 
+	/**
+	 * Adds an ActorGestureListener to the given planet so the player may
+	 * translate and scale it when editing their custom levels.
+	 * 
+	 * @param planet
+	 *            planet to add an ActorGestureListener to
+	 */
 	private void addPlanetListener(final Planet planet) {
 		planet.addListener(new ActorGestureListener() {
 			private boolean inflate;
-			
+
 			@Override
 			public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
 				planet.translate(x, y);
 			}
-			
+
 			@Override
 			public void tap(InputEvent event, float x, float y, int count, int button) {
 				if (planet.isHomePlanet()) {
@@ -111,12 +128,12 @@ public class LevelEditScreen extends LevelScreen {
 					planet.setHomePlanet(true);
 				}
 			}
-			
+
 			@Override
 			public boolean longPress(Actor actor, float x, float y) {
 				inflate = true;
 				Timer.schedule(new Timer.Task() {
-					
+
 					@Override
 					public void run() {
 						if (!inflate) {
@@ -127,7 +144,7 @@ public class LevelEditScreen extends LevelScreen {
 				}, 0, 0.01f);
 				return true;
 			}
-			
+
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				inflate = false;
@@ -135,7 +152,7 @@ public class LevelEditScreen extends LevelScreen {
 			}
 		});
 	}
-	
+
 	@Override
 	public void keyDown(int keycode) {
 		if (keycode == Keys.BACK || keycode == Keys.BACKSPACE) {
@@ -152,7 +169,7 @@ public class LevelEditScreen extends LevelScreen {
 			planet.zoom(amount * SCROLL_SCALAR);
 		}
 	}
-	
+
 	@Override
 	public void touchDown(int screenX, int screenY, int pointer, int button) {
 	}
@@ -161,6 +178,12 @@ public class LevelEditScreen extends LevelScreen {
 	public void touchUp(int screenX, int screenY, int pointer, int button) {
 	}
 
+	/**
+	 * Checks if the current level being edited is valid for testing i.e. has a
+	 * home planet.
+	 * 
+	 * @return true if the current level is ready to test
+	 */
 	private boolean checkLevel() {
 		for (Actor actor : getStage().getActors()) {
 			if (actor instanceof Planet) {
@@ -171,34 +194,49 @@ public class LevelEditScreen extends LevelScreen {
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Constructs a Level instance from the current level being edited.
+	 * 
+	 * @return a new Level instance based on the current level being edited
+	 */
 	private Level makeLevel() {
 		ArrayList<PlanetMeta> planetList = new ArrayList<PlanetMeta>();
 		for (Planet planet : getPlanets()) {
 			planetList.add(new PlanetMeta(planet.getPosition(), planet.getRadius(), planet.isHomePlanet()));
 		}
-		return new Level(customLevelName, game.getPlayerStatus().getUsername(), getShip().getInitialPosition(), planetList);
+		return new Level(customLevelName, game.getPlayerStatus().getUsername(), getShip().getInitialPosition(),
+				planetList);
 	}
-	
-	// must check that level has a home planet
+
+	/**
+	 * If the current level being edited has a home planet, test the level on
+	 * the level play screen.
+	 */
 	public void testLevel() {
 		if (checkLevel()) {
 			game.setScreenToPlay(makeLevel(), Context.TESTING);
 		}
 	}
 
+	/**
+	 * Save the current level being edited in the custom level list at the
+	 * custom level index specified when the level was loaded for editing.
+	 */
 	public void saveLevel() {
 		game.getLevels().saveLevel(customLevelIndex, makeLevel());
 	}
 
-	// must check that author name has been set
-	// must check that level has a home planet
+	/**
+	 * If level has a home planet and the player has set their username, upload
+	 * the level to the online custom level database.
+	 */
 	public void uploadLevel() {
 		if (checkLevel() && !game.getPlayerStatus().getUsername().equals("")) {
 			System.out.println(game.getLevels().uploadLevel(makeLevel()));
 		}
 	}
-	
+
 	@Override
 	public void loadLevel(Level level) {
 		super.loadLevel(level);

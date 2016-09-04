@@ -3,9 +3,7 @@ package com.sawyerharris.gravitygame.manager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -26,8 +24,9 @@ import com.sawyerharris.gravitygame.game.PlayerStatus;
  *
  */
 public class LevelManager {
+	/** Singleton instance of game */
 	private final GravityGame game = GravityGame.getInstance();
-	
+
 	/** URL of level server */
 	private static final String LEVEL_SERVER = "http://gravity-game.appspot.com/?";
 
@@ -72,6 +71,14 @@ public class LevelManager {
 		loadOnlineLevels();
 	}
 
+	/**
+	 * Checks if level is valid i.e. has name, author, origin, theme, type, and
+	 * planets
+	 * 
+	 * @param l
+	 *            level to check
+	 * @return true if level is valid
+	 */
 	private boolean checkLevel(Level l) {
 		if (l == null) {
 			return false;
@@ -83,13 +90,21 @@ public class LevelManager {
 		return true;
 	}
 
+	/**
+	 * Sets the levels in which a ship style will be unlocked.
+	 */
 	private void prepareShipStyleUnlockList() {
+		// Index + 1 of the list is the index of the ship style to be unlocked
+		// The Integer value in the list is the level at which it is unlocked
 		styleUnlockLevelIndexList = new ArrayList<Integer>();
 		styleUnlockLevelIndexList.add(1);
 		styleUnlockLevelIndexList.add(3);
 		styleUnlockLevelIndexList.add(6);
 	}
 
+	/**
+	 * Loads official and tutorial levels.
+	 */
 	private void loadLevels() {
 		levels = new ArrayList<Level>();
 		tutorialLevels = new ArrayList<Level>();
@@ -111,11 +126,17 @@ public class LevelManager {
 		}
 	}
 
+	/**
+	 * Loads the player's status on level completion.
+	 */
 	private void loadLevelStatus() {
 		currentLevel = game.getPlayerStatus().getHighestLevel();
 		onTutorialLevels = !game.getPlayerStatus().isTutorialCompleted();
 	}
 
+	/**
+	 * Loads the player's custom levels.
+	 */
 	private void loadCustomLevels() {
 		customLevels = new ArrayList<Level>();
 		prefs = Gdx.app.getPreferences(PREFS_NAME);
@@ -137,6 +158,9 @@ public class LevelManager {
 		}
 	}
 
+	/**
+	 * Loads levels from the online databse.
+	 */
 	private void loadOnlineLevels() {
 		onlineLevels = new ArrayList<Level>();
 
